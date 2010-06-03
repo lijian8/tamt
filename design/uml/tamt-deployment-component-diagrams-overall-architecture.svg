@@ -1,0 +1,1459 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1024px"
+   height="768px"
+   id="svg2816"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="tamt-deployment-component-diagrams-overall-architecture.svg">
+  <defs
+     id="defs2818">
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;">
+      <path
+         id="path4477"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lstart"
+       style="overflow:visible">
+      <path
+         id="path4209"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="TriangleOutL"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="TriangleOutL"
+       style="overflow:visible">
+      <path
+         id="path4334"
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         transform="scale(0.8)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;">
+      <path
+         id="path4194"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="1562.8157 : 4853.2432 : 1"
+       inkscape:vp_y="0 : 220.23005 : 0"
+       inkscape:vp_z="2182.5105 : 4856.7669 : 1"
+       inkscape:persp3d-origin="2109.3522 : 4787.6146 : 1"
+       id="perspective2824" />
+    <inkscape:perspective
+       id="perspective3685"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3778"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3813"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3838"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3869"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3924"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3955"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3984"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4011"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4042"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4073"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4073-7"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4119"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4144"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4169"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5229"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5260"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5285"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart-7"
+       style="overflow:visible">
+      <path
+         id="path4209-4"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <inkscape:perspective
+       id="perspective5403"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5512"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5567"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5604"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5641"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5699"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5724"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5749"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5780"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5805"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4917"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-2"
+       style="overflow:visible">
+      <path
+         id="path4477-9"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <inkscape:perspective
+       id="perspective4945"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-1"
+       style="overflow:visible">
+      <path
+         id="path4477-1"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <inkscape:perspective
+       id="perspective4945-6"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend-5"
+       style="overflow:visible">
+      <path
+         id="path4477-3"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7421875"
+     inkscape:cx="512"
+     inkscape:cy="384"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="px"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1440"
+     inkscape:window-height="825"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata2821">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <g
+       id="g3009"
+       transform="translate(236.7071,-116.67474)">
+      <g
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-system-overview.png"
+         transform="matrix(0.5,0,0,0.5,97.762211,59.687757)"
+         id="g3911">
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:1.80016005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect2903"
+           width="296.03986"
+           height="232.2392"
+           x="213.48825"
+           y="242.14772" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:1.91721952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 212.86104,240.96584 20.07051,-17.72818 296.66705,0 0,232.83012 -20.07049,18.31913"
+           id="path3740" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:1.91721952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="M 510.15531,240.3749 529.5986,223.23766"
+           id="path3742" />
+      </g>
+      <g
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-system-overview.png"
+         transform="matrix(0.39995078,0,0,0.29436093,133.73977,179.52911)"
+         id="g3744-3">
+        <rect
+           style="fill:none;stroke:#000000;stroke-width:1.87788618;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect2903-2"
+           width="299.76141"
+           height="249.58948"
+           x="200.05263"
+           y="118.30526" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 199.41754,117.03509 20.32281,-19.05263 300.39649,0 0,250.22456 -20.3228,19.68772"
+           id="path3740-0" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="M 500.44912,116.4 520.13684,97.98246"
+           id="path3742-7" />
+      </g>
+      <text
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-system-overview.png"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         sodipodi:linespacing="125%"
+         id="text3801"
+         y="195.0983"
+         x="210.94118"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+         xml:space="preserve"><tspan
+           style="font-size:8px"
+           y="195.0983"
+           x="210.94118"
+           id="tspan3803"
+           sodipodi:role="line">Host Computer</tspan></text>
+      <text
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-system-overview.png"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         sodipodi:linespacing="125%"
+         id="text3801-2"
+         y="224.81938"
+         x="217.54796"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+         xml:space="preserve"><tspan
+           style="font-size:7px"
+           y="224.81938"
+           x="217.54796"
+           id="tspan3803-2"
+           sodipodi:role="line">VirtualBox Client</tspan></text>
+      <g
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-system-overview.png"
+         transform="matrix(0.23562568,0,0,0.18094977,174.2417,214.62684)"
+         id="g3744-3-0">
+        <rect
+           style="fill:none;stroke:#000000;stroke-width:1.87788618;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect2903-2-4"
+           width="299.76141"
+           height="249.58948"
+           x="200.05263"
+           y="118.30526" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 199.41754,117.03509 20.32281,-19.05263 300.39649,0 0,250.22456 -20.3228,19.68772"
+           id="path3740-0-8" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="M 500.44912,116.4 520.13684,97.98246"
+           id="path3742-7-4" />
+      </g>
+      <text
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-system-overview.png"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         sodipodi:linespacing="125%"
+         id="text3801-2-0"
+         y="244.78426"
+         x="226.74718"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+         xml:space="preserve"><tspan
+           style="font-size:7px"
+           y="244.78426"
+           x="226.74718"
+           id="tspan3803-2-6"
+           sodipodi:role="line">TAMT Appliance</tspan></text>
+    </g>
+    <g
+       id="g3029"
+       transform="translate(63.705118,26.861242)"
+       style="opacity:1">
+      <g
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-appliance.png"
+         id="g3911-5"
+         transform="matrix(0.52225795,0,0,0.5,262.50138,59.186693)">
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:1.80016004999999990;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect2903-1"
+           width="296.03986"
+           height="232.2392"
+           x="213.48825"
+           y="242.14772" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:1.91721951999999995;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="m 212.86104,240.96584 20.07051,-17.72818 296.66705,0 0,232.83012 -20.07049,18.31913"
+           id="path3740-5" />
+        <path
+           style="fill:none;stroke:#000000;stroke-width:1.91721951999999995;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           d="M 510.15531,240.3749 529.5986,223.23766"
+           id="path3742-0" />
+      </g>
+      <text
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-appliance.png"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         sodipodi:linespacing="125%"
+         id="text3801-3"
+         y="193.174"
+         x="380.44171"
+         style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+         xml:space="preserve"><tspan
+           style="font-size:8px"
+           y="193.174"
+           x="380.44171"
+           id="tspan3803-4"
+           sodipodi:role="line">TAMT Appliance</tspan></text>
+      <g
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-appliance.png"
+         id="g3998-7"
+         transform="matrix(0.32233417,0,0,0.3213555,285.66333,42.563703)">
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect3972-3"
+           width="185.24188"
+           height="110.14382"
+           x="322.08725"
+           y="504.32236" />
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect3974-8"
+           width="50.899796"
+           height="18.357304"
+           x="295.63776"
+           y="531.85834" />
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect3974-2-0"
+           width="50.899796"
+           height="18.357304"
+           x="295.63776"
+           y="569.07404" />
+      </g>
+      <g
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-appliance.png"
+         id="g3998-7-0"
+         transform="matrix(0.32233417,0,0,0.3213555,285.87194,84.702058)">
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect3972-3-8"
+           width="185.24188"
+           height="110.14382"
+           x="322.08725"
+           y="504.32236" />
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect3974-8-5"
+           width="50.899796"
+           height="18.357304"
+           x="295.63776"
+           y="531.85834" />
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect3974-2-0-4"
+           width="50.899796"
+           height="18.357304"
+           x="295.63776"
+           y="569.07404" />
+      </g>
+      <g
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-appliance.png"
+         id="g3998-7-04"
+         transform="matrix(0.32233417,0,0,0.3213555,359.30115,85.119268)">
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect3972-3-6"
+           width="185.24188"
+           height="110.14382"
+           x="322.08725"
+           y="504.32236" />
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect3974-8-3"
+           width="50.899796"
+           height="18.357304"
+           x="295.63776"
+           y="531.85834" />
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect3974-2-0-8"
+           width="50.899796"
+           height="18.357304"
+           x="295.63776"
+           y="569.07404" />
+      </g>
+      <text
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-appliance.png"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         sodipodi:linespacing="125%"
+         id="text3801-2-0-5"
+         y="217.58389"
+         x="403.32849"
+         style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+         xml:space="preserve"><tspan
+           style="font-size:5px"
+           y="217.58389"
+           x="403.32849"
+           id="tspan3803-2-6-6"
+           sodipodi:role="line">Ubuntu OS</tspan></text>
+      <text
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-appliance.png"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         sodipodi:linespacing="125%"
+         id="text3801-2-0-5-6"
+         y="260.26511"
+         x="402.37683"
+         style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+         xml:space="preserve"><tspan
+           style="font-size:5px"
+           y="260.26511"
+           x="402.37683"
+           id="tspan3803-2-6-6-4"
+           sodipodi:role="line">TAMT Platform</tspan></text>
+      <text
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-appliance.png"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         sodipodi:linespacing="125%"
+         id="text3801-2-0-5-6-1"
+         y="260.44379"
+         x="473.50861"
+         style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+         xml:space="preserve"><tspan
+           style="font-size:5px"
+           y="260.44379"
+           x="473.50861"
+           id="tspan3803-2-6-6-4-0"
+           sodipodi:role="line">TAMT Applications</tspan></text>
+      <path
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-appliance.png"
+         sodipodi:nodetypes="ccccc"
+         id="path4186"
+         d="m 420.26807,283.7092 7.09694,5.88334 9.23902,0.0532 50.87627,0.29289 4.17467,-6.22942"
+         style="fill:none;stroke:#000000;stroke-width:0.45552534000000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.36657600000000001, 0.45552533000000001;stroke-dashoffset:0;marker-start:url(#Arrow2Lstart);marker-end:none" />
+      <g
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-appliance.png"
+         id="g3998-7-0-7"
+         transform="matrix(0.32233417,0,0,0.3213555,359.21609,42.455283)">
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect3972-3-8-13"
+           width="185.24188"
+           height="110.14382"
+           x="322.08725"
+           y="504.32236" />
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect3974-8-5-8"
+           width="50.899796"
+           height="18.357304"
+           x="295.63776"
+           y="531.85834" />
+        <rect
+           style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           id="rect3974-2-0-4-0"
+           width="50.899796"
+           height="18.357304"
+           x="295.63776"
+           y="569.07404" />
+      </g>
+      <text
+         inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-appliance.png"
+         inkscape:export-ydpi="90"
+         inkscape:export-xdpi="90"
+         sodipodi:linespacing="125%"
+         id="text3801-2-0-5-6-8"
+         y="217.52615"
+         x="475.14929"
+         style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+         xml:space="preserve"><tspan
+           style="font-size:5px"
+           y="217.52615"
+           x="475.14929"
+           id="tspan3803-2-6-6-4-01"
+           sodipodi:role="line">TAMT Dev</tspan></text>
+    </g>
+    <g
+       id="g3168"
+       transform="translate(0,-3.1866904e-6)">
+      <g
+         transform="translate(-344.41101,12.044764)"
+         id="g3094">
+        <g
+           transform="matrix(0.52225795,0,0,0.5,487.94742,217.04863)"
+           id="g3911-5-9"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-platform.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="242.14772"
+             x="213.48825"
+             height="232.2392"
+             width="296.03986"
+             id="rect2903-1-0"
+             style="fill:#ffffff;stroke:#000000;stroke-width:1.80016005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <path
+             id="path3740-5-4"
+             d="m 212.86104,240.96584 20.07051,-17.72818 296.66705,0 0,232.83012 -20.07049,18.31913"
+             style="fill:none;stroke:#000000;stroke-width:1.91721952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+          <path
+             id="path3742-0-7"
+             d="M 510.15531,240.3749 529.5986,223.23766"
+             style="fill:none;stroke:#000000;stroke-width:1.91721952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="605.88776"
+           y="351.03592"
+           id="text3801-3-6"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-platform.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-4-8"
+             x="605.88776"
+             y="351.03592"
+             style="font-size:8px">TAMT Platform</tspan></text>
+        <g
+           transform="matrix(0.32233417,0,0,0.3213555,511.10937,200.42564)"
+           id="g3998-7-2"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-platform.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-5"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-0"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-6"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <g
+           transform="matrix(0.32233417,0,0,0.3213555,511.31798,242.564)"
+           id="g3998-7-0-5"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-platform.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-8-1"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-5-7"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-4-3"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <g
+           transform="matrix(0.32233417,0,0,0.3213555,584.7472,242.98121)"
+           id="g3998-7-04-2"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-platform.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-6-9"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-3-4"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-8-0"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="628.77454"
+           y="375.44583"
+           id="text3801-2-0-5-79"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-platform.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-2"
+             x="628.77454"
+             y="375.44583"
+             style="font-size:5px">Web browser</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="627.82288"
+           y="418.12701"
+           id="text3801-2-0-5-6-7"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-platform.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-4-6"
+             x="627.82288"
+             y="418.12701"
+             style="font-size:5px">Apache Tomcat</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="698.95471"
+           y="418.30569"
+           id="text3801-2-0-5-6-1-2"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-platform.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-4-0-2"
+             x="698.95471"
+             y="418.30569"
+             style="font-size:5px">PostgreSQL</tspan></text>
+        <g
+           transform="matrix(0.32233417,0,0,0.3213555,584.7472,200.42564)"
+           id="g3998-7-9-8"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-platform.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-67-9"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-33-1"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-2-7"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="700.89587"
+           y="375.2131"
+           id="text3801-2-0-5-7-5"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-platform.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-9-0"
+             x="700.89587"
+             y="375.2131"
+             style="font-size:5px">Java 1.5 SDK</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="704.32312"
+           y="425.72534"
+           id="text3801-2-0-5-6-1-2-3"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-platform.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-4-0-2-2"
+             x="704.32312"
+             y="425.72534"
+             style="font-size:5px">(with PostGIS)</tspan></text>
+      </g>
+      <g
+         transform="translate(-349.4861,12.879183)"
+         id="g3128">
+        <g
+           transform="matrix(0.52225795,0,0,0.5,675.69258,216.21421)"
+           id="g3911-5-9-2"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="242.14772"
+             x="213.48825"
+             height="232.2392"
+             width="296.03986"
+             id="rect2903-1-0-0"
+             style="fill:#ffffff;stroke:#000000;stroke-width:1.80016005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <path
+             id="path3740-5-4-5"
+             d="m 212.86104,240.96584 20.07051,-17.72818 296.66705,0 0,232.83012 -20.07049,18.31913"
+             style="fill:none;stroke:#000000;stroke-width:1.91721952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+          <path
+             id="path3742-0-7-6"
+             d="M 510.15531,240.3749 529.5986,223.23766"
+             style="fill:none;stroke:#000000;stroke-width:1.91721952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="793.63293"
+           y="350.20148"
+           id="text3801-3-6-1"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-4-8-4"
+             x="793.63293"
+             y="350.20148"
+             style="font-size:8px">TAMT Applications</tspan></text>
+        <g
+           transform="matrix(0.2910953,0,0,0.20230833,709.39642,258.68226)"
+           id="g3998-7-2-1"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-5-0"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-0-4"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-6-5"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="814.51971"
+           y="369.61139"
+           id="text3801-2-0-5-79-6"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-2-9"
+             x="814.51971"
+             y="369.61139"
+             style="font-size:5px">Tag</tspan></text>
+        <g
+           transform="matrix(0.2910953,0,0,0.20230833,776.78095,258.92081)"
+           id="g3998-7-2-1-8"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-5-0-5"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-0-4-5"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-6-5-6"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="881.90424"
+           y="369.84995"
+           id="text3801-2-0-5-79-6-7"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-2-9-9"
+             x="881.90424"
+             y="369.84995"
+             style="font-size:5px">Import</tspan></text>
+        <g
+           transform="matrix(0.2910953,0,0,0.20230833,709.70143,284.33802)"
+           id="g3998-7-2-1-4"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-5-0-9"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-0-4-0"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-6-5-9"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="814.82471"
+           y="395.26712"
+           id="text3801-2-0-5-79-6-8"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-2-9-2"
+             x="814.82471"
+             y="395.26712"
+             style="font-size:5px">Assign</tspan></text>
+        <g
+           transform="matrix(0.2910953,0,0,0.20230833,709.70143,310.33802)"
+           id="g3998-7-2-1-4-4"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-5-0-9-9"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-0-4-0-2"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-6-5-9-1"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="814.82471"
+           y="421.26712"
+           id="text3801-2-0-5-79-6-8-4"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-2-9-2-0"
+             x="814.82471"
+             y="421.26712"
+             style="font-size:5px">Export</tspan></text>
+        <g
+           transform="matrix(0.2910953,0,0,0.20230833,776.70143,284.33802)"
+           id="g3998-7-2-1-4-4-3"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-5-0-9-9-0"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-0-4-0-2-0"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-6-5-9-1-7"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="881.82471"
+           y="395.26712"
+           id="text3801-2-0-5-79-6-8-4-2"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-2-9-2-0-9"
+             x="881.82471"
+             y="395.26712"
+             style="font-size:5px">Query</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="818.41937"
+           y="376.10275"
+           id="text3801-2-0-5-6-1-2-3-6"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-applications.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-4-0-2-2-5"
+             x="818.41937"
+             y="376.10275"
+             style="font-size:5px">(with JOSM)</tspan></text>
+      </g>
+      <g
+         transform="translate(-51.072314,179.80395)"
+         id="g3062">
+        <g
+           transform="matrix(0.52225795,0,0,0.5,559.9489,49.289441)"
+           id="g3911-5-9-9"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-dev.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="242.14772"
+             x="213.48825"
+             height="232.2392"
+             width="296.03986"
+             id="rect2903-1-0-1"
+             style="fill:#ffffff;stroke:#000000;stroke-width:1.80016005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <path
+             id="path3740-5-4-7"
+             d="m 212.86104,240.96584 20.07051,-17.72818 296.66705,0 0,232.83012 -20.07049,18.31913"
+             style="fill:none;stroke:#000000;stroke-width:1.91721952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+          <path
+             id="path3742-0-7-1"
+             d="M 510.15531,240.3749 529.5986,223.23766"
+             style="fill:none;stroke:#000000;stroke-width:1.91721952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:8px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="677.88928"
+           y="183.27673"
+           id="text3801-3-6-7"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-dev.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-4-8-1"
+             x="677.88928"
+             y="183.27673"
+             style="font-size:8px">TAMT Dev</tspan></text>
+        <g
+           transform="matrix(0.32233417,0,0,0.3213555,583.11085,32.666451)"
+           id="g3998-7-2-0"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-dev.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-5-1"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-0-47"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-6-6"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <g
+           transform="matrix(0.32233417,0,0,0.3213555,583.31946,74.804811)"
+           id="g3998-7-0-5-6"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-dev.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-8-1-0"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-5-7-4"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-4-3-2"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <g
+           transform="matrix(0.32233417,0,0,0.3213555,656.74868,75.222026)"
+           id="g3998-7-04-2-5"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-dev.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-6-9-3"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-3-4-0"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-8-0-9"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="700.776"
+           y="207.68666"
+           id="text3801-2-0-5-79-2"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-dev.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-2-99"
+             x="700.776"
+             y="207.68666"
+             style="font-size:5px">Eclipse IDE</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="699.82434"
+           y="250.36784"
+           id="text3801-2-0-5-6-7-6"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-dev.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-4-6-7"
+             x="699.82434"
+             y="250.36784"
+             style="font-size:5px">pgAdmin III</tspan></text>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="770.95618"
+           y="250.54652"
+           id="text3801-2-0-5-6-1-2-2"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-dev.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-4-0-2-3"
+             x="770.95618"
+             y="250.54652"
+             style="font-size:5px">Quantum GIS</tspan></text>
+        <g
+           transform="matrix(0.32233417,0,0,0.3213555,656.74868,32.666451)"
+           id="g3998-7-9-8-2"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-dev.png"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90">
+          <rect
+             y="504.32236"
+             x="322.08725"
+             height="110.14382"
+             width="185.24188"
+             id="rect3972-3-67-9-6"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="531.85834"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-8-33-1-4"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+          <rect
+             y="569.07404"
+             x="295.63776"
+             height="18.357304"
+             width="50.899796"
+             id="rect3974-2-0-2-7-5"
+             style="fill:#ffffff;stroke:#000000;stroke-width:2;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        </g>
+        <text
+           xml:space="preserve"
+           style="font-size:5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
+           x="772.89734"
+           y="207.45393"
+           id="text3801-2-0-5-7-5-2"
+           sodipodi:linespacing="125%"
+           inkscape:export-xdpi="90"
+           inkscape:export-ydpi="90"
+           inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/deployment-tamt-dev.png"><tspan
+             sodipodi:role="line"
+             id="tspan3803-2-6-6-9-0-3"
+             x="772.89734"
+             y="207.45393"
+             style="font-size:5px">Inkscape</tspan></text>
+      </g>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.94052093999999997px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="m 493.63925,198.22914 -0.0538,-33.66495"
+       id="path3275"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.94052094px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 340.19315,341.13656 452.79334,309.10428"
+       id="path3275-5"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.94052094px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="m 519.21923,340.57244 7.5653,-29.85539"
+       id="path3275-5-4"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:0.94052094px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 703.07077,340.32712 587.64187,248.4304"
+       id="path3275-5-47"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>
