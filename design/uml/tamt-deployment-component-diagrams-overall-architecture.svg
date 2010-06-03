@@ -374,7 +374,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -384,7 +384,10 @@
      inkscape:groupmode="layer">
     <g
        id="g3009"
-       transform="translate(236.7071,-116.67474)">
+       transform="matrix(1.5625,0,0,1.5625,44.970633,-215.63668)"
+       inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/design-system-overview-complete.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
       <g
          inkscape:export-ydpi="90"
          inkscape:export-xdpi="90"
@@ -499,8 +502,10 @@
     </g>
     <g
        id="g3029"
-       transform="translate(63.705118,26.861242)"
-       style="opacity:1">
+       transform="matrix(1.5625,0,0,1.5625,-225.34497,8.6382869)"
+       inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/design-system-overview-complete.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
       <g
          inkscape:export-ydpi="90"
          inkscape:export-xdpi="90"
@@ -508,18 +513,18 @@
          id="g3911-5"
          transform="matrix(0.52225795,0,0,0.5,262.50138,59.186693)">
         <rect
-           style="fill:#ffffff;stroke:#000000;stroke-width:1.80016004999999990;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+           style="fill:#ffffff;stroke:#000000;stroke-width:1.80016005;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
            id="rect2903-1"
            width="296.03986"
            height="232.2392"
            x="213.48825"
            y="242.14772" />
         <path
-           style="fill:none;stroke:#000000;stroke-width:1.91721951999999995;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           style="fill:none;stroke:#000000;stroke-width:1.91721952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
            d="m 212.86104,240.96584 20.07051,-17.72818 296.66705,0 0,232.83012 -20.07049,18.31913"
            id="path3740-5" />
         <path
-           style="fill:none;stroke:#000000;stroke-width:1.91721951999999995;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           style="fill:none;stroke:#000000;stroke-width:1.91721952;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
            d="M 510.15531,240.3749 529.5986,223.23766"
            id="path3742-0" />
       </g>
@@ -674,7 +679,7 @@
          sodipodi:nodetypes="ccccc"
          id="path4186"
          d="m 420.26807,283.7092 7.09694,5.88334 9.23902,0.0532 50.87627,0.29289 4.17467,-6.22942"
-         style="fill:none;stroke:#000000;stroke-width:0.45552534000000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.36657600000000001, 0.45552533000000001;stroke-dashoffset:0;marker-start:url(#Arrow2Lstart);marker-end:none" />
+         style="fill:none;stroke:#000000;stroke-width:0.45552534;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:1.366576, 0.45552533;stroke-dashoffset:0;marker-start:url(#Arrow2Lstart);marker-end:none" />
       <g
          inkscape:export-ydpi="90"
          inkscape:export-xdpi="90"
@@ -721,7 +726,10 @@
     </g>
     <g
        id="g3168"
-       transform="translate(0,-3.1866904e-6)">
+       transform="matrix(1.5625,0,0,1.5625,-324.88422,-33.332408)"
+       inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/design-system-overview-complete.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
       <g
          transform="translate(-344.41101,12.044764)"
          id="g3094">
@@ -1436,24 +1444,36 @@
       </g>
     </g>
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.94052093999999997px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
-       d="m 493.63925,198.22914 -0.0538,-33.66495"
+       style="fill:none;stroke:#000000;stroke-width:1.46956396px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="m 446.42712,276.40063 -0.0841,-52.60149"
        id="path3275"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/design-system-overview-complete.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.94052094px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
-       d="M 340.19315,341.13656 452.79334,309.10428"
+       style="fill:none;stroke:#000000;stroke-width:1.46956396px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="m 206.66758,499.69347 175.9378,-50.05044"
        id="path3275-5"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/design-system-overview-complete.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.94052094px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
-       d="m 519.21923,340.57244 7.5653,-29.85539"
+       style="fill:none;stroke:#000000;stroke-width:1.46956396px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="m 486.39583,498.81203 11.82079,-46.64904"
        id="path3275-5-4"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/design-system-overview-complete.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:0.94052094px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
-       d="M 703.07077,340.32712 587.64187,248.4304"
+       style="fill:none;stroke:#000000;stroke-width:1.46956396px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
+       d="M 773.66387,498.42872 593.30621,354.84009"
        id="path3275-5-47"
-       sodipodi:nodetypes="cc" />
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/tamt/eclipse/workspace/tamt/design/uml/design-system-overview-complete.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
   </g>
 </svg>
