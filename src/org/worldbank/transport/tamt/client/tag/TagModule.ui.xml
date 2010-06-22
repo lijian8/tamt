@@ -1,0 +1,33 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:tagm="urn:import:org.worldbank.transport.tamt.client.tag">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+		.tag {
+			border: 6px solid green;
+			padding: 10px;
+		}
+		.map {
+			border: 1px solid black;	
+		}
+		.info {
+			border: 1px solid black;
+			margin-left: 10px;
+			height: 480px;
+		}
+		.tabs {
+			margin-right: 10px;
+		}
+		.shadow {
+			
+		}
+	</ui:style>
+	<g:HorizontalPanel styleName="{style.tag}">
+		<tagm:TagInformation ui:field="tagInformation" styleName="{style.tabs}"/>
+		<tagm:TagMap ui:field="tagMap" styleName="{style.map}"/>
+	</g:HorizontalPanel>
+	
+</ui:UiBinder> 
