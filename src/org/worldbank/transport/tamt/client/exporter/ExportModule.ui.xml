@@ -1,0 +1,38 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:tagm="urn:import:org.worldbank.transport.tamt.client.assign">
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+		.outerBorder {
+			border: 6px solid green;
+			padding: 10px;
+		}
+		.map {
+			border: 1px solid black;	
+		}
+		.info {
+			border: 1px solid black;
+			margin-left: 10px;
+			height: 480px;
+		}
+		.tabs {
+			margin-right: 10px;
+		}
+		.shadow {
+			
+		}
+		.buffer {
+			height: 500px;
+			width: 900px;	
+		}
+	</ui:style>
+	<g:HorizontalPanel styleName="{style.outerBorder}">
+		<g:HTMLPanel styleName="{style.buffer}">
+			<g:HTML>Placeholder for Export Module</g:HTML>
+		</g:HTMLPanel>
+	</g:HorizontalPanel>
+	
+</ui:UiBinder> 

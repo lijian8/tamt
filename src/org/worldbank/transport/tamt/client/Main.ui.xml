@@ -1,0 +1,57 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:tamt="urn:import:org.worldbank.transport.tamt.client">
+    
+    <ui:with field='res' type='org.worldbank.transport.tamt.client.Main.Resources'/>
+    
+	<ui:style>
+		.pretty { background-color: Skyblue; }
+		.top {
+			padding-top: 10px;
+		}
+		.footer { 
+			color: gray; 
+			padding: 0.5em;
+		}
+		.footer a, a.visited, a.link { 
+			color: gray; 
+		}
+		.center {
+			border: 3px;
+			border-color: green;
+			background-color: gray;
+			padding: 1em;
+		}
+		.north {
+			padding: 0.9em;
+			font-size: large;
+			font-weight: bold;
+		}
+		.logo {
+			margin-left: 26px;
+		}
+	</ui:style>
+	
+<g:DockLayoutPanel unit='EM' styleName="{style.top}">
+  <g:north size='5'>
+  	<g:HorizontalPanel>
+  		<g:Image resource='{res.logo}' styleName="{style.logo}"/>
+    	<g:Label styleName="{style.north}">The World Bank Transport Activity Measurement Toolkit</g:Label>
+  	</g:HorizontalPanel>
+  </g:north>
+  <g:center>
+    <tamt:ApplicationContainer/>
+  </g:center>
+  <g:west size='10'>
+	<tamt:ApplicationNavigation/>
+  </g:west>
+  <g:east size='5'>
+  	<g:Label></g:Label>
+  </g:east>
+  <g:south size='2.5'>
+  	<g:HTML styleName="{style.footer}">TAMT Applications Beta 0.1 - <a target="_blank" href="http://tamt.googlecode.com">http://tamt.googlecode.com</a></g:HTML>
+  </g:south>
+</g:DockLayoutPanel>
+	
+</ui:UiBinder> 

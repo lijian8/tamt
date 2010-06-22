@@ -1,0 +1,24 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:tagm="urn:import:org.worldbank.transport.tamt.client.tag"
+	xmlns:importm="urn:import:org.worldbank.transport.tamt.client.importer"
+	xmlns:assignm="urn:import:org.worldbank.transport.tamt.client.assign"
+	xmlns:querym="urn:import:org.worldbank.transport.tamt.client.query"
+	xmlns:exportm="urn:import:org.worldbank.transport.tamt.client.exporter"
+	>
+	<ui:style>
+		.important {
+			font-weight: bold;
+		}
+	</ui:style>
+	
+	<g:VerticalPanel>
+		<tagm:TagModule ui:field="tagModule"/>
+		<importm:ImportModule ui:field="importModule"/>
+		<assignm:AssignModule ui:field="assignModule"/>
+		<querym:QueryModule ui:field="queryModule"/>
+		<exportm:ExportModule ui:field="exportModule"/>
+	</g:VerticalPanel>
+
+</ui:UiBinder> 

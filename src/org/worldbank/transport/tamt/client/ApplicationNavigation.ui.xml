@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style type='org.worldbank.transport.tamt.client.ApplicationNavigation.NavigationStyle'>
+		.application {
+			padding: 0.6em;
+			text-align: left;
+			margin-left: 2em;
+			cursor: pointer;
+			font-weight: normal;
+		}
+		.selected {
+			background-color: green;
+			color: white;
+			font-weight: bold;
+		}
+		.unselected {
+			background-color: blue;
+			color: white;
+		}		
+	</ui:style>
+	<g:HTMLPanel>
+		<g:HTML styleName="{style.application} {style.selected}" ui:field="tagNav" />
+		<g:HTML styleName="{style.application}" ui:field="importNav" />
+		<g:HTML styleName="{style.application}" ui:field="assignNav" />
+		<g:HTML styleName="{style.application}" ui:field="queryNav" />
+		<g:HTML styleName="{style.application}" ui:field="exportNav" />
+	</g:HTMLPanel>
+</ui:UiBinder>
