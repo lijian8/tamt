@@ -5,7 +5,7 @@
 
 <web-app>
   
-  <!-- Servlets -->
+<!-- Servlets -->
   <!-- 
   <servlet>
     <servlet-name>greetServlet</servlet-name>
@@ -18,6 +18,26 @@
   </servlet-mapping>
   -->
   
+ <servlet>
+    <servlet-name>Log4JInitServlet</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.Log4JInitServlet</servlet-class>
+    <init-param>
+      <param-name>log4j-properties</param-name>
+      <param-value>/WEB-INF/classes/log4j.properties</param-value>
+     </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet>
+    <servlet-name>gpsTraceServiceServlet</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.GPSTraceServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>gpsTraceServiceServlet</servlet-name>
+    <url-pattern>/tamt/gpsTraceService</url-pattern>
+  </servlet-mapping>
+    
   <servlet>
     <servlet-name>tagServiceServlet</servlet-name>
     <servlet-class>org.worldbank.transport.tamt.server.TagServiceImpl</servlet-class>
@@ -48,6 +68,16 @@
     <url-pattern>/tamt/zoneService</url-pattern>
   </servlet-mapping>
         
+  <servlet>
+    <servlet-name>uploadGPSServlet</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.UploadGPSTraceHandler</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>uploadGPSServlet</servlet-name>
+    <url-pattern>/tamt/uploadGPS</url-pattern>
+  </servlet-mapping>
+  
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>TransportActivityMeasurementToolkit.html</welcome-file>

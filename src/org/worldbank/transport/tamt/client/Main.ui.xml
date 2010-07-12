@@ -50,7 +50,10 @@
   	<g:Label></g:Label>
   </g:east>
   <g:south size='2.5'>
-  	<g:HTML styleName="{style.footer}">TAMT Applications Beta 0.1 - <a target="_blank" href="http://tamt.googlecode.com">http://tamt.googlecode.com</a></g:HTML>
+  	<g:HorizontalPanel>
+  		<g:HTML styleName="{style.footer}">TAMT Applications Beta 0.1 - <a target="_blank" href="http://tamt.googlecode.com">http://tamt.googlecode.com</a></g:HTML>
+  		<g:DialogBox ui:field="dialogBox"/>
+  	</g:HorizontalPanel>
   </g:south>
 </g:DockLayoutPanel>
 	
