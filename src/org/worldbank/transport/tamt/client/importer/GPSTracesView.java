@@ -245,7 +245,8 @@ public class GPSTracesView extends Composite {
 					});
 					Label name = new Label(gpsTrace.getName());
 					name.setStyleName(style.list());
-					name.addStyleName(style.clickable());
+					//TODO: add clickable only if we load the details to edit
+					// name.addStyleName(style.clickable());
 					name.addClickHandler(new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
