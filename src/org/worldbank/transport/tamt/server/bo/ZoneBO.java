@@ -82,7 +82,7 @@ public class ZoneBO {
 			}
 		} catch (Exception e)
 		{
-			throw new Exception("An unknown error occured");
+			throw new Exception("An unknown error occured while trying to save a zone");
 		}
 		
 	}
