@@ -1,5 +1,6 @@
 package org.worldbank.transport.tamt.server.dao;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,21 +18,22 @@ public class TagDAO extends DAO {
 	
 	public TagDAO()
 	{
-		init();
+		
 	}
 	
 	public ArrayList<TagDetails> getTagDetails(StudyRegion region)
 	{
 		/*
-		 * Query the tagDetails table where regionName = region.name
+		 * Query the tagdetails table where regionName = region.name
 		 * 
-		 * select * from "tagDetails" where region = 'default'
+		 * select * from "tagdetails" where region = 'default'
 		 * 
 		 */
 		ArrayList<TagDetails> tagDetailsList = new ArrayList<TagDetails>();
 		try {
+			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "select * from \"tagDetails\" where region = '"+region.getName()+"' ORDER BY name";
+			String sql = "select * from \"tagdetails\" where region = '"+region.getName()+"' ORDER BY name";
 			ResultSet r = s.executeQuery(sql); 
 			while( r.next() ) { 
 			      /* 
@@ -62,7 +64,7 @@ public class TagDAO extends DAO {
 			      
 			      tagDetailsList.add(tagDetails);
 			} 
-    
+			connection.close(); // returns connection to the pool
 		} 
 	    catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -77,16 +79,17 @@ public class TagDAO extends DAO {
 	public TagDetails saveTagDetails(TagDetails tagDetails) throws SQLException {
 
 		try {
+			Connection connection = getConnection();
 			Statement s = connection.createStatement();
 			// INSERT INTO films VALUES ('UA502', 'Bananas', 105, DEFAULT, 'Comedy', '82 minutes');
 			// name, description, regionName
 			// TODO: extend the model to include regionName string or region StudyRegion as property of TagDetails
 			// for now we just use 'default'
-			String sql = "INSERT INTO \"tagDetails\" (id, name, description, region) VALUES ('"+tagDetails.getId()+"', '"+tagDetails.getName()+"','"+tagDetails.getDescription()+"','default')";
+			String sql = "INSERT INTO \"tagdetails\" (id, name, description, region) VALUES ('"+tagDetails.getId()+"', '"+tagDetails.getName()+"','"+tagDetails.getDescription()+"','default')";
 			logger.debug("sql=" + sql);
 			logger.debug("native sql=" + connection.nativeSQL(sql));
 			s.executeUpdate(sql); 
-			
+			connection.close(); // returns connection to the pool
 		} 
 	    catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -101,17 +104,18 @@ public class TagDAO extends DAO {
 	
 	public TagDetails updateTagDetails(TagDetails tagDetails) throws SQLException {
 		try {
+			Connection connection = getConnection();
 			Statement s = connection.createStatement();
 			// TODO: extend the model to include regionName string or region StudyRegion as property of TagDetails
 			// for now we just use 'default'
-			String sql = "UPDATE \"tagDetails\" SET " +
+			String sql = "UPDATE \"tagdetails\" SET " +
 					" name = '"+tagDetails.getName()+"'," +
 					" description = '"+tagDetails.getDescription()+"'," +
 					" region = 'default' " +
 					"WHERE id = '"+tagDetails.getId()+"'";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
-			
+			connection.close(); // returns connection to the pool
 		} 
 		catch (SQLException e) {
 			logger.error(e.getMessage());
@@ -131,11 +135,12 @@ public class TagDAO extends DAO {
 	public void deleteTagDetailById(String id) throws SQLException
 	{
 		try {
+			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "DELETE FROM \"tagDetails\" WHERE id = '"+id+"'";
+			String sql = "DELETE FROM \"tagdetails\" WHERE id = '"+id+"'";
 			logger.debug("sql=" + sql);
 			s.execute(sql); 
-			
+			connection.close(); // returns connection to the pool
 		} 
 		catch (SQLException e) {
 			logger.error(e.getMessage());

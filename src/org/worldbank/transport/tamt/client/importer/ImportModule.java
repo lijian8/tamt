@@ -4,6 +4,8 @@ import org.worldbank.transport.tamt.client.event.GetGPSTracesEvent;
 import org.worldbank.transport.tamt.client.event.GetGPSTracesEventHandler;
 import org.worldbank.transport.tamt.client.event.SwitchModuleEvent;
 import org.worldbank.transport.tamt.client.event.SwitchModuleEventHandler;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEventHandler;
 import org.worldbank.transport.tamt.client.exporter.ExportModule;
 import org.worldbank.transport.tamt.client.tag.TagMap;
 
@@ -14,6 +16,7 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -26,6 +29,7 @@ public class ImportModule extends Composite {
 	
 	private HandlerManager eventBus;
 	
+	@UiField HorizontalPanel hpanel;
 	@UiField TabLayoutPanel tabLayoutPanel;
 	@UiField GPSTracesView gpsTracesView;
 	
@@ -34,6 +38,9 @@ public class ImportModule extends Composite {
 		this.eventBus = eventBus;
 		
 		initWidget(uiBinder.createAndBindUi(this));
+		
+		hpanel.setWidth("100%");
+		tabLayoutPanel.setWidth("100%");
 		
 		bind();
 	}
@@ -46,6 +53,26 @@ public class ImportModule extends Composite {
 	public void bind()
 	{
 
+		eventBus.addHandler(TAMTResizeEvent.TYPE, new TAMTResizeEventHandler() {
+			
+			@Override
+			public void onTAMTResize(TAMTResizeEvent event) {
+				GWT.log("SIZE: ImportModule tabLayoutPanel height within: " + event.height);
+				
+				int h = event.height - 40; // account for other study region UI
+				int w = event.width;
+				
+				String height = Integer.toString(h) + "px";
+				String width = Integer.toString(w) + "px";
+				GWT.log("SIZE: ImportModule tabLayoutPanel height: " + height);
+				GWT.log("SIZE: ImportModule tabLayoutPanel width: " + width);
+				
+				
+				tabLayoutPanel.setHeight(height);
+				//tabLayoutPanel.setWidth(width);
+				
+			}
+		});		
 		eventBus.addHandler(SwitchModuleEvent.TYPE,
 			new SwitchModuleEventHandler() {
 		    	public void onSwitchModule(SwitchModuleEvent event) {
@@ -57,6 +84,8 @@ public class ImportModule extends Composite {
 			            } else {
 			            	hideModule();
 			            }
+		            } else {
+		            	hideModule();
 		            }
 		        }
 		});	

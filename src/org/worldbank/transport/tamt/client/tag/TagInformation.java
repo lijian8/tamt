@@ -24,12 +24,15 @@ import org.worldbank.transport.tamt.client.event.RenderRoadsEventHandler;
 import org.worldbank.transport.tamt.client.event.ShowRoadsEvent;
 import org.worldbank.transport.tamt.client.event.ShowTagsEvent;
 import org.worldbank.transport.tamt.client.event.ShowZonesEvent;
+import org.worldbank.transport.tamt.client.event.SwitchModuleEvent;
 import org.worldbank.transport.tamt.shared.RoadDetails;
 import org.worldbank.transport.tamt.shared.TagDetails;
 import org.worldbank.transport.tamt.shared.Vertex;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -39,26 +42,57 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabBar;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class TagInformation extends Composite {
 
-	private HandlerManager eventBus;
+	private final HandlerManager eventBus;
+	
+	private VerticalPanel vPanel;
+	private HorizontalPanel hPanel;
 	private TabPanel panel;
+	
 	private TagListing tagListing;
 	private ZoneListing zoneListing;
 	private RoadListing roadListing;
 	
+	private HTML title;
+	private HTML studyRegion;
+	
 	private TabBar tabBar;
 	
-	public TagInformation(HandlerManager eventBus)
+	public TagInformation(HandlerManager _eventBus)
 	{
-		this.eventBus = eventBus;
-		tagListing = new TagListing(this.eventBus);
-		zoneListing = new ZoneListing(this.eventBus);
-		roadListing = new RoadListing(this.eventBus);
+		eventBus = _eventBus;
+		
+		
+		tagListing = new TagListing(eventBus);
+		zoneListing = new ZoneListing(eventBus);
+		roadListing = new RoadListing(eventBus);
+		
+		title = new HTML("Current study region:");
+		title.setStyleName("studyRegionLabel");
+		studyRegion = new HTML("My Study Region");
+		studyRegion.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.REGION, true));
+			}
+		});
+		
+		studyRegion.setStyleName("studyRegionTitle");
+		
+		hPanel = new HorizontalPanel();
+		hPanel.add(title);
+		hPanel.add(studyRegion);
+		
+		vPanel = new VerticalPanel();
+		vPanel.add(hPanel);
 		
 		panel = new TabPanel();
 		
@@ -70,6 +104,7 @@ public class TagInformation extends Composite {
 			
 			@Override
 			public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
+				
 				// 0 = Tags, 1 = Roads, 2 = Zones
 				int almostSelected = event.getItem();
 				switch (almostSelected) {
@@ -107,7 +142,10 @@ public class TagInformation extends Composite {
 		});
 		
 		panel.setWidth("400px");
-		initWidget(panel);
+		
+		vPanel.add(panel);
+		
+		initWidget(vPanel);
 		
 		bind();
 		

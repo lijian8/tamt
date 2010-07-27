@@ -6,18 +6,8 @@
 <web-app>
   
 <!-- Servlets -->
-  <!-- 
-  <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>org.test.myproject.server.GreetingServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>greetServlet</servlet-name>
-    <url-pattern>/mytestproject/greet</url-pattern>
-  </servlet-mapping>
-  -->
-  
+
+ <!-- Start Up Servlets -->  
  <servlet>
     <servlet-name>Log4JInitServlet</servlet-name>
     <servlet-class>org.worldbank.transport.tamt.server.Log4JInitServlet</servlet-class>
@@ -26,8 +16,39 @@
       <param-value>/WEB-INF/classes/log4j.properties</param-value>
      </init-param>
     <load-on-startup>1</load-on-startup>
+ </servlet>
+ <servlet>
+    <servlet-name>SingletonInitializer</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.SingletonInitializer</servlet-class>
+    <load-on-startup>1</load-on-startup>
+ </servlet>  
+ <servlet>
+    <servlet-name>TAMTConnectionPoolInitializer</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.TAMTConnectionPoolInitializer</servlet-class>
+    <load-on-startup>1</load-on-startup>
+ </servlet>
+  
+  <!-- Application Servlets -->
+  <servlet>
+    <servlet-name>assignStatusHandler</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.AssignStatusHandler</servlet-class>
   </servlet>
-
+  
+  <servlet-mapping>
+    <servlet-name>assignStatusHandler</servlet-name>
+    <url-pattern>/tamt/assignStatusHandler</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>assignServiceServlet</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.AssignServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>assignServiceServlet</servlet-name>
+    <url-pattern>/tamt/assignService</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>gpsTraceServiceServlet</servlet-name>
     <servlet-class>org.worldbank.transport.tamt.server.GPSTraceServiceImpl</servlet-class>
@@ -57,7 +78,17 @@
     <servlet-name>roadServiceServlet</servlet-name>
     <url-pattern>/tamt/roadService</url-pattern>
   </servlet-mapping>
-    
+
+  <servlet>
+    <servlet-name>regionServiceServlet</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.RegionServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>regionServiceServlet</servlet-name>
+    <url-pattern>/tamt/regionService</url-pattern>
+  </servlet-mapping>
+      
   <servlet>
     <servlet-name>zoneServiceServlet</servlet-name>
     <servlet-class>org.worldbank.transport.tamt.server.ZoneServiceImpl</servlet-class>

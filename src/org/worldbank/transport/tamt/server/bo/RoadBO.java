@@ -75,7 +75,7 @@ public class RoadBO {
 			if( e.getMessage().indexOf("duplicate key value violates unique constraint") != -1 )
 			{
 				throw new Exception("A road with that name already exists");
-			} else if (e.getMessage().indexOf("roadDetails_tag_id_fkey") != -1) {
+			} else if (e.getMessage().indexOf("roaddetails_tag_id_fkey") != -1) {
 				throw new Exception("The tag for this road is not valid");
 			} else {
 				throw new Exception(e.getMessage());

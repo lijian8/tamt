@@ -6,6 +6,8 @@ import java.util.Iterator;
 import org.worldbank.transport.tamt.client.event.GetTagsEvent;
 import org.worldbank.transport.tamt.client.event.GetTagsEventHandler;
 import org.worldbank.transport.tamt.client.event.ReceivedTagsEvent;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEventHandler;
 import org.worldbank.transport.tamt.client.services.TagService;
 import org.worldbank.transport.tamt.client.services.TagServiceAsync;
 import org.worldbank.transport.tamt.shared.StudyRegion;
@@ -27,6 +29,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -55,6 +58,8 @@ public class TagListing extends Composite {
 	@UiField FlexTable tagList;
 	@UiField TextBox name;
 	@UiField TextBox description;
+	
+	@UiField ScrollPanel scrollPanel;
 	
 	private HandlerManager eventBus;
 	private TagServiceAsync tagService;
@@ -86,7 +91,18 @@ public class TagListing extends Composite {
 		    		clearTagDetailView();
 		    		fetchTagDetails();
 		        }
-		});		
+		});	
+		
+		eventBus.addHandler(TAMTResizeEvent.TYPE, new TAMTResizeEventHandler() {
+			
+			@Override
+			public void onTAMTResize(TAMTResizeEvent event) {
+				int h = event.height - 250; // account for other UI
+				String height = Integer.toString(h) + "px";
+				GWT.log("SIZE: TagListsing scroll panel height: " + height);
+				scrollPanel.setHeight(height);
+			}
+		});					
 	}
 
 	@UiHandler("all")

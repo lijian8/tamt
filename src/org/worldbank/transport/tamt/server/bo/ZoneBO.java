@@ -15,6 +15,7 @@ import org.worldbank.transport.tamt.shared.ZoneDetails;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Point;
 
 public class ZoneBO {
@@ -55,8 +56,10 @@ public class ZoneBO {
 			Coordinate c = new Coordinate(v.getLng(), v.getLat());
 			coords[i] = c;
 		}
-		// now create a line string from the coordinates array
-		Geometry geometry = new GeometryFactory().createLineString(coords);
+		
+		// now create a line string from the coordinates array where null = no holes in the polygon
+		LinearRing ring = new GeometryFactory().createLinearRing(coords);
+		Geometry geometry = new GeometryFactory().createPolygon(ring, null);
 		
 		// Note: the centroid for the ZoneDetail vertices is never
 		// stored in the database. It was just as easy to calculate

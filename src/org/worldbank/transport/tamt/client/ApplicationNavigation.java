@@ -1,6 +1,9 @@
 package org.worldbank.transport.tamt.client;
 
+import java.util.HashMap;
+
 import org.worldbank.transport.tamt.client.event.SwitchModuleEvent;
+import org.worldbank.transport.tamt.client.event.SwitchModuleEventHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -24,131 +27,150 @@ public class ApplicationNavigation extends Composite {
 	
 	interface NavigationStyle extends CssResource {
 	    String selected();
+	    String selectedSettings();
 	    String unselected();
 	  }
 
 	@UiField NavigationStyle style;
 
+	@UiField HTML regionNav;
 	@UiField HTML tagNav;
 	@UiField HTML importNav;
-	@UiField HTML assignNav;
 	@UiField HTML queryNav;
 	@UiField HTML exportNav;
 
 	private HandlerManager eventBus;
+	
+	private HashMap<String, Integer> navs;
 
 	public ApplicationNavigation(HandlerManager eventBus) {
 		
 		this.eventBus = eventBus;
 		
+		navs = new HashMap<String, Integer>();
+		navs.put(SwitchModuleEvent.REGION, 0);
+		navs.put(SwitchModuleEvent.TAG, 1);
+		navs.put(SwitchModuleEvent.IMPORT, 2);
+		navs.put(SwitchModuleEvent.QUERY, 3);
+		navs.put(SwitchModuleEvent.EXPORT, 4);
+		
 		initWidget(uiBinder.createAndBindUi(this));
+		
+		bind();
 		
 		// set names on modules
 		// TODO: Add il8n
+		regionNav.setText("Home");
 		tagNav.setText("Tag");
 		importNav.setText("Import");
-		assignNav.setText("Assign");
 		queryNav.setText("Query");
 		exportNav.setText("Export");
+		
+		// select Home
+		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.REGION, true));
 	}
 
+	private void bind()
+	{
+		eventBus.addHandler(SwitchModuleEvent.TYPE,
+			new SwitchModuleEventHandler() {
+		    	public void onSwitchModule(SwitchModuleEvent event) {
+		    		String module = event.getModule();
+		    		GWT.log("NAV: module=" + module);
+		    		Integer m = navs.get(module);
+		    		GWT.log("NAV: m=" + m);
+		    		switch (m) {
+		    		case 0:
+						// region
+		    			setEnabled(regionNav, true);
+		    			setEnabled(tagNav, false);
+		    			setEnabled(importNav, false);
+		    			setEnabled(queryNav, false);
+		    			setEnabled(exportNav, false);
+						break;
+		    		case 1:
+						// tag
+		    			setEnabled(regionNav, false);
+		    			setEnabled(tagNav, true);
+		    			setEnabled(importNav, false);
+		    			setEnabled(queryNav, false);
+		    			setEnabled(exportNav, false);
+						break;
+		    		case 2:
+						// import
+		    			setEnabled(regionNav, false);
+		    			setEnabled(tagNav, false);
+		    			setEnabled(importNav, true);
+		    			setEnabled(queryNav, false);
+		    			setEnabled(exportNav, false);
+						break;
+		    		case 3:
+						// query
+		    			setEnabled(regionNav, false);
+		    			setEnabled(tagNav, false);
+		    			setEnabled(importNav, false);
+		    			setEnabled(queryNav, true);
+		    			setEnabled(exportNav, false);
+						break;						
+		    		case 4:
+						// export
+		    			setEnabled(regionNav, false);
+		    			setEnabled(tagNav, false);
+		    			setEnabled(importNav, false);
+		    			setEnabled(queryNav, false);
+		    			setEnabled(exportNav, true);
+						break;						
+		    		}
+		    	}
+		});
+	}
+	
 	@UiHandler("tagNav")
 	void onClickTag(ClickEvent e) {
-		GWT.log("trigger tag module: " + this.eventBus.toString());
-		
-		// change ui in left nav
-		setEnabled(tagNav, true);
-		setEnabled(importNav, false);
-		setEnabled(assignNav, false);
-		setEnabled(queryNav, false);
-		setEnabled(exportNav, false);
-		
-		// fire event so actual Module can show up too
 		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.TAG, true));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.IMPORT, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.ASSIGN, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.QUERY, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.EXPORT, false));
-		
 	}
 	
 	@UiHandler("importNav")
 	void onClickImport(ClickEvent e) {
-		GWT.log("trigger import module: " + this.eventBus.toString());
-		setEnabled(tagNav, false);
-		setEnabled(importNav, true);
-		setEnabled(assignNav, false);
-		setEnabled(queryNav, false);
-		setEnabled(exportNav, false);		
-		
-		// fire event so actual Module can show up too
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.TAG, false));
 		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.IMPORT, true));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.ASSIGN, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.QUERY, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.EXPORT, false));
-		
 	}
 	
-	@UiHandler("assignNav")
-	void onClickAssign(ClickEvent e) {
-		GWT.log("trigger assign module: " + this.eventBus.toString());
-		setEnabled(tagNav, false);
-		setEnabled(importNav, false);
-		setEnabled(assignNav, true);
-		setEnabled(queryNav, false);
-		setEnabled(exportNav, false);		
-		
-
-		// fire event so actual Module can show up too
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.TAG, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.IMPORT, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.ASSIGN, true));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.QUERY, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.EXPORT, false));
-		
+	@UiHandler("regionNav")
+	void onClickRegion(ClickEvent e) {
+		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.REGION, true));
 	}
 	
 	@UiHandler("queryNav")
 	void onClickQuery(ClickEvent e) {
-		GWT.log("trigger query module: " + this.eventBus.toString());
-		setEnabled(tagNav, false);
-		setEnabled(importNav, false);
-		setEnabled(assignNav, false);
-		setEnabled(queryNav, true);
-		setEnabled(exportNav, false);
-
-		// fire event so actual Module can show up too
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.TAG, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.IMPORT, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.ASSIGN, false));
 		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.QUERY, true));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.EXPORT, false));
 	}
 	
 	@UiHandler("exportNav")
 	void onClickExport(ClickEvent e) {
-		GWT.log("trigger export module: " + this.eventBus.toString());
-		setEnabled(tagNav, false);
-		setEnabled(importNav, false);
-		setEnabled(assignNav, false);
-		setEnabled(queryNav, false);
-		setEnabled(exportNav, true);		
-
-		// fire event so actual Module can show up too
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.TAG, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.IMPORT, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.ASSIGN, false));
-		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.QUERY, false));
 		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.EXPORT, true));
 	}	
 	
 	void setEnabled(HTML element, boolean enabled) {
 		if(enabled)
 		{
+			/*GWT.log("NAV: element=" + element);
+			if( element == regionNav)
+			{
+				element.addStyleName(style.selectedSettings());
+			} else {
+				element.addStyleName(style.selected());
+			}
+			*/
 			element.addStyleName(style.selected());
+			
 		} else 
 		{
+			/*if( element == regionNav)
+			{
+				element.removeStyleName(style.selectedSettings());
+			} else {
+				element.removeStyleName(style.selected());
+			}*/
 			element.removeStyleName(style.selected());
 		}
 		//getElement().addStyle(enabled ? : style.selected() : style.unselected());

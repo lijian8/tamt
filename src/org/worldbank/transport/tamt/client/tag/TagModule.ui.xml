@@ -6,7 +6,7 @@
 		.important {
 			font-weight: bold;
 		}
-		.tag {
+		.outerBorder {
 			border: 6px solid green;
 			padding: 10px;
 		}
@@ -24,10 +24,13 @@
 		.shadow {
 			
 		}
+		.buffer {
+			height: 500px;
+			width: 900px;
+		}		
 	</ui:style>
-	<g:HorizontalPanel styleName="{style.tag}">
+	<g:HorizontalPanel ui:field="hpanel" styleName="{style.outerBorder}">
 		<tagm:TagInformation ui:field="tagInformation" styleName="{style.tabs}"/>
 		<tagm:TagMap ui:field="tagMap" styleName="{style.map}"/>
-	</g:HorizontalPanel>
-	
+	</g:HorizontalPanel>	 
 </ui:UiBinder> 

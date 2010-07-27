@@ -77,10 +77,12 @@
 					<g:HTML styleName="{style.label}">Name:</g:HTML>
 					<g:TextBox ui:field="name" name="myName"/>
 				</g:HorizontalPanel>
+				<!-- 
 				<g:HorizontalPanel styleName="{style.detailRow}">
 					<g:HTML styleName="{style.label}">Description:</g:HTML>
 					<g:TextBox ui:field="description" name="myDesc"/>
 				</g:HorizontalPanel>
+				 -->
 				<g:HorizontalPanel styleName="{style.detailRow}">
 					<g:HTML styleName="{style.label}">ZIP file:</g:HTML>
 					<g:FileUpload ui:field="fileUpload" name="uploadFormElement"/>	
@@ -97,10 +99,11 @@
 				 <g:Label ui:field="none" text="None" styleName="{style.nav} {style.clickable}"/>
 				 <g:Label ui:field="refresh" text="Refresh" styleName="{style.nav} {style.clickable}"/>
 			 	 <g:Button ui:field="delete" text="Delete checked" styleName="{style.delete}"/>
+			 	 <g:Button ui:field="assignToRoads" text="Tag GPS records by Road" styleName="{style.delete}"/>
 				 <g:Button ui:field="process" text="Process checked" styleName="{style.invisible}"/>
 			</g:HorizontalPanel>
 			<g:HTML><hr/></g:HTML>
-			<g:ScrollPanel ui:field="scroller" height="250px" width="100%" styleName="{style.top}">
+			<g:ScrollPanel ui:field="scrollPanel" height="250px" width="100%" styleName="{style.top}">
 				<g:FlexTable ui:field="gpsTraceList" cellSpacing="0" cellPadding="0" width="100%" styleName="{style.list}"/>
 			</g:ScrollPanel>		
 		</g:VerticalPanel>

@@ -29,8 +29,8 @@
 			width: 900px;	
 		}
 	</ui:style>
-	<g:HorizontalPanel styleName="{style.outerBorder}">
-		<g:HTMLPanel styleName="{style.buffer}">
+	<g:HorizontalPanel ui:field="hpanel" styleName="{style.outerBorder}">
+		<g:HTMLPanel ui:field="container" styleName="{style.buffer}">
 			<g:HTML>Placeholder for Query Module</g:HTML>
 		</g:HTMLPanel>
 	</g:HorizontalPanel>

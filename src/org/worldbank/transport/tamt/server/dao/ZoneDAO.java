@@ -1,5 +1,6 @@
 package org.worldbank.transport.tamt.server.dao;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,15 +25,16 @@ public class ZoneDAO extends DAO {
 	
 	public ZoneDAO()
 	{
-		init();
+		
 	}
 	
 	public ArrayList<ZoneDetails> getZoneDetails(StudyRegion region) throws Exception
 	{
 		ArrayList<ZoneDetails> roadDetailsList = new ArrayList<ZoneDetails>();
 		try {
+			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "select id, name, description, region, zoneType, AsText(geometry) from \"zoneDetails\" where region = '"+region.getName()+"' ORDER BY name";
+			String sql = "select id, name, description, region, zoneType, AsText(geometry) from \"zonedetails\" where region = '"+region.getName()+"' ORDER BY name";
 			ResultSet r = s.executeQuery(sql); 
 			while( r.next() ) { 
 			      /* 
@@ -74,7 +76,7 @@ public class ZoneDAO extends DAO {
 			      
 			      roadDetailsList.add(zoneDetails);
 			} 
-    
+			connection.close(); // returns connection to the pool
 		} 
 	    catch (SQLException e) {
 			logger.error(e.getMessage());
@@ -92,9 +94,12 @@ public class ZoneDAO extends DAO {
 	public ZoneDetails saveZoneDetails(ZoneDetails zoneDetails, Geometry geometry) throws SQLException {
 
 		try {
+			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "INSERT INTO \"zoneDetails\" (id, name, description, region, zoneType, geometry) " +
-					"VALUES ('"+zoneDetails.getId()+"', " +
+			String sql = "INSERT INTO \"zonedetails\" (pid, id, name, description, region, zoneType, geometry) " +
+					"VALUES (" + // insert null zid so that the sequence can fill it
+					"(SELECT nextval('zonedetails_pid_seq'))," +
+					"'"+zoneDetails.getId()+"', " +
 					"'"+zoneDetails.getName()+"'," +
 					"'"+zoneDetails.getDescription()+"'," +
 					"'default'," +
@@ -103,7 +108,7 @@ public class ZoneDAO extends DAO {
 					")";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
-			
+			connection.close(); // returns connection to the pool
 		} 
 	    catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -118,10 +123,11 @@ public class ZoneDAO extends DAO {
 	
 	public ZoneDetails updateZoneDetails(ZoneDetails zoneDetails, Geometry geometry) throws SQLException {
 		try {
+			Connection connection = getConnection();
 			Statement s = connection.createStatement();
 			// TODO: extend the model to include regionName string or region StudyRegion as property of ZoneDetails
 			// for now we just use 'default'
-			String sql = "UPDATE \"zoneDetails\" SET " +
+			String sql = "UPDATE \"zonedetails\" SET " +
 					" name = '"+zoneDetails.getName()+"'," +
 					" description = '"+zoneDetails.getDescription()+"'," +
 					" region = 'default', " +
@@ -130,7 +136,7 @@ public class ZoneDAO extends DAO {
 					"WHERE id = '"+zoneDetails.getId()+"'";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
-			
+			connection.close(); // returns connection to the pool
 		} 
 		catch (SQLException e) {
 			logger.error(e.getMessage());
@@ -150,11 +156,12 @@ public class ZoneDAO extends DAO {
 	public void deleteZoneDetailById(String id) throws SQLException
 	{
 		try {
+			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "DELETE FROM \"zoneDetails\" WHERE id = '"+id+"'";
+			String sql = "DELETE FROM \"zonedetails\" WHERE id = '"+id+"'";
 			logger.debug("sql=" + sql);
 			s.execute(sql); 
-			
+			connection.close(); // returns connection to the pool
 		} 
 		catch (SQLException e) {
 			logger.error(e.getMessage());

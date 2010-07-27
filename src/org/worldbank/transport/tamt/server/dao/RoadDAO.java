@@ -1,5 +1,6 @@
 package org.worldbank.transport.tamt.server.dao;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -23,21 +24,22 @@ public class RoadDAO extends DAO {
 	
 	public RoadDAO()
 	{
-		init();
+		
 	}
 	
 	public ArrayList<RoadDetails> getRoadDetails(StudyRegion region) throws Exception
 	{
 		/*
-		 * Query the roadDetails table where regionName = region.name
+		 * Query the roaddetails table where regionName = region.name
 		 * 
-		 * select * from "roadDetails" where region = 'default'
+		 * select * from "roaddetails" where region = 'default'
 		 * 
 		 */
 		ArrayList<RoadDetails> roadDetailsList = new ArrayList<RoadDetails>();
 		try {
+			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "select id, name, description, region, tag_id, AsText(geometry) from \"roadDetails\" where region = '"+region.getName()+"' ORDER BY name";
+			String sql = "select id, name, description, region, tag_id, AsText(geometry) from \"roaddetails\" where region = '"+region.getName()+"' ORDER BY name";
 			ResultSet r = s.executeQuery(sql); 
 			while( r.next() ) { 
 			      /* 
@@ -79,7 +81,7 @@ public class RoadDAO extends DAO {
 			      
 			      roadDetailsList.add(roadDetails);
 			} 
-    
+			connection.close(); // returns connection to pool
 		} 
 	    catch (SQLException e) {
 			logger.error(e.getMessage());
@@ -97,13 +99,12 @@ public class RoadDAO extends DAO {
 	public RoadDetails saveRoadDetails(RoadDetails roadDetails, Geometry geometry) throws SQLException {
 
 		try {
+			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			// INSERT INTO films VALUES ('UA502', 'Bananas', 105, DEFAULT, 'Comedy', '82 minutes');
-			// name, description, regionName
 			// TODO: extend the model to include regionName string or region StudyRegion as property of RoadDetails
 			// for now we just use 'default'
 			// TODO: add geometry (store as jts linestring, BO will convert to coordinate pair list)
-			String sql = "INSERT INTO \"roadDetails\" (id, name, description, region, tag_id, geometry) " +
+			String sql = "INSERT INTO \"roaddetails\" (id, name, description, region, tag_id, geometry) " +
 					"VALUES ('"+roadDetails.getId()+"', " +
 					"'"+roadDetails.getName()+"'," +
 					"'"+roadDetails.getDescription()+"'," +
@@ -113,7 +114,7 @@ public class RoadDAO extends DAO {
 					")";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
-			
+			connection.close(); // returns connection to pool
 		} 
 	    catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -128,10 +129,11 @@ public class RoadDAO extends DAO {
 	
 	public RoadDetails updateRoadDetails(RoadDetails roadDetails, Geometry geometry) throws SQLException {
 		try {
+			Connection connection = getConnection();
 			Statement s = connection.createStatement();
 			// TODO: extend the model to include regionName string or region StudyRegion as property of RoadDetails
 			// for now we just use 'default'
-			String sql = "UPDATE \"roadDetails\" SET " +
+			String sql = "UPDATE \"roaddetails\" SET " +
 					" name = '"+roadDetails.getName()+"'," +
 					" description = '"+roadDetails.getDescription()+"'," +
 					" region = 'default', " +
@@ -140,7 +142,7 @@ public class RoadDAO extends DAO {
 					"WHERE id = '"+roadDetails.getId()+"'";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
-			
+			connection.close(); // returns connection to pool
 		} 
 		catch (SQLException e) {
 			logger.error(e.getMessage());
@@ -160,11 +162,12 @@ public class RoadDAO extends DAO {
 	public void deleteRoadDetailById(String id) throws SQLException
 	{
 		try {
+			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "DELETE FROM \"roadDetails\" WHERE id = '"+id+"'";
+			String sql = "DELETE FROM \"roaddetails\" WHERE id = '"+id+"'";
 			logger.debug("sql=" + sql);
 			s.execute(sql); 
-			
+			connection.close(); // returns connection to pool
 		} 
 		catch (SQLException e) {
 			logger.error(e.getMessage());

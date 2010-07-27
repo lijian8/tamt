@@ -27,6 +27,8 @@ import org.worldbank.transport.tamt.client.event.ReceivedTagsEvent;
 import org.worldbank.transport.tamt.client.event.RenderRoadsEvent;
 import org.worldbank.transport.tamt.client.event.SentUpdatedPolylineEvent;
 import org.worldbank.transport.tamt.client.event.SentUpdatedPolylineEventHandler;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEventHandler;
 import org.worldbank.transport.tamt.client.services.RoadService;
 import org.worldbank.transport.tamt.client.services.RoadServiceAsync;
 import org.worldbank.transport.tamt.shared.RoadDetails;
@@ -54,6 +56,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -87,6 +90,7 @@ public class RoadListing extends Composite {
 	@UiField Label vertices;
 	
 	@UiField FlexTable roadList;
+	@UiField ScrollPanel scrollPanel;
 	
 	private HandlerManager eventBus;
 	private HashMap<String, TagPolyline> polylineHash;
@@ -309,6 +313,17 @@ public class RoadListing extends Composite {
 					clearRoadEditView();
 				}
 			});
+			
+		eventBus.addHandler(TAMTResizeEvent.TYPE, new TAMTResizeEventHandler() {
+			
+			@Override
+			public void onTAMTResize(TAMTResizeEvent event) {
+				int h = event.height - 284; // account for other UI
+				String height = Integer.toString(h) + "px";
+				GWT.log("SIZE: RoadListing scroll panel height: " + height);
+				scrollPanel.setHeight(height);
+			}
+		});
 	}
 	
 	private void deleteRoadDetails()

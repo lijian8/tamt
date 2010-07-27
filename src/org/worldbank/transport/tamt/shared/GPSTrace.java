@@ -16,7 +16,13 @@ public class GPSTrace implements Serializable {
 	
 	private int recordCount = 0;
 	private Date uploadDate;
+	
+	// "processed" (count,date) now represents "assigned to roads"
+	// matchedCount is how many points in the trace were matched to roads
+	// during the assignment process.
+	private int processedCount = 0; 
 	private Date processDate;
+	private int matchedCount = 0;
 	private boolean processed = false;
 	
 	public GPSTrace() {
@@ -95,30 +101,20 @@ public class GPSTrace implements Serializable {
 		return recordCount;
 	}
 
-	/*
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("GPSTrace [description=");
-		builder.append(description);
-		builder.append(", fileId=");
-		builder.append(fileId);
-		builder.append(", id=");
-		builder.append(id);
-		builder.append(", name=");
-		builder.append(name);
-		builder.append(", processDate=");
-		builder.append(processDate);
-		builder.append(", processed=");
-		builder.append(processed);
-		builder.append(", recordCount=");
-		builder.append(recordCount);
-		builder.append(", region=");
-		builder.append(region);
-		builder.append(", uploadDate=");
-		builder.append(uploadDate);
-		builder.append("]");
-		return builder.toString();
+	public int getMatchedCount() {
+		return matchedCount;
 	}
-	*/
+
+	public void setMatchedCount(int matchedCount) {
+		this.matchedCount = matchedCount;
+	}
+
+	public int getProcessedCount() {
+		return processedCount;
+	}
+
+	public void setProcessedCount(int processedCount) {
+		this.processedCount = processedCount;
+	}
+
 }

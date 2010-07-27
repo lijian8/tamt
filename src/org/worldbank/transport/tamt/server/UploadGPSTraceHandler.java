@@ -116,6 +116,12 @@ public class UploadGPSTraceHandler extends HttpServlet {
 								fileName = FilenameUtils.getName(fileName);
 							}
 							
+							/*
+							 * We have hijacked description to be used
+							 * for the filename
+							 */
+							descriptionValue = fileName;
+							
 							// append a timestamp to the filename
 							fileName = timestamp + fileName;
 							

@@ -10,11 +10,17 @@
 		.top {
 			padding-top: 10px;
 		}
-		.footer { 
+		.debug {
+			background-color: white;	
+		}
+		.debug2 {
+			background-color: white;	
+		}		
+		.footerlink { 
 			color: gray; 
 			padding: 0.5em;
 		}
-		.footer a, a.visited, a.link { 
+		.footerlink a, a.visited, a.link { 
 			color: gray; 
 		}
 		.center {
@@ -33,9 +39,9 @@
 		}
 	</ui:style>
 	
-<g:DockLayoutPanel unit='EM' styleName="{style.top}">
-  <g:north size='5'>
-  	<g:HorizontalPanel>
+<g:DockLayoutPanel unit='PX'>
+  <g:north size='80'>
+  	<g:HorizontalPanel styleName='{style.debug}'>
   		<g:Image resource='{res.logo}' styleName="{style.logo}"/>
     	<g:Label styleName="{style.north}">The World Bank Transport Activity Measurement Toolkit</g:Label>
   	</g:HorizontalPanel>
@@ -43,15 +49,17 @@
   <g:center>
     <tamt:ApplicationContainer/>
   </g:center>
-  <g:west size='10'>
+  <g:west size='160'>
 	<tamt:ApplicationNavigation/>
   </g:west>
-  <g:east size='5'>
+  <g:east size='20'>
+  	<g:HorizontalPanel styleName='{style.debug2}'>
   	<g:Label></g:Label>
+  	</g:HorizontalPanel>
   </g:east>
-  <g:south size='2.5'>
-  	<g:HorizontalPanel>
-  		<g:HTML styleName="{style.footer}">TAMT Applications Beta 0.1 - <a target="_blank" href="http://tamt.googlecode.com">http://tamt.googlecode.com</a></g:HTML>
+  <g:south size='40'>
+  	<g:HorizontalPanel styleName="{style.debug}">
+  		<g:HTML styleName="{style.footerlink}">TAMT Applications Beta 0.3 - <a target="_blank" href="http://tamt.googlecode.com">http://tamt.googlecode.com</a></g:HTML>
   		<g:DialogBox ui:field="dialogBox"/>
   	</g:HorizontalPanel>
   </g:south>
