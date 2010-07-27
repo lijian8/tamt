@@ -8,10 +8,12 @@ import java.util.Date;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.worldbank.transport.tamt.server.dao.AssignStatusDAO;
 import org.worldbank.transport.tamt.server.dao.GPSTraceDAO;
 import org.worldbank.transport.tamt.server.dao.NonZipFileException;
 import org.worldbank.transport.tamt.server.dao.RoadDAO;
 import org.worldbank.transport.tamt.server.dao.ZoneDAO;
+import org.worldbank.transport.tamt.shared.AssignStatus;
 import org.worldbank.transport.tamt.shared.GPSTrace;
 import org.worldbank.transport.tamt.shared.GPSTraceException;
 import org.worldbank.transport.tamt.shared.RoadDetails;
@@ -27,14 +29,31 @@ import com.vividsolutions.jts.geom.Point;
 public class GPSTraceBO {
 
 	private GPSTraceDAO gpsTraceDAO;
+	private AssignStatusDAO assignStatusDAO;
 	private static Logger logger = Logger.getLogger(GPSTraceBO.class);
-		
-	public GPSTraceBO()
+	
+	private static GPSTraceBO singleton = null;
+	public static GPSTraceBO get()
 	{
-		gpsTraceDAO = new GPSTraceDAO();
+		if(singleton == null)
+		{
+			singleton = new GPSTraceBO();
+		}
+		return singleton;
 	}
 	
-	public ArrayList<GPSTrace> getGPSTrace(StudyRegion region) throws Exception
+	public GPSTraceBO()
+	{
+		gpsTraceDAO = GPSTraceDAO.get();
+		assignStatusDAO = AssignStatusDAO.get();
+	}
+	
+	public GPSTrace getGPSTrace(GPSTrace gpsTrace) throws Exception
+	{
+		String id = gpsTrace.getId();
+		return gpsTraceDAO.getGPSTraceById(id);
+	}
+	public ArrayList<GPSTrace> getGPSTraces(StudyRegion region) throws Exception
 	{
 		//TODO: validate study region name
 		return gpsTraceDAO.getGPSTraces(region);
@@ -149,5 +168,55 @@ public class GPSTraceBO {
 			logger.error("Could not delete GPS trace:" + e.getMessage());
 			throw new Exception("Could not delete GPS trace");
 		}
+	}
+
+	public void assignPoints(GPSTrace gpsTrace) throws Exception {
+		
+		if( gpsTrace.getId() == null || gpsTrace.getId() == "" )
+		{
+			throw new Exception("GPS trace must have an ID to assign points");	
+		}
+		
+		try {
+			
+			/*
+			 * Before we do the assign points, let's record the initial
+			 * status of the assignment process in the database
+			 */
+			AssignStatus status = new AssignStatus();
+			status.setGpsTraceId(gpsTrace.getId());
+			
+			// fetch the updated trace, including the record count
+			gpsTrace = getGPSTrace(gpsTrace);
+			logger.debug("record count in trace prior to insertAssignStatus=" + gpsTrace.getRecordCount());
+			
+			//assignStatusBO.insertAssignStatus(status);
+			/*
+			 * Add a new date, get the record count from the GPS trace
+			 * (matched, processed all came from http get from handler)
+			 */
+			status.setLastUpdated(new Date());
+			status.setPointsTotal(gpsTrace.getRecordCount());
+			status.setPointsMatched(0);
+			status.setPointsProcessed(0);
+			
+			assignStatusDAO.insertAssignStatus(status);
+			
+			/*
+			 * With the status table updated to signal the start
+			 * of the process, let's run assignPoints. The DAO
+			 * will kick off a stored procedure, which will update
+			 * the status table.
+			 */
+			gpsTraceDAO.assignPoints(gpsTrace);
+			
+		} catch (Exception e) {
+			logger.error("Could not assign points from GPS trace:" + e.getMessage());
+			throw new Exception("Could not assign points from  GPS trace");
+		}		
+	}
+
+	public void updateGPSTrace(GPSTrace gpsTrace) throws Exception {
+		gpsTraceDAO.updateGPSTrace(gpsTrace);
 	}
 }

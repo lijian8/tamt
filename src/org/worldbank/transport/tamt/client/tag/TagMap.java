@@ -51,6 +51,8 @@ import org.worldbank.transport.tamt.client.event.ShowZonesEvent;
 import org.worldbank.transport.tamt.client.event.ShowZonesEventHandler;
 import org.worldbank.transport.tamt.client.event.SwitchModuleEvent;
 import org.worldbank.transport.tamt.client.event.SwitchModuleEventHandler;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEventHandler;
 import org.worldbank.transport.tamt.client.tag.TagModule.TagModuleUiBinder;
 import org.worldbank.transport.tamt.shared.Vertex;
 
@@ -123,6 +125,8 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -153,6 +157,8 @@ public class TagMap extends Composite {
 	@UiField MapWidget map;
 	*/
 	
+	private SimplePanel simple;
+	private DockLayoutPanel docker;
 	private MapWidget map;
 	private HashMap<String, ArrayList<Vertex>> roadListingVertexHash;
 	private String currentPolyEditId;
@@ -176,7 +182,7 @@ public class TagMap extends Composite {
         map = new MapWidget(center, 12); 
         //Window.alert("Initial map widget hashcode:" + map.hashCode());
         
-        map.setSize("500px", "500px"); 
+        
 		
         map.addMapType(MapType.getNormalMap());
         map.addMapType(MapType.getHybridMap());
@@ -185,6 +191,19 @@ public class TagMap extends Composite {
         
         map.addControl(new DrawingToolsControl(this.eventBus));
 		map.addControl(new LargeMapControl3D());
+		
+		/*
+		 * Workaround for bad map rendering:
+		 * http://code.google.com/p/gwt-google-apis/issues/detail?id=366#c21
+		 * 
+		 * - add map to dock layout panel
+		 * - add dock layout panel to simple panel
+		 */
+		//dock = new DockLayoutPanel(Unit.EM);
+		//dock.add(map);
+		map.setSize("500px", "500px"); 
+		//simple = new SimplePanel();
+		//simple.add(dock);
 		
 		initWidget(map);
 		
@@ -197,6 +216,61 @@ public class TagMap extends Composite {
 	
 	public void bind()
 	{
+		
+		eventBus.addHandler(TAMTResizeEvent.TYPE, new TAMTResizeEventHandler() {
+			
+			@Override
+			public void onTAMTResize(TAMTResizeEvent event) {
+				GWT.log("SIZE: TagMap height: " + event.height);
+				GWT.log("SIZE: TagMap width: " + event.width);
+				int mapW = event.width - (400 + 50);
+				
+				int mapH = event.height - 40; // margins
+				String mapHeight = Integer.toString(mapH) + "px";
+				String mapWidth = Integer.toString(mapW) + "px";
+				
+				GWT.log("SIZE: TagMap resize map height to: " + mapHeight);
+				GWT.log("SIZE: TagMap resize map width to: " + mapWidth);
+				GWT.log("SIZE: TagMap center: " + map.getCenter());
+				
+				map.setWidth(mapWidth);
+				map.setHeight(mapHeight);
+				
+				// workaround for bad alignment
+            	DeferredCommand.addCommand(new Command() {
+            	      public void execute() {
+            	            map.checkResizeAndCenter();
+            	            GWT.log("SIZE: TagMap checkResizeCenter: " + map.getCenter());
+            	       }
+            	    });
+            	
+				
+				
+			}
+		});		
+		eventBus.addHandler(SwitchModuleEvent.TYPE,
+				new SwitchModuleEventHandler() {
+			    	public void onSwitchModule(SwitchModuleEvent event) {
+			            if( event.getModule().equals(SwitchModuleEvent.TAG))
+			            {
+			            	
+			            	//if( event.isVisible())
+			            	//{
+			            	GWT.log("SIZE MAP: deferred command to check and resize center");
+			            	// single instead of double deferred
+			            	DeferredCommand.addCommand(new Command() {
+			            	      public void execute() {
+			            	            //map.checkResizeAndCenter();
+			            	    	  	map.checkResize();
+			            	       }
+			            	    });
+			            	
+			            	
+			            	//} // end if visible
+			            }
+			        }
+			});
+		
 		eventBus.addHandler(CreatePolyLineEvent.TYPE,
 			new CreatePolyLineEventHandler() {
 		    	public void onCreatePolyLine(CreatePolyLineEvent event) {
@@ -209,6 +283,8 @@ public class TagMap extends Composite {
 		            createPolygon();
 		    }
 		});	
+		
+				
 		
 		/* polyline (road) event handling */
 		eventBus.addHandler(EditRoadSegmentEvent.TYPE,
@@ -839,6 +915,14 @@ public void setCurrentPolyline(TagPolyline currentPolyline) {
 public TagPolyline getCurrentPolyline() {
 	return currentPolyline;
 }
+
+/*
+@Override
+public void onResize() {
+	// TODO Auto-generated method stub
+	// map.checkResizeAndCenter();
+}
+*/
 
 		  
 }

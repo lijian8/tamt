@@ -4,23 +4,35 @@ import org.worldbank.transport.tamt.client.event.CloseWaitModelDialogEvent;
 import org.worldbank.transport.tamt.client.event.CloseWaitModelDialogEventHandler;
 import org.worldbank.transport.tamt.client.event.OpenWaitModelDialogEvent;
 import org.worldbank.transport.tamt.client.event.OpenWaitModelDialogEventHandler;
+import org.worldbank.transport.tamt.client.event.SwitchModuleEvent;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
-public class Main extends Composite {
+public class Main extends Composite implements RequiresResize {
 
 	private static MainUiBinder uiBinder = GWT.create(MainUiBinder.class);
 	private HandlerManager eventBus;
+	
+	public static final int NORTH_HEIGHT = 80; // in PX
+	public static final int SOUTH_HEIGHT = 40; // in PX
+	public static final int EAST_WIDTH = 20; // in PX
+	public static final int WEST_WIDTH = 160; // in PX
+	
 	
 	interface MainUiBinder extends UiBinder<Widget, Main> {
 	}
@@ -38,6 +50,8 @@ public class Main extends Composite {
 		dialogBox.setVisible(false);
 		
 		bind();
+		
+		onResize();// to initialize sizes for maps, listings, etc
 		
 	}
 
@@ -77,6 +91,27 @@ public class Main extends Composite {
 	
 	@UiFactory ApplicationNavigation initAppNav() {
 		return new ApplicationNavigation(this.eventBus);
+	}
+	
+	@Override
+	public void onResize() {
+		// TODO Auto-generated method stub
+		GWT.log("SIZE: resizing Main");
+		
+		/*
+		 * Send the height and width after taking out the surrounding chrome
+		 * of the north, east, west, and south of the dock
+		 */
+		int h = Window.getClientHeight();
+		int w = Window.getClientWidth();
+		
+		int height = h - (NORTH_HEIGHT + SOUTH_HEIGHT);
+		int width = w - (EAST_WIDTH + WEST_WIDTH);
+		
+		GWT.log("SIZE: =======================================");
+		GWT.log("SIZE: Firing TAMTResizeEvent");
+		GWT.log("SIZE: =======================================");
+		eventBus.fireEvent(new TAMTResizeEvent(height,width));
 	}
 
 }

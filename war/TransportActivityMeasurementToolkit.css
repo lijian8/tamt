@@ -1,5 +1,38 @@
 /** Add css rules here for your application. */
+.studyRegionLabel {
+	background-color: white;
+	font-size: 14px;
+	font-weight: bold;
+	padding-top: 4px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-bottom: 8px;
+	color: #666666;
+}
+.studyRegionTitle {
+	font-size: 14px;
+	font-weight: bold;
+	padding-top: 4px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-bottom: 8px;
+	text-decoration: underline;
+	color: blue;
+	cursor: pointer;
+	cursor: hand;
+}
 
+.saveMapView
+{
+	padding: 4px;
+	margin: 4px;
+	background-color: white;
+	border: 1px solid #999;
+	text-decoration: underline;
+	color: blue;
+	cursor: pointer;
+	cursor: hand;	
+}
 
 /** Example rules used by the template application (remove for your app) */
 h1 {

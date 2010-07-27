@@ -69,7 +69,7 @@
 			 <g:Button ui:field="delete" text="Delete checked" styleName="{style.delete}"/>
 		</g:HorizontalPanel>
 		<g:HTML><hr/></g:HTML>
-		<g:ScrollPanel height="318px">
+		<g:ScrollPanel ui:field="scrollPanel" height="318px">
 			<g:FlexTable ui:field="tagList" cellSpacing="0" cellPadding="0" width="100%" styleName="{style.tagList}"/>
 		</g:ScrollPanel>
 	</g:VerticalPanel>

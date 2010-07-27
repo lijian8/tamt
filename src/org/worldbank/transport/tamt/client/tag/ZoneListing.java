@@ -38,6 +38,8 @@ import org.worldbank.transport.tamt.client.event.SentUpdatedPolygonEvent;
 import org.worldbank.transport.tamt.client.event.SentUpdatedPolygonEventHandler;
 import org.worldbank.transport.tamt.client.event.SentUpdatedPolylineEvent;
 import org.worldbank.transport.tamt.client.event.SentUpdatedPolylineEventHandler;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEventHandler;
 import org.worldbank.transport.tamt.client.services.RoadService;
 import org.worldbank.transport.tamt.client.services.RoadServiceAsync;
 import org.worldbank.transport.tamt.client.services.ZoneService;
@@ -69,6 +71,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -103,6 +106,7 @@ public class ZoneListing extends Composite {
 	@UiField Label vertices;
 	
 	@UiField FlexTable zoneList;
+	@UiField ScrollPanel scrollPanel;
 	
 	private HandlerManager eventBus;
 	private HashMap<String, TagPolygon> polygonHash;
@@ -290,6 +294,17 @@ public class ZoneListing extends Composite {
 					}
 				}
 			});
+		
+		eventBus.addHandler(TAMTResizeEvent.TYPE, new TAMTResizeEventHandler() {
+			
+			@Override
+			public void onTAMTResize(TAMTResizeEvent event) {
+				int h = event.height - 280; // account for other UI
+				String height = Integer.toString(h) + "px";
+				GWT.log("SIZE: ZoneListing scroll panel height: " + height);
+				scrollPanel.setHeight(height);
+			}
+		});		
 	
 		
 	}
@@ -475,7 +490,7 @@ public class ZoneListing extends Composite {
 		      }
 		     
 		      public void onFailure(Throwable caught) {
-		        Window.alert("Error fetching road details");
+		        Window.alert("Error fetching zone details");
 		        GWT.log(caught.getMessage());
 		      }
 		    });

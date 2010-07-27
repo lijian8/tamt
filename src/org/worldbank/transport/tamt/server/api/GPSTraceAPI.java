@@ -20,12 +20,12 @@ public class GPSTraceAPI {
 	
 	public GPSTraceAPI()
 	{
-		gpsTraceBO = new GPSTraceBO();
+		gpsTraceBO = GPSTraceBO.get();
 	}
 	
 	public ArrayList<GPSTrace> getGPSTraces(StudyRegion region) throws Exception
 	{
-		return gpsTraceBO.getGPSTrace(region);
+		return gpsTraceBO.getGPSTraces(region);
 	}
 	
 	public GPSTrace saveGPSTrace(GPSTrace gpsTrace) throws Exception
@@ -44,5 +44,18 @@ public class GPSTraceAPI {
 	
 	public void deleteGPSTraces(ArrayList<String> gpsTraceIds) throws Exception {
 		gpsTraceBO.deleteGPSTraces(gpsTraceIds);
+	}
+	
+	public void assignPoints(GPSTrace gpsTrace) throws Exception
+	{
+		gpsTraceBO.assignPoints(gpsTrace);
+	}
+
+	public GPSTrace getGPSTrace(GPSTrace gpsTrace) throws Exception {
+		return gpsTraceBO.getGPSTrace(gpsTrace);
+	}
+
+	public void updateGPSTrace(GPSTrace gpsTrace) throws Exception {
+		gpsTraceBO.updateGPSTrace(gpsTrace);
 	}
 }

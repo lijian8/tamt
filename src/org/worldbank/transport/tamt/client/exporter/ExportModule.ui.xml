@@ -1,7 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
-	xmlns:tagm="urn:import:org.worldbank.transport.tamt.client.assign">
+	xmlns:exporterm="urn:import:org.worldbank.transport.tamt.client.exporter">
 	<ui:style>
 		.important {
 			font-weight: bold;
@@ -29,7 +29,7 @@
 			width: 900px;	
 		}
 	</ui:style>
-	<g:HorizontalPanel styleName="{style.outerBorder}">
+	<g:HorizontalPanel ui:field="hpanel" styleName="{style.outerBorder}">
 		<g:HTMLPanel styleName="{style.buffer}">
 			<g:HTML>Placeholder for Export Module</g:HTML>
 		</g:HTMLPanel>

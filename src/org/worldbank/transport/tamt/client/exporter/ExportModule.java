@@ -6,8 +6,10 @@ import org.worldbank.transport.tamt.client.event.SwitchModuleEventHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ExportModule extends Composite {
@@ -17,6 +19,8 @@ public class ExportModule extends Composite {
 	interface ExportModuleUiBinder extends UiBinder<Widget, ExportModule> {
 	}
 
+	@UiField HorizontalPanel hpanel;
+
 	private HTML html;
 	private HandlerManager eventBus;
 	
@@ -25,6 +29,9 @@ public class ExportModule extends Composite {
 		this.eventBus = eventBus;
 		
 		initWidget(uiBinder.createAndBindUi(this));
+		
+		hpanel.setWidth("100%");
+		hpanel.setHeight("100%");
 		
 		bind();
 	}
@@ -42,6 +49,8 @@ public class ExportModule extends Composite {
 				            } else {
 				            	hideModule();
 				            }
+			            } else {
+			            	hideModule();
 			            }
 			        }
 			});

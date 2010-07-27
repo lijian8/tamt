@@ -1,9 +1,9 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:regionm="urn:import:org.worldbank.transport.tamt.client.region"
 	xmlns:tagm="urn:import:org.worldbank.transport.tamt.client.tag"
 	xmlns:importm="urn:import:org.worldbank.transport.tamt.client.importer"
-	xmlns:assignm="urn:import:org.worldbank.transport.tamt.client.assign"
 	xmlns:querym="urn:import:org.worldbank.transport.tamt.client.query"
 	xmlns:exportm="urn:import:org.worldbank.transport.tamt.client.exporter"
 	>
@@ -11,12 +11,15 @@
 		.important {
 			font-weight: bold;
 		}
+		.debug {
+			background-color: white	
+		}
 	</ui:style>
 	
-	<g:VerticalPanel>
+	<g:VerticalPanel ui:field="vpanel" styleName="{style.debug}">
+		<regionm:RegionModule ui:field="regionModule"/>
 		<tagm:TagModule ui:field="tagModule"/>
 		<importm:ImportModule ui:field="importModule"/>
-		<assignm:AssignModule ui:field="assignModule"/>
 		<querym:QueryModule ui:field="queryModule"/>
 		<exportm:ExportModule ui:field="exportModule"/>
 	</g:VerticalPanel>

@@ -6,7 +6,7 @@ public class SwitchModuleEvent extends GwtEvent<SwitchModuleEventHandler> {
   
   public static final String TAG = "TAG";
   public static final String IMPORT = "IMPORT";
-  public static final String ASSIGN = "ASSIGN";
+  public static final String REGION = "REGION";
   public static final String QUERY = "QUERY";
   public static final String EXPORT = "EXPORT";
   

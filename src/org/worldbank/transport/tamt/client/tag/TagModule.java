@@ -8,16 +8,22 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.Widget;
 
-public class TagModule extends Composite {
+public class TagModule extends Composite implements RequiresResize {
 
 	private static TagModuleUiBinder uiBinder = GWT.create(TagModuleUiBinder.class);
 
 	interface TagModuleUiBinder extends UiBinder<Widget, TagModule> {
 	}
 	
+	@UiField HorizontalPanel hpanel;
 	@UiField TagMap tagMap;
 	@UiField TagInformation tagInformation;
 	
@@ -28,7 +34,7 @@ public class TagModule extends Composite {
 		this.eventBus = eventBus;
 		initWidget(uiBinder.createAndBindUi(this));
 		
-		init();
+		hpanel.setWidth("100%");
 		
 		bind();
 		
@@ -38,17 +44,10 @@ public class TagModule extends Composite {
 		GWT.log("initializing TagMap from TagModule");
 		return new TagMap(this.eventBus);
 	}	
-
+	
 	@UiFactory TagInformation initInformation() {
 		GWT.log("initializing TagInformation from TagModule");
 		return new TagInformation(this.eventBus);
-	}
-	
-	public void init()
-	{
-		// what do we need to do here?
-		// fetch tags, roads, and zones?
-		tagInformation.setHeight("500px");
 	}
 	
 	public void bind()
@@ -64,46 +63,29 @@ public class TagModule extends Composite {
 			            } else {
 			            	hideModule();
 			            }
+		            } else {
+		            	hideModule();
 		            }
 		        }
 		});
-		
-		/*
-		eventBus.addHandler(ShowTagsEvent.TYPE, new ShowTagsEventHandler() {
-			
-			@Override
-			public void onShowTags(ShowTagsEvent event) {
-				tagMap.setVisible(false);
-			}
-		});
-		
-		eventBus.addHandler(ShowZonesEvent.TYPE, new ShowZonesEventHandler() {
-			
-			@Override
-			public void onShowZones(ShowZonesEvent event) {
-				tagMap.setVisible(true);
-			}
-		});
-		
-		eventBus.addHandler(ShowRoadsEvent.TYPE, new ShowRoadsEventHandler() {
-			
-			@Override
-			public void onShowRoads(ShowRoadsEvent event) {
-				tagMap.setVisible(true);
-			}
-		});
-		*/
 		
 	}
 	
 	public void showModule()
 	{
 		this.setVisible(true);
+		
 	}
 	
 	public void hideModule()
 	{
 		this.setVisible(false);
+	}
+
+	@Override
+	public void onResize() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 
