@@ -10,6 +10,7 @@ import com.google.gwt.maps.client.overlay.PolylineOptions;
 public class RegionPolygon extends Polygon {
 
 	private String regionDetailsId;
+	private String regionName;
 	private Vertex mapCenter;
 	private int mapZoomLevel;
 
@@ -44,6 +45,29 @@ public class RegionPolygon extends Polygon {
 
 	public void setMapZoomLevel(int mapZoomLevel) {
 		this.mapZoomLevel = mapZoomLevel;
+	}
+
+	public void setRegionName(String regionName) {
+		this.regionName = regionName;
+	}
+
+	public String getRegionName() {
+		return regionName;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("RegionPolygon [mapCenter=");
+		builder.append(mapCenter);
+		builder.append(", mapZoomLevel=");
+		builder.append(mapZoomLevel);
+		builder.append(", regionDetailsId=");
+		builder.append(regionDetailsId);
+		builder.append(", regionName=");
+		builder.append(regionName);
+		builder.append("]");
+		return builder.toString();
 	}
 
 

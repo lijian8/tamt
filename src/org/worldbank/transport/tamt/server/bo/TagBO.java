@@ -2,9 +2,11 @@ package org.worldbank.transport.tamt.server.bo;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.worldbank.transport.tamt.server.dao.RegionDAO;
 import org.worldbank.transport.tamt.server.dao.TagDAO;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
@@ -12,16 +14,39 @@ import org.worldbank.transport.tamt.shared.TagDetails;
 public class TagBO {
 
 	private TagDAO tagDAO;
+	private RegionDAO regionDAO;
 	static Logger logger = Logger.getLogger(TagBO.class);
+	
+	private static TagBO singleton = null;
+	public static TagBO get()
+	{
+		if(singleton == null)
+		{
+			singleton = new TagBO();
+		}
+		return singleton;		
+	}
 	
 	public TagBO()
 	{
-		tagDAO = new TagDAO();
+		tagDAO = TagDAO.get();
+		regionDAO = RegionDAO.get();
 	}
 	
-	public ArrayList<TagDetails> getTagDetails(StudyRegion region)
+	public ArrayList<TagDetails> getTagDetails(StudyRegion region) throws Exception
 	{
-		//TODO: validate study region name
+		if ( region == null ) // possible on initial load
+		{
+			ArrayList<StudyRegion> regions = regionDAO.getStudyRegions();
+			for (Iterator iterator = regions.iterator(); iterator.hasNext();) {
+				StudyRegion studyRegion = (StudyRegion) iterator.next();
+				if(studyRegion.isCurrentRegion())
+				{
+					region = studyRegion;
+					break;
+				}
+			}
+		}
 		return tagDAO.getTagDetails(region);
 	}
 

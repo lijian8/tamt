@@ -11,7 +11,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("tagService")
 public interface TagService extends RemoteService {
 
-	ArrayList<TagDetails> getTagDetails(StudyRegion region);
+	ArrayList<TagDetails> getTagDetails(StudyRegion region) throws Exception;
 	TagDetails saveTagDetails(TagDetails tagDetails) throws Exception;
 	void deleteTagDetails(ArrayList<String> tagDetailIds) throws Exception;
 }

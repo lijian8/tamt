@@ -13,10 +13,10 @@ public class TagAPI {
 	
 	public TagAPI()
 	{
-		tagBO = new TagBO();
+		tagBO = TagBO.get();
 	}
 	
-	public ArrayList<TagDetails> getTagDetails(StudyRegion region)
+	public ArrayList<TagDetails> getTagDetails(StudyRegion region) throws Exception
 	{
 		return tagBO.getTagDetails(region);
 	}

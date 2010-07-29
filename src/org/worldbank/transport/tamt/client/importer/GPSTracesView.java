@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.worldbank.transport.tamt.client.event.CloseWaitModelDialogEvent;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
 import org.worldbank.transport.tamt.client.event.GetGPSTracesEvent;
 import org.worldbank.transport.tamt.client.event.GetGPSTracesEventHandler;
 import org.worldbank.transport.tamt.client.event.MatchingPointsBusyEvent;
@@ -43,6 +45,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -84,6 +87,7 @@ public class GPSTracesView extends Composite {
 	@UiField FileUpload fileUpload;
 	@UiField TextBox name;
 	//@UiField TextBox description; // user can't edit; reserved for filename in list
+	@UiField Hidden studyRegionId;
 	@UiField FormPanel uploadForm;
 	@UiField Button submit;
 	
@@ -106,6 +110,8 @@ public class GPSTracesView extends Composite {
 	private Label dialogLastUpdated;
 	private Label dialogStatus;
 	private Button closeDialog;
+
+	protected StudyRegion currentStudyRegion;
 	
 	
 	public GPSTracesView(HandlerManager eventBus) {
@@ -126,7 +132,7 @@ public class GPSTracesView extends Composite {
 		// load the data
 		//TODO: move this so it only fires when the 
 		// user clicks the Import nav item
-		eventBus.fireEvent(new GetGPSTracesEvent());
+		// eventBus.fireEvent(new GetGPSTracesEvent());
 		
 		// Set up the status dialog layout
 		dialogBox.setText("Matching GPS Points with Roads");
@@ -244,6 +250,15 @@ public class GPSTracesView extends Composite {
 	
 	public void bind()
 	{
+		eventBus.addHandler(CurrentStudyRegionUpdatedEvent.TYPE, new CurrentStudyRegionUpdatedEventHandler() {
+			
+			@Override
+			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
+				currentStudyRegion = event.studyRegion;
+				studyRegionId.setValue( currentStudyRegion.getId() );
+			}
+		});
+		
 		eventBus.addHandler(GetGPSTracesEvent.TYPE, new GetGPSTracesEventHandler() {
 			
 			@Override
@@ -258,12 +273,13 @@ public class GPSTracesView extends Composite {
 			public void onTAMTResize(TAMTResizeEvent event) {
 				GWT.log("SIZE: GPSTracesView scroll panel height within: " + event.height);
 				
-				int h = event.height - 265; // account for other study region UI
+				int h = event.height - 275; // account for other study region UI
 				
 				String height = Integer.toString(h) + "px";
 				GWT.log("SIZE: GPSTracesView scroll panel height: " + height);
 				
 				scrollPanel.setHeight(height);
+				panel.setHeight(height);
 				
 			}
 		});				
@@ -274,10 +290,11 @@ public class GPSTracesView extends Composite {
 		//gpsTraceList.removeAllRows();
 		//gpsTraceList.setWidget(0, 0, new HTML("Reloading GPS traces..."));
 		// TODO: for now we just use a Default region
-		StudyRegion region = new StudyRegion();
-		region.setName("default");
+		//StudyRegion region = new StudyRegion();
+		//region.setName("default");
 		
-		traceService.getGPSTraces(region, new AsyncCallback<ArrayList<GPSTrace>>() {
+		// replaced with currentStudyRegion
+		traceService.getGPSTraces(currentStudyRegion, new AsyncCallback<ArrayList<GPSTrace>>() {
 			
 			@Override
 			public void onSuccess(ArrayList<GPSTrace> result) {

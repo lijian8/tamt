@@ -10,6 +10,8 @@ import org.worldbank.transport.tamt.client.event.BindPolyLineToRoadEvent;
 import org.worldbank.transport.tamt.client.event.BindPolyLineToRoadEventHandler;
 import org.worldbank.transport.tamt.client.event.CancelRoadEvent;
 import org.worldbank.transport.tamt.client.event.CancelRoadEventHandler;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
 import org.worldbank.transport.tamt.client.event.DebugEvent;
 import org.worldbank.transport.tamt.client.event.DebugEventHandler;
 import org.worldbank.transport.tamt.client.event.DisableLineEditingEvent;
@@ -111,6 +113,8 @@ public class RoadListing extends Composite {
 	private HashMap<String, ArrayList<Vertex>> vertexHash;
 
 	protected TagPolyline currentPolyline;
+
+	protected StudyRegion currentStudyRegion;
 	
 	public RoadListing(HandlerManager eventBus) {
 		
@@ -186,6 +190,15 @@ public class RoadListing extends Composite {
 
 	private void bind()
 	{
+		
+		eventBus.addHandler(CurrentStudyRegionUpdatedEvent.TYPE, new CurrentStudyRegionUpdatedEventHandler() {
+			
+			@Override
+			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
+				currentStudyRegion = event.studyRegion;
+			}
+		});	
+		
 		eventBus.addHandler(BindPolyLineToRoadEvent.TYPE,
 			new BindPolyLineToRoadEventHandler() {
 		    	public void onBindPolyLineToRoad(BindPolyLineToRoadEvent event) {
@@ -369,6 +382,7 @@ public class RoadListing extends Composite {
 		roadDetails.setName(name.getText());
 		roadDetails.setDescription(description.getText());
 		roadDetails.setId(currentRoadDetailId);
+		roadDetails.setRegion(currentStudyRegion);
 		
 		/*
 		 * Take tag field from suggest box, look up the tagID
@@ -386,7 +400,7 @@ public class RoadListing extends Composite {
 		
 		/*
 		 * Polyline can't RPC, so we need to convert the vertices
-		 * to CoordinatePairs, and store in the RoadDetails
+		 * to Vertex, and store in the RoadDetails
 		 */
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 		try {
@@ -424,6 +438,10 @@ public class RoadListing extends Composite {
 					// TODO Auto-generated method stub
 					eventBus.fireEvent(new DisableLineEditingEvent());
 					clearRoadEditView();
+					
+					refreshRoadDetails = true;
+					fetchRoadDetails();
+					/*
 					if( refresh )
 					{
 						refreshRoadDetails = true;
@@ -446,6 +464,7 @@ public class RoadListing extends Composite {
 						renderRoadTable(roadDetailsList);
 						
 					}
+					*/
 				}
 				});		
 		} catch (Exception e) {
@@ -559,16 +578,16 @@ public class RoadListing extends Composite {
 	
 	private void fetchRoadDetails() {
 		
-		if( refreshRoadDetails )
-		{
-			roadList.removeAllRows();
-    		roadList.setWidget(0, 0, new HTML("Reloading roads..."));
+		//if( refreshRoadDetails )
+		//{
+			//roadList.removeAllRows();
+			//roadList.setWidget(0, 0, new HTML("Reloading roads..."));
             
     		// TODO: for now we just use a Default region
-    		StudyRegion region = new StudyRegion();
-    		region.setName("default");
+    		//StudyRegion region = new StudyRegion();
+    		//region.setName("default");
     		
-			roadService.getRoadDetails(region, new AsyncCallback<ArrayList<RoadDetails>>() {
+			roadService.getRoadDetails(currentStudyRegion, new AsyncCallback<ArrayList<RoadDetails>>() {
 		      
 				public void onSuccess(ArrayList<RoadDetails> result) {
 		          
@@ -585,7 +604,7 @@ public class RoadListing extends Composite {
 		        GWT.log(caught.getMessage());
 		      }
 		    });
-		}
+		//}
 	}	
 	
 	public void loadRoadDetails(RoadDetails roadDetails)

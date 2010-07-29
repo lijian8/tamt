@@ -27,6 +27,14 @@ public class RegionDAO extends DAO {
 
 	static Logger logger = Logger.getLogger(RegionDAO.class);
 	
+	private static RegionDAO singleton = null;
+	public static RegionDAO get() {
+		if (singleton == null) {
+			singleton = new RegionDAO();
+		}
+		return singleton;
+	}
+	
 	public RegionDAO()
 	{
 	
@@ -36,6 +44,8 @@ public class RegionDAO extends DAO {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
+			
+			// first, delete the study region
 			String sql = "DELETE FROM \"studyregion\" WHERE id = '"+id+"'";
 			logger.debug("sql=" + sql);
 			s.execute(sql); 
@@ -53,7 +63,7 @@ public class RegionDAO extends DAO {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "select id, name, description, AsText(geometry) geom, mapzoomlevel, AsText(mapcenter) center, iscurrentregion from \"studyregion\" ORDER BY name";
+			String sql = "select id, name, description, AsText(geometry) geom, mapzoomlevel, AsText(mapcenter) center, iscurrentregion, default_zone_type from \"studyregion\" ORDER BY name";
 			ResultSet r = s.executeQuery(sql); 
 			while( r.next() ) { 
 			      /* 
@@ -67,6 +77,7 @@ public class RegionDAO extends DAO {
 			      int mapZoomLevel = r.getInt(5);
 			      String mapCenterWKT = r.getString(6);
 			      boolean currentRegion = r.getBoolean(7);
+			      String defaultZoneType = r.getString(8);
 			      
 			      // convert a linestring to a JTS geometry
 			      WKTReader reader = new WKTReader();
@@ -79,6 +90,7 @@ public class RegionDAO extends DAO {
 			      studyRegion.setDescription(description);
 			      studyRegion.setCurrentRegion(currentRegion);
 			      studyRegion.setMapZoomLevel(mapZoomLevel);
+			      studyRegion.setDefaultZoneType(defaultZoneType);
 			      
 			      // now convert the geometry to an ArrayList<Vertex> and
 			      // set in the roadDetails
@@ -128,7 +140,8 @@ public class RegionDAO extends DAO {
 					" geometry = GeometryFromText('"+geometry.toText()+"', 4326), " + 
 					" mapzoomlevel = "+studyRegion.getMapZoomLevel()+"," +
 					" mapcenter = GeometryFromText('"+mapCenter.toText()+"', 4326)," +
-					" iscurrentregion = "+studyRegion.isCurrentRegion()+" " +
+					" iscurrentregion = "+studyRegion.isCurrentRegion()+"," +
+					" default_zone_type = '"+studyRegion.getDefaultZoneType()+"' " +
 					"WHERE id = '"+studyRegion.getId()+"'";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
@@ -173,7 +186,7 @@ public class RegionDAO extends DAO {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "INSERT INTO \"studyregion\" (pid, id, name, description, geometry, mapzoomlevel, mapcenter, iscurrentregion) " +
+			String sql = "INSERT INTO \"studyregion\" (pid, id, name, description, geometry, mapzoomlevel, mapcenter, iscurrentregion, default_zone_type) " +
 					"VALUES (" + 
 					"(SELECT nextval('studyregion_pid_seq'))," +
 					"'"+studyRegion.getId()+"', " +
@@ -182,7 +195,8 @@ public class RegionDAO extends DAO {
 					"GeometryFromText('"+geometry.toText()+"', 4326)," +
 					"'"+studyRegion.getMapZoomLevel()+"'," +
 					"GeometryFromText('"+mapCenter.toText()+"', 4326)," +
-					" "+studyRegion.isCurrentRegion()+" " +
+					" "+studyRegion.isCurrentRegion()+"," +
+					" '"+studyRegion.getDefaultZoneType()+"' " +
 					")";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
@@ -212,5 +226,6 @@ public class RegionDAO extends DAO {
 			deleteStudyRegionById(id);
 		}
 	}
+
 	
 }

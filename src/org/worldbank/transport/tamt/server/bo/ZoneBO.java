@@ -23,9 +23,19 @@ public class ZoneBO {
 	private ZoneDAO zoneDAO;
 	private static Logger logger = Logger.getLogger(ZoneBO.class);
 		
+	private static ZoneBO singleton = null;
+	public static ZoneBO get()
+	{
+		if(singleton == null)
+		{
+			singleton = new ZoneBO();
+		}
+		return singleton;		
+	}
+	
 	public ZoneBO()
 	{
-		zoneDAO = new ZoneDAO();
+		zoneDAO = ZoneDAO.get();
 	}
 	
 	public ArrayList<ZoneDetails> getZoneDetails(StudyRegion region) throws Exception

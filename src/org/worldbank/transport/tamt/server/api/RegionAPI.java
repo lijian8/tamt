@@ -18,7 +18,7 @@ public class RegionAPI {
 	
 	public RegionAPI()
 	{
-		bo = new RegionBO();
+		bo = RegionBO.get();
 	}
 
 	public void deleteStudyRegions(ArrayList<String> studyRegionIds) throws Exception {

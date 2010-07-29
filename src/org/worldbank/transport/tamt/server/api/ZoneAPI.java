@@ -17,7 +17,7 @@ public class ZoneAPI {
 	
 	public ZoneAPI()
 	{
-		zoneBO = new ZoneBO();
+		zoneBO = ZoneBO.get();
 	}
 	
 	public ArrayList<ZoneDetails> getZoneDetails(StudyRegion region) throws Exception

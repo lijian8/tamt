@@ -10,6 +10,8 @@ import org.worldbank.transport.tamt.client.event.BindPolygonToZoneEvent;
 import org.worldbank.transport.tamt.client.event.BindPolygonToZoneEventHandler;
 import org.worldbank.transport.tamt.client.event.CancelRoadEvent;
 import org.worldbank.transport.tamt.client.event.CancelZoneEvent;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
 import org.worldbank.transport.tamt.client.event.DebugEvent;
 import org.worldbank.transport.tamt.client.event.DebugEventHandler;
 import org.worldbank.transport.tamt.client.event.DisableLineEditingEvent;
@@ -78,6 +80,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ZoneListing extends Composite {
 
+	public static final String ZONETYPE_RESIDENTIAL = "#RES";
+	public static final String ZONETYPE_COMMERCIAL = "#COM";
+	public static final String ZONETYPE_INDUSTRIAL = "#IND";
+	
 	private static ZoneListingUiBinder uiBinder = GWT
 			.create(ZoneListingUiBinder.class);
 
@@ -120,6 +126,8 @@ public class ZoneListing extends Composite {
 	private HashMap<String, ArrayList<Vertex>> vertexHash;
 
 	protected TagPolygon currentPolygon;
+
+	protected StudyRegion currentStudyRegion;
 	
 	public ZoneListing(HandlerManager eventBus) {
 		
@@ -132,9 +140,9 @@ public class ZoneListing extends Composite {
 		zoneService = GWT.create(ZoneService.class);
 		
 		zoneTypes = new ListBox();
-		zoneTypes.addItem("Residential", "RESIDENTIAL");
-		zoneTypes.addItem("Commercial", "COMMERCIAL");
-		zoneTypes.addItem("Industrial", "INDUSTRIAL");
+		zoneTypes.addItem("Residential", ZONETYPE_RESIDENTIAL);
+		zoneTypes.addItem("Commercial", ZONETYPE_COMMERCIAL);
+		zoneTypes.addItem("Industrial", ZONETYPE_INDUSTRIAL);
 		zoneTypes.setSelectedIndex(0);
 		
 		initWidget(uiBinder.createAndBindUi(this));
@@ -191,6 +199,14 @@ public class ZoneListing extends Composite {
 
 	private void bind()
 	{
+		
+		eventBus.addHandler(CurrentStudyRegionUpdatedEvent.TYPE, new CurrentStudyRegionUpdatedEventHandler() {
+			
+			@Override
+			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
+				currentStudyRegion = event.studyRegion;
+			}
+		});	
 		
 		eventBus.addHandler(BindPolygonToZoneEvent.TYPE, 
 			new BindPolygonToZoneEventHandler() {
@@ -349,6 +365,7 @@ public class ZoneListing extends Composite {
 		zoneDetails.setDescription(description.getText());
 		zoneDetails.setId(currentZoneDetailId);
 		zoneDetails.setZoneType(zoneTypes.getValue(zoneTypes.getSelectedIndex())); // match to UI bit for zoneType
+		zoneDetails.setRegion(currentStudyRegion);
 		
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 		try {
@@ -428,15 +445,15 @@ public class ZoneListing extends Composite {
 	
 	private void fetchZoneDetails() {
 		
-		if( refreshZoneDetails )
-		{
-			zoneList.removeAllRows();
-    		zoneList.setWidget(0, 0, new HTML("Reloading zones..."));
+		//if( refreshZoneDetails )
+		//{
+			//zoneList.removeAllRows();
+    		//zoneList.setWidget(0, 0, new HTML("Reloading zones..."));
             
-    		StudyRegion region = new StudyRegion();
-    		region.setName("default");
+    		//StudyRegion region = new StudyRegion();
+    		//region.setName("default");
     		
-			zoneService.getZoneDetails(region, new AsyncCallback<ArrayList<ZoneDetails>>() {
+			zoneService.getZoneDetails(currentStudyRegion, new AsyncCallback<ArrayList<ZoneDetails>>() {
 		      
 				public void onSuccess(ArrayList<ZoneDetails> result) {
 		          
@@ -494,7 +511,7 @@ public class ZoneListing extends Composite {
 		        GWT.log(caught.getMessage());
 		      }
 		    });
-		}
+		//}
 	}	
 	
 	public void loadZoneDetails(ZoneDetails zoneDetails)
@@ -507,28 +524,8 @@ public class ZoneListing extends Composite {
 		description.setText(zoneDetails.getDescription());
 		currentZoneDetailId = zoneDetails.getId();
 		polyline.setText(zoneDetails.getId());
-	
-		/*
-		String n = "";
-		for (Iterator iterator = zoneDetailsList.iterator(); iterator
-				.hasNext();) {
-			ZoneDetails zd = (ZoneDetails) iterator.next();
-			if( currentPolygon != null )
-			{
-				if(zd.getId().equals(currentPolygon.getZoneDetailsId()))
-				{
-					n = zd.getName();
-					break;
-				}
-			} else {
-				break;
-			}
-			
-		}
-		vertices.setText("Current polyline in RoadListing=" + n);
-		*/
 		
-		//TODO: update the ListBox via a loop
+		// synchronize the zoneType
 		for (int i = 0; i < zoneTypes.getItemCount(); i++) {
 			String value = zoneTypes.getValue(i);
 			if( zoneDetails.getZoneType().equalsIgnoreCase(value))

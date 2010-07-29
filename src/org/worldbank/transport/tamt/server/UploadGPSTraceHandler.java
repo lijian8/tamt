@@ -27,6 +27,7 @@ import org.worldbank.transport.tamt.server.dao.NonGPSArchiveException;
 import org.worldbank.transport.tamt.server.dao.NonZipFileException;
 import org.worldbank.transport.tamt.shared.GPSTrace;
 import org.worldbank.transport.tamt.shared.GPSTraceException;
+import org.worldbank.transport.tamt.shared.StudyRegion;
 
 
 public class UploadGPSTraceHandler extends HttpServlet {
@@ -80,6 +81,7 @@ public class UploadGPSTraceHandler extends HttpServlet {
 				
 				String nameValue = "";
 				String descriptionValue = "";
+				String studyRegionId = "";
 				
 				try 
 				{
@@ -108,6 +110,12 @@ public class UploadGPSTraceHandler extends HttpServlet {
 					            logger.debug("!! descriptionValue=" + descriptionValue);
 					            
 							}
+							if ("studyRegionId".equals(item.getFieldName()))
+							{
+					            studyRegionId = item.getString();
+					            logger.debug("!! studyRegionId=" + studyRegionId);
+					            
+							}							
 						} else {
 						
 							String fileName = item.getName();
@@ -138,6 +146,11 @@ public class UploadGPSTraceHandler extends HttpServlet {
 								gpsTrace.setId("TEMP");
 								gpsTrace.setName(nameValue);
 								gpsTrace.setDescription(descriptionValue);
+								
+								// add a study region with an id
+								StudyRegion studyRegion = new StudyRegion();
+								studyRegion.setId(studyRegionId);
+								gpsTrace.setRegion(studyRegion);
 								gpsTraceAPI.saveGPSTrace(gpsTrace, uploadedFile);
 								
 								// if it doesn't get thrown, then return 200

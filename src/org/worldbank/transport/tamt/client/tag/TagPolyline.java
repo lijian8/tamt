@@ -38,4 +38,15 @@ public class TagPolyline extends Polyline {
 		this.roadDetailsId = roadDetailsId;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("TagPolyline [(roadDetailsId=");
+		builder.append(roadDetailsId);
+		builder.append("), (points");
+		builder.append(super.toString());
+		builder.append("]");
+		return builder.toString();
+	}
+
 }

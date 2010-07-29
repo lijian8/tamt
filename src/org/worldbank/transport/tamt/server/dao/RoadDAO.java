@@ -22,6 +22,14 @@ public class RoadDAO extends DAO {
 	
 	static Logger logger = Logger.getLogger(RoadDAO.class);
 	
+	private static RoadDAO singleton = null;
+	public static RoadDAO get() {
+		if (singleton == null) {
+			singleton = new RoadDAO();
+		}
+		return singleton;
+	}
+	
 	public RoadDAO()
 	{
 		
@@ -39,7 +47,9 @@ public class RoadDAO extends DAO {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "select id, name, description, region, tag_id, AsText(geometry) from \"roaddetails\" where region = '"+region.getName()+"' ORDER BY name";
+			String sql = "select id, name, description, region, tag_id, AsText(geometry) " +
+					"from \"roaddetails\" where " +
+					"region = '"+region.getId()+"' ORDER BY name";
 			ResultSet r = s.executeQuery(sql); 
 			while( r.next() ) { 
 			      /* 
@@ -49,7 +59,7 @@ public class RoadDAO extends DAO {
 				  String id = r.getString(1);
 			      String name = r.getString(2);
 			      String description = r.getString(3);
-			      String regionName = r.getString(4);
+			      String regionId = r.getString(4);
 			      String tagId = r.getString(5);
 			      String lineString = r.getString(6);
 			      
@@ -75,9 +85,9 @@ public class RoadDAO extends DAO {
 			      centroid.setLng(centroidJTS.getX());
 			      roadDetails.setCentroid(centroid);
 			      
-			      //TODO: do I need to include the study region id, description here?
+			      //TODO: Do we need to include the study region name, description here?
 			      StudyRegion sr = new StudyRegion();
-			      sr.setName(regionName);
+			      sr.setId(regionId);
 			      
 			      roadDetailsList.add(roadDetails);
 			} 
@@ -108,7 +118,7 @@ public class RoadDAO extends DAO {
 					"VALUES ('"+roadDetails.getId()+"', " +
 					"'"+roadDetails.getName()+"'," +
 					"'"+roadDetails.getDescription()+"'," +
-					"'default'," +
+					"'"+roadDetails.getRegion().getId()+"'," +
 					"'"+roadDetails.getTagId()+"'," +
 					"GeometryFromText('"+geometry.toText()+"', 4326)" +
 					")";
@@ -136,7 +146,7 @@ public class RoadDAO extends DAO {
 			String sql = "UPDATE \"roaddetails\" SET " +
 					" name = '"+roadDetails.getName()+"'," +
 					" description = '"+roadDetails.getDescription()+"'," +
-					" region = 'default', " +
+					" region = '"+roadDetails.getRegion().getId()+"'," +
 					" tag_id = '"+roadDetails.getTagId()+"', " +
 					" geometry = GeometryFromText('"+geometry.toText()+"', 4326) " + 
 					"WHERE id = '"+roadDetails.getId()+"'";

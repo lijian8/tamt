@@ -1,5 +1,8 @@
 package org.worldbank.transport.tamt.client.tag;
 
+import org.worldbank.transport.tamt.client.event.GetRoadsEvent;
+import org.worldbank.transport.tamt.client.event.GetTagsEvent;
+import org.worldbank.transport.tamt.client.event.GetZonesEvent;
 import org.worldbank.transport.tamt.client.event.SwitchModuleEvent;
 import org.worldbank.transport.tamt.client.event.SwitchModuleEventHandler;
 
@@ -57,7 +60,9 @@ public class TagModule extends Composite implements RequiresResize {
 		    	public void onSwitchModule(SwitchModuleEvent event) {
 		            if( event.getModule().equals(SwitchModuleEvent.TAG))
 		            {
-			            if(event.isVisible())
+		            	// data is loaded in TagInformation onBeforeSelection
+		        		
+		        		if(event.isVisible())
 			            {
 			            	showModule();
 			            } else {

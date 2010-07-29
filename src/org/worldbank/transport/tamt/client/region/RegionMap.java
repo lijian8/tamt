@@ -26,6 +26,8 @@ import org.worldbank.transport.tamt.client.event.CreatePolygonEvent;
 import org.worldbank.transport.tamt.client.event.CreatePolygonEventHandler;
 import org.worldbank.transport.tamt.client.event.CreateRegionPolygonEvent;
 import org.worldbank.transport.tamt.client.event.CreateRegionPolygonEventHandler;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
 import org.worldbank.transport.tamt.client.event.DebugEvent;
 import org.worldbank.transport.tamt.client.event.DebugEventHandler;
 import org.worldbank.transport.tamt.client.event.DisableLineEditingEvent;
@@ -62,6 +64,7 @@ import org.worldbank.transport.tamt.client.event.RenderZonesEvent;
 import org.worldbank.transport.tamt.client.event.RenderZonesEventHandler;
 import org.worldbank.transport.tamt.client.event.SentUpdatedPolygonEvent;
 import org.worldbank.transport.tamt.client.event.SentUpdatedPolylineEvent;
+import org.worldbank.transport.tamt.client.event.SentUpdatedRegionPolygonEvent;
 import org.worldbank.transport.tamt.client.event.ShowRegionsEvent;
 import org.worldbank.transport.tamt.client.event.ShowRegionsEventHandler;
 import org.worldbank.transport.tamt.client.event.ShowRoadsEvent;
@@ -155,7 +158,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class RegionMap extends Composite implements RequiresResize {
 
-	private String polygonColor = "red";
+	private String polygonColor = "green";
 	private double opacity = 0.6;
 	private int weight = 4;
 	private HandlerManager eventBus;
@@ -164,6 +167,8 @@ public class RegionMap extends Composite implements RequiresResize {
 	protected RegionPolygon currentPolygon;
 	private ArrayList<RegionPolygon> polygons;
 	private HashMap<String, ArrayList<Vertex>> zoneListingVertexHash;
+	protected StudyRegion currentStudyRegion;
+	private boolean mapFirstLoad;
 	
 	public RegionMap(HandlerManager eventBus) {
 		
@@ -172,7 +177,7 @@ public class RegionMap extends Composite implements RequiresResize {
 		//TODO: get center of map from DB
 		LatLng center = LatLng.newInstance(0.0, 0.0); 
         map = new MapWidget(center, 2); 
-        
+        mapFirstLoad = true;
         
         map.addMapType(MapType.getNormalMap());
         map.addMapType(MapType.getHybridMap());
@@ -195,6 +200,31 @@ public class RegionMap extends Composite implements RequiresResize {
 	public void bind()
 	{
 		
+		eventBus.addHandler(CurrentStudyRegionUpdatedEvent.TYPE, new CurrentStudyRegionUpdatedEventHandler() {
+			
+			@Override
+			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
+				
+				// only change the map after first load, not during runtime of app
+				if( mapFirstLoad )
+				{
+					currentStudyRegion = event.studyRegion;
+					Vertex v = currentStudyRegion.getMapCenter();
+					final LatLng center = LatLng.newInstance(v.getLat(), v.getLng());
+					
+					// do this as a deferred command
+	            	DeferredCommand.addCommand(new Command() {
+	          	      public void execute() {
+	          	    	  GWT.log("RegionMap - (on first load only) update to current study region" + currentStudyRegion);
+	          	    	  map.setZoomLevel(currentStudyRegion.getMapZoomLevel());
+	          	    	  map.setCenter(center);
+	          	    	  map.checkResizeAndCenter();
+	          	       }
+	          	    });				
+				}
+			}
+		});	
+
 		eventBus.addHandler(TAMTResizeEvent.TYPE, new TAMTResizeEventHandler() {
 			
 			@Override
@@ -299,14 +329,6 @@ public class RegionMap extends Composite implements RequiresResize {
 		            final RenderRegionsEvent e = event;
 		            renderRegions(e.vertexHash);
 		    }
-		});	
-		
-		eventBus.addHandler(ShowRegionsEvent.TYPE,
-				new ShowRegionsEventHandler() {
-					@Override
-					public void onShowRegions(ShowRegionsEvent event) {
-						renderRegions(zoneListingVertexHash);
-				}
 		});
 		
 		eventBus.addHandler(CancelRegionEvent.TYPE, new CancelRegionEventHandler() {
@@ -359,7 +381,7 @@ public class RegionMap extends Composite implements RequiresResize {
 		    	  }
 		  	  	  final RegionPolygon p = new RegionPolygon(points);
 		  	  	  p.setRegionDetailsId(currentPolygon.getRegionDetailsId());
-		  	      //TODO: update eventBus.fireEvent(new SentUpdatedRegionPolygonEvent(p));
+		  	      eventBus.fireEvent(new SentUpdatedRegionPolygonEvent(p));
 			} else {
 				polygon.setEditingEnabled(false);
 			}
@@ -436,6 +458,7 @@ public class RegionMap extends Composite implements RequiresResize {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				GWT.log("DUPE: fire CacheRegionMapMetaDataEvent");
 				eventBus.fireEvent(new CacheRegionMapMetaDataEvent(
 						map.getCenter(), map.getZoomLevel()));
 				
@@ -496,6 +519,7 @@ public class RegionMap extends Composite implements RequiresResize {
 	public void renderRegions(
 			HashMap<String, ArrayList<Vertex>> zoneListingVertexHash) {
 	
+		GWT.log("DUPE renderRegions");
 		if( zoneListingVertexHash == null )
 		{
 			eventBus.fireEvent(new GetRegionsEvent());
@@ -513,7 +537,7 @@ public class RegionMap extends Composite implements RequiresResize {
 				RegionPolygon newPolygon = null;
 				try {
 					newPolygon = createPolygonFromVertexArray(zoneDetailsId, vertices);
-					polygons.add(newPolygon);
+					polygons.add(newPolygon);// TODO: newPolygon is getting added twice!
 				} catch (Exception e) {
 					GWT.log("An error occured converting the zone vertices to a polygon: " + e.getMessage());
 				}
@@ -536,6 +560,7 @@ public class RegionMap extends Composite implements RequiresResize {
 		GWT.log("isNew=" + isNew);
 		if( isNew )
 		{
+			
 			polygon.addPolygonEndLineHandler(new PolygonEndLineHandler() {
 		      public void onEnd(PolygonEndLineEvent event) {
 		    	  
@@ -549,6 +574,16 @@ public class RegionMap extends Composite implements RequiresResize {
 		    	  }
 		  	  	  final RegionPolygon p = new RegionPolygon(points);
 		  	  	  p.setRegionDetailsId(currentPolygon.getRegionDetailsId());
+		  	  	  
+		  	  	  // add a mapCenter and mapZoomLevel to the polygon
+		  	  	  LatLng center = event.getSender().getBounds().getCenter();
+		  	  	  Vertex mapCenter = new Vertex();
+		  	  	  mapCenter.setLat(center.getLatitude());
+		  	  	  mapCenter.setLng(center.getLongitude());
+		  	  	  int mapZoomLevel = map.getZoomLevel();
+		  	  	  p.setMapCenter(mapCenter);
+		  	  	  p.setMapZoomLevel(mapZoomLevel);
+		  	  	  
 		  	  	  eventBus.fireEvent(new EndEditRegionPolygonEvent(p));
 		      }
 		    });	
@@ -588,7 +623,7 @@ public class RegionMap extends Composite implements RequiresResize {
 				@Override
 				public void onClick(PolygonClickEvent event) {
 					polygon.setEditingEnabled(true);
-					eventBus.fireEvent(new EditRegionDetailsBySegmentEvent(polygon.getRegionDetailsId()));
+					eventBus.fireEvent(new EditRegionDetailsBySegmentEvent(polygon));
 				}
 			});
 			
@@ -615,7 +650,7 @@ public class RegionMap extends Composite implements RequiresResize {
 		    PolyStyleOptions style = PolyStyleOptions.newInstance(polygonColor, weight, opacity);
 		    polygon.setStrokeStyle(style);
 		    
-		    polygons.add(polygon);
+		    //polygons.add(polygon);
 		    
 		    return polygon;
 		    

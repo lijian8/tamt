@@ -11,12 +11,15 @@ import org.worldbank.transport.tamt.client.event.CreatePolyLineEvent;
 import org.worldbank.transport.tamt.client.event.CreatePolyLineEventHandler;
 import org.worldbank.transport.tamt.client.event.CreatePolygonEvent;
 import org.worldbank.transport.tamt.client.event.CreatePolygonEventHandler;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
 import org.worldbank.transport.tamt.client.event.EditRoadDetailsBySegmentEvent;
 import org.worldbank.transport.tamt.client.event.EditRoadDetailsBySegmentEventHandler;
 import org.worldbank.transport.tamt.client.event.GetRoadsEvent;
 import org.worldbank.transport.tamt.client.event.GetTagsEvent;
 import org.worldbank.transport.tamt.client.event.GetTagsEventHandler;
 import org.worldbank.transport.tamt.client.event.GetZonesEvent;
+import org.worldbank.transport.tamt.client.event.LoadCurrentStudyRegionEvent;
 import org.worldbank.transport.tamt.client.event.ReceivedTagsEvent;
 import org.worldbank.transport.tamt.client.event.ReceivedTagsEventHandler;
 import org.worldbank.transport.tamt.client.event.RenderRoadsEvent;
@@ -26,6 +29,7 @@ import org.worldbank.transport.tamt.client.event.ShowTagsEvent;
 import org.worldbank.transport.tamt.client.event.ShowZonesEvent;
 import org.worldbank.transport.tamt.client.event.SwitchModuleEvent;
 import org.worldbank.transport.tamt.shared.RoadDetails;
+import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
 import org.worldbank.transport.tamt.shared.Vertex;
 
@@ -38,6 +42,9 @@ import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.maps.client.event.MapDragEndHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -65,6 +72,8 @@ public class TagInformation extends Composite {
 	private HTML studyRegion;
 	
 	private TabBar tabBar;
+
+	protected StudyRegion currentStudyRegion;
 	
 	public TagInformation(HandlerManager _eventBus)
 	{
@@ -77,11 +86,12 @@ public class TagInformation extends Composite {
 		
 		title = new HTML("Current study region:");
 		title.setStyleName("studyRegionLabel");
-		studyRegion = new HTML("My Study Region");
+		studyRegion = new HTML("< Not Set >");
 		studyRegion.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.REGION, true));
+				eventBus.fireEvent(new LoadCurrentStudyRegionEvent());
 			}
 		});
 		
@@ -105,30 +115,41 @@ public class TagInformation extends Composite {
 			@Override
 			public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
 				
-				// 0 = Tags, 1 = Roads, 2 = Zones
-				int almostSelected = event.getItem();
-				switch (almostSelected) {
-				case 0:
-					if( !tagListing.isVisible())
-					{
-						showTags();
+				try {
+					// 0 = Tags, 1 = Roads, 2 = Zones
+					// TODO: place before Tab select
+	            	GWT.log("TAG get tags, roads and zones");
+	            	int almostSelected = event.getItem();
+					switch (almostSelected) {
+					case 0:
+						eventBus.fireEvent(new GetTagsEvent());
+		        		if( !tagListing.isVisible())
+						{
+							showTags();
+						}
+						break;
+					case 1:
+						eventBus.fireEvent(new GetRoadsEvent());
+						if( !roadListing.isVisible())
+						{
+							showRoads();
+						}
+						break;
+					case 2:
+						eventBus.fireEvent(new GetZonesEvent());
+						if( !zoneListing.isVisible())
+						{
+							showZones();
+						}
+						break;
+					default:
+						// do nothing
+						break;
 					}
-					break;
-				case 1:
-					if( !roadListing.isVisible())
-					{
-						showRoads();
-					}
-					break;
-				case 2:
-					if( !zoneListing.isVisible())
-					{
-						showZones();
-					}
-					break;
-				default:
-					// do nothing
-					break;
+				} catch (Exception e)
+				{
+					e.printStackTrace();
+					GWT.log("An unknown exception occured:" + e.getMessage());
 				}
 			}
 		});
@@ -149,16 +170,34 @@ public class TagInformation extends Composite {
 		
 		bind();
 		
-		// default tab is Tags
-		panel.selectTab(0);
-		
-		// load the data
-		eventBus.fireEvent(new GetTagsEvent());
+		// select the Tags tab (and trigger tag loading)
+		// once the DOM is ready
+		DeferredCommand.addCommand(new Command() {
+			
+			@Override
+			public void execute() {
+				// TODO Auto-generated method stub
+				panel.selectTab(0);
+			}
+		});
+		// 
 		
 	}
 	
 	public void bind()
 	{
+		
+		eventBus.addHandler(CurrentStudyRegionUpdatedEvent.TYPE, new CurrentStudyRegionUpdatedEventHandler() {
+			
+			@Override
+			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
+				currentStudyRegion = event.studyRegion;
+				studyRegion.setText(currentStudyRegion.getName());
+				panel.selectTab(0);
+	
+			}
+		});	
+		
 		eventBus.addHandler(ReceivedTagsEvent.TYPE,
 			new ReceivedTagsEventHandler() {
 				@Override

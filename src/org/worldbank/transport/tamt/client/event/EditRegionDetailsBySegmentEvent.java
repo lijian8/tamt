@@ -1,15 +1,17 @@
 package org.worldbank.transport.tamt.client.event;
 
+import org.worldbank.transport.tamt.client.region.RegionPolygon;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 public class EditRegionDetailsBySegmentEvent extends GwtEvent<EditRegionDetailsBySegmentEventHandler> {
   
   public static Type<EditRegionDetailsBySegmentEventHandler> TYPE = new Type<EditRegionDetailsBySegmentEventHandler>();
   
-  private String id;
+  public RegionPolygon regionPolygon;
   
-  public EditRegionDetailsBySegmentEvent(String id) {
-	  this.setId(id);
+  public EditRegionDetailsBySegmentEvent(RegionPolygon regionPolygon) {
+	 this.regionPolygon = regionPolygon;
   }
 
 @Override
@@ -22,11 +24,4 @@ public class EditRegionDetailsBySegmentEvent extends GwtEvent<EditRegionDetailsB
     handler.onEditRegionDetailsBySegment(this);
   }
 
-public void setId(String id) {
-	this.id = id;
-}
-
-public String getId() {
-	return id;
-}
 }

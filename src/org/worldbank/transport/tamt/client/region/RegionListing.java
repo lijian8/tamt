@@ -4,80 +4,39 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.worldbank.transport.tamt.client.event.BindPolyLineToRoadEvent;
-import org.worldbank.transport.tamt.client.event.BindPolyLineToRoadEventHandler;
 import org.worldbank.transport.tamt.client.event.BindPolygonToRegionEvent;
 import org.worldbank.transport.tamt.client.event.BindPolygonToRegionEventHandler;
-import org.worldbank.transport.tamt.client.event.BindPolygonToZoneEvent;
-import org.worldbank.transport.tamt.client.event.BindPolygonToZoneEventHandler;
 import org.worldbank.transport.tamt.client.event.CacheRegionMapMetaDataEvent;
 import org.worldbank.transport.tamt.client.event.CacheRegionMapMetaDataEventHandler;
 import org.worldbank.transport.tamt.client.event.CancelRegionEvent;
 import org.worldbank.transport.tamt.client.event.CancelRegionEventHandler;
-import org.worldbank.transport.tamt.client.event.CancelRoadEvent;
-import org.worldbank.transport.tamt.client.event.CancelRoadEventHandler;
-import org.worldbank.transport.tamt.client.event.CancelZoneEvent;
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
-import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
-import org.worldbank.transport.tamt.client.event.DebugEvent;
-import org.worldbank.transport.tamt.client.event.DebugEventHandler;
-import org.worldbank.transport.tamt.client.event.DisableLineEditingEvent;
 import org.worldbank.transport.tamt.client.event.DisableRegionEditingEvent;
-import org.worldbank.transport.tamt.client.event.DisableZoneEditingEvent;
 import org.worldbank.transport.tamt.client.event.EditRegionDetailsBySegmentEvent;
 import org.worldbank.transport.tamt.client.event.EditRegionDetailsBySegmentEventHandler;
 import org.worldbank.transport.tamt.client.event.EditRegionSegmentEvent;
-import org.worldbank.transport.tamt.client.event.EditRoadDetailsBySegmentEvent;
-import org.worldbank.transport.tamt.client.event.EditRoadDetailsBySegmentEventHandler;
-import org.worldbank.transport.tamt.client.event.EditRoadSegmentEvent;
-import org.worldbank.transport.tamt.client.event.EditZoneDetailsBySegmentEvent;
-import org.worldbank.transport.tamt.client.event.EditZoneDetailsBySegmentEventHandler;
-import org.worldbank.transport.tamt.client.event.EditZoneSegmentEvent;
-import org.worldbank.transport.tamt.client.event.EndEditPolyLineEvent;
-import org.worldbank.transport.tamt.client.event.EndEditPolyLineEventHandler;
-import org.worldbank.transport.tamt.client.event.EndEditPolygonEvent;
-import org.worldbank.transport.tamt.client.event.EndEditPolygonEventHandler;
 import org.worldbank.transport.tamt.client.event.EndEditRegionPolygonEvent;
 import org.worldbank.transport.tamt.client.event.EndEditRegionPolygonEventHandler;
-import org.worldbank.transport.tamt.client.event.FetchUpdatedPolylineEvent;
 import org.worldbank.transport.tamt.client.event.GetRegionsEvent;
 import org.worldbank.transport.tamt.client.event.GetRegionsEventHandler;
-import org.worldbank.transport.tamt.client.event.GetRoadsEvent;
-import org.worldbank.transport.tamt.client.event.GetRoadsEventHandler;
-import org.worldbank.transport.tamt.client.event.GetTagsEvent;
-import org.worldbank.transport.tamt.client.event.GetTagsEventHandler;
-import org.worldbank.transport.tamt.client.event.GetZonesEvent;
-import org.worldbank.transport.tamt.client.event.GetZonesEventHandler;
-import org.worldbank.transport.tamt.client.event.ReceivedTagsEvent;
+import org.worldbank.transport.tamt.client.event.LoadCurrentStudyRegionEvent;
+import org.worldbank.transport.tamt.client.event.LoadCurrentStudyRegionEventHandler;
 import org.worldbank.transport.tamt.client.event.RenderRegionsEvent;
-import org.worldbank.transport.tamt.client.event.RenderRoadsEvent;
-import org.worldbank.transport.tamt.client.event.RenderZonesEvent;
-import org.worldbank.transport.tamt.client.event.SentUpdatedPolygonEvent;
-import org.worldbank.transport.tamt.client.event.SentUpdatedPolygonEventHandler;
-import org.worldbank.transport.tamt.client.event.SentUpdatedPolylineEvent;
-import org.worldbank.transport.tamt.client.event.SentUpdatedPolylineEventHandler;
+import org.worldbank.transport.tamt.client.event.SentUpdatedRegionPolygonEvent;
+import org.worldbank.transport.tamt.client.event.SentUpdatedRegionPolygonEventHandler;
 import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
 import org.worldbank.transport.tamt.client.event.TAMTResizeEventHandler;
 import org.worldbank.transport.tamt.client.services.RegionService;
 import org.worldbank.transport.tamt.client.services.RegionServiceAsync;
-import org.worldbank.transport.tamt.client.services.RoadService;
-import org.worldbank.transport.tamt.client.services.RoadServiceAsync;
-import org.worldbank.transport.tamt.client.services.ZoneService;
-import org.worldbank.transport.tamt.client.services.ZoneServiceAsync;
-import org.worldbank.transport.tamt.shared.RegionDetails;
-import org.worldbank.transport.tamt.shared.RoadDetails;
+import org.worldbank.transport.tamt.client.tag.ZoneListing;
 import org.worldbank.transport.tamt.shared.StudyRegion;
-import org.worldbank.transport.tamt.shared.TagDetails;
 import org.worldbank.transport.tamt.shared.Vertex;
-import org.worldbank.transport.tamt.shared.ZoneDetails;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.overlay.Polygon;
-import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -88,13 +47,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
-import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -113,7 +68,8 @@ public class RegionListing extends Composite {
 	}
 
 	@UiField RegionStyle style;
-
+	@UiField(provided=true) ListBox zoneTypes;
+	
 	@UiField Label select;
 	@UiField Label all;
 	@UiField Label none;
@@ -154,6 +110,12 @@ public class RegionListing extends Composite {
 		
 		studyRegionList = new ArrayList<StudyRegion>();
 		
+		zoneTypes = new ListBox();
+		zoneTypes.addItem("Residential", ZoneListing.ZONETYPE_RESIDENTIAL);
+		zoneTypes.addItem("Commercial", ZoneListing.ZONETYPE_COMMERCIAL);
+		zoneTypes.addItem("Industrial", ZoneListing.ZONETYPE_INDUSTRIAL);
+		zoneTypes.setSelectedIndex(0);
+		
 		regionService = GWT.create(RegionService.class);
 		
 		initWidget(uiBinder.createAndBindUi(this));
@@ -180,6 +142,7 @@ public class RegionListing extends Composite {
 	@UiHandler("refresh")
 	void onClickRefresh(ClickEvent e) {
 		refreshStudyRegions = true;
+		GWT.log("RegionListing refresh study regions");
 		fetchStudyRegions();
 	}	
 	
@@ -211,14 +174,37 @@ public class RegionListing extends Composite {
 	private void bind()
 	{
 		
+		eventBus.addHandler(LoadCurrentStudyRegionEvent.TYPE, new LoadCurrentStudyRegionEventHandler() {
+			
+			@Override
+			public void onLoad(LoadCurrentStudyRegionEvent event) {
+				for (Iterator iterator = studyRegionList.iterator(); iterator
+						.hasNext();) {
+					StudyRegion studyRegion = (StudyRegion) iterator.next();
+					if( studyRegion.isCurrentRegion() )
+					{
+						loadRegionDetails(studyRegion);
+					}
+				}
+			}
+		});
+		
+		eventBus.addHandler(SentUpdatedRegionPolygonEvent.TYPE, new SentUpdatedRegionPolygonEventHandler() {
+			
+			@Override
+			public void onSentUpdatedPolygon(SentUpdatedRegionPolygonEvent event) {
+				currentPolygon = event.regionPolygon;
+			}
+		});
+		
 		eventBus.addHandler(CacheRegionMapMetaDataEvent.TYPE, new CacheRegionMapMetaDataEventHandler() {
 			
 			@Override
 			public void onCache(CacheRegionMapMetaDataEvent event) {
-				GWT.log("MAP CacheRegionMapMetaDataEventHandler");
+				GWT.log("DUPE CacheRegionMapMetaDataEventHandler");
 				// TODO: apply zoomLevel and mapCenter to currently selected region
-				GWT.log("Apply mapCenter and zoomLevel to currentStudyRegionId:" + currentStudyRegionId);
-				for (Iterator iterator = studyRegionList.iterator(); iterator
+				GWT.log("DUPE Apply mapCenter and zoomLevel to currentStudyRegionId:" + currentStudyRegionId);
+				for (Iterator<StudyRegion> iterator = studyRegionList.iterator(); iterator
 						.hasNext();) {
 					StudyRegion studyRegion = (StudyRegion) iterator.next();
 					if( studyRegion.getId().equals(currentStudyRegionId))
@@ -234,11 +220,17 @@ public class RegionListing extends Composite {
 						studyRegion.setMapCenter(mapCenter);
 						studyRegion.setMapZoomLevel(mapZoomLevel);
 						
-						GWT.log("Study region now has map view:" + studyRegion);
+						GWT.log("DUPE Study region now has map view:" + studyRegion);
 						
 						break;
 					}
 				}
+				
+				// now, it makes sense to save the study region here automatically
+				// rather than forcing the user to do it
+				GWT.log("DUPE call saveStudyRegion");
+				saveStudyRegion();
+				
 			}
 		});
 		
@@ -257,7 +249,7 @@ public class RegionListing extends Composite {
 			public void onTAMTResize(TAMTResizeEvent event) {
 				GWT.log("SIZE: RegionListing scroll panel height within: " + event.height);
 				
-				int h = event.height - 278; // account for other study region UI
+				int h = event.height - 318; // account for other study region UI
 				
 				String height = Integer.toString(h) + "px";
 				GWT.log("SIZE: RegionListing scroll panel height: " + height);
@@ -272,6 +264,7 @@ public class RegionListing extends Composite {
 			public void onBindPolygonToRegion(BindPolygonToRegionEvent event) {
 				RegionPolygon p = event.getPolygon();
 				currentPolygon = p;
+				GWT.log("DUPE BindPolygonToRegionEventHandler currentPolygon="+currentPolygon);
 				polygonHash.put(p.getRegionDetailsId(), p);
 	    		String n = "";
 	    		for (Iterator iterator = studyRegionList.iterator(); iterator
@@ -290,11 +283,27 @@ public class RegionListing extends Composite {
 			new EndEditRegionPolygonEventHandler() {
 		    	public void onEndEditRegionPolygon(EndEditRegionPolygonEvent event) {
 		    		
-		    		RegionPolygon p = event.getPolygon();
+		    		RegionPolygon p = event.polygon;
 		    		currentPolygon = p;
+		    		GWT.log("DUPE EndEditRegionPolygonEventHandler currentPolygon="+currentPolygon);
 		    		currentStudyRegionId = p.getRegionDetailsId();
 		    		
 		    		polygonHash.put(p.getRegionDetailsId(), p);
+		    		
+		    		// create a minimal StudyRegion with mapCenter and mapZoomLevel
+		    		// and put it into the studyRegion list. This handler is only
+		    		// run after a new StudyRegion is drawn, so we can safely add
+		    		// it to the study region list
+		    		StudyRegion minimal = new StudyRegion();
+		    		minimal.setId(currentStudyRegionId);
+		    		minimal.setMapCenter(p.getMapCenter());
+		    		minimal.setMapZoomLevel(p.getMapZoomLevel());
+		    		studyRegionList.add(minimal);
+		    		
+		    		/*
+		    		 * Debug: is the currentStudyRegionId the same as the currentPolygon.getRegionDetailsId()?
+		    		 */
+		    		GWT.log("DUPE currentStudyRegionId("+currentStudyRegionId+"), currentPolygon.getRegionDetailsId("+currentPolygon.getRegionDetailsId()+") ");
 		    		
 		    		polyline.setText(p.getRegionDetailsId());
 		    		String n = "";
@@ -317,6 +326,7 @@ public class RegionListing extends Composite {
 			    		description.setText("");
 			    		description.setFocus(true);
 		    		}
+		    		GWT.log("DUPE id("+currentPolygon.getRegionDetailsId()+"), name("+regionName+")");
 		    	}
 		});
 		
@@ -342,9 +352,9 @@ public class RegionListing extends Composite {
 			new EditRegionDetailsBySegmentEventHandler() {
 				@Override
 				public void onEditRegionDetailsBySegment(EditRegionDetailsBySegmentEvent event) {
-					String id = event.getId();
-					GWT.log("RegionListing: Edit Region Deails By Segment");
-					if( id == null )
+					currentPolygon = event.regionPolygon;
+					GWT.log("DUPE EditRegionDetailsBySegmentEventHandler currentPolygon=" + currentPolygon);
+					if( currentPolygon == null )
 					{
 						clearRegionEditView();
 						return;
@@ -354,7 +364,7 @@ public class RegionListing extends Composite {
 							.hasNext();) {
 						StudyRegion studyRegion = (StudyRegion) iterator.next();
 						//GWT.log("EDIT road details loop, working on id=" + roadDetails.getId());
-						if( studyRegion.getId().equals(id))
+						if( studyRegion.getId().equals(currentPolygon.getRegionDetailsId()))
 						{
 							loadRegionDetails(studyRegion);
 							break;
@@ -412,20 +422,30 @@ public class RegionListing extends Composite {
 
 	private void saveStudyRegion() {
 		
-		/*
-		 * The map meta-data is saved on every zoom of the RegionMap,
-		 * and inserts the currentPolygon id, 
-		 */
+		if( currentPolygon == null || currentStudyRegionId == null )
+		{
+			Window.alert("Please draw a region on the map before saving.");
+			clearRegionEditView();
+			return;
+		};
 		
 		refreshStudyRegions = true;
+		// currentPolygon after clicking on BRASIL is still CANADA
+		GWT.log("DUPE currentPolygon ID=" + currentPolygon.getRegionDetailsId());
+		GWT.log("DUPE currentStudyRegionId ID=" + currentStudyRegionId);
+		if( !currentStudyRegionId.equalsIgnoreCase( currentPolygon.getRegionDetailsId() ))
+		{
+			GWT.log("DUPE WARNING **** currentPolygon and currentStudyRegionId are NOT synchronized!");
+		}
 		
 		StudyRegion studyRegion = new StudyRegion();
 		studyRegion.setName(name.getText());
 		studyRegion.setDescription(description.getText());
 		studyRegion.setId(currentStudyRegionId);
 		studyRegion.setCurrentRegion(currentStudyRegionCheckBox.getValue());
+		studyRegion.setDefaultZoneType(zoneTypes.getValue(zoneTypes.getSelectedIndex()));
 		
-		GWT.log("Saving study region with id:" + currentStudyRegionId);
+		GWT.log("DUPE Saving study region with id:" + currentStudyRegionId);
 		
 		/*
 		 * We updated the study region in the list with map data, so,
@@ -439,7 +459,7 @@ public class RegionListing extends Composite {
 				// transfer mapCenter and mapZoomLevel
 				studyRegion.setMapCenter(sr.getMapCenter());
 				studyRegion.setMapZoomLevel(sr.getMapZoomLevel());
-				GWT.log("Study region now has map view:" + studyRegion);
+				GWT.log("DUPE Study region now has map view:" + studyRegion);
 				
 				break;
 			}
@@ -452,11 +472,12 @@ public class RegionListing extends Composite {
 			{
 				currentPolygon = null;
 			}
+			GWT.log("DUPE saveStudyRegion currentPolygon="+currentPolygon);
+			
 			vertices = polylgonToVertexArrayList(currentPolygon);
 			studyRegion.setVertices(vertices);
 			
-			GWT.log("Current polygon:" + currentPolygon);
-			GWT.log("Saving study region:" + studyRegion);
+			GWT.log("DUPE Saving study region:" + studyRegion);
 			
 			
 			regionService.saveStudyRegion(studyRegion, new AsyncCallback<StudyRegion>() {
@@ -523,11 +544,16 @@ public class RegionListing extends Composite {
 		description.setText("");
 		currentStudyRegionId = null;
 		currentPolygon = null;
+		GWT.log("DUPE clearRegionEditView currentPolygon="+currentPolygon);
+		
 		polygonHash = new HashMap<String, RegionPolygon>();
 		polyline.setText("");
 		vertices.setText("");
 		currentStudyRegionCheckBox.setValue(false);
 		save.setText("Save");
+		
+		zoneTypes.setSelectedIndex(0);
+		
 	}
 	
 	private void fetchStudyRegions() {
@@ -563,8 +589,14 @@ public class RegionListing extends Composite {
 						// if this is the current study region, let all the widgets know
 						if( studyRegion.isCurrentRegion() )
 						{
-							// fire a new event
-							eventBus.fireEvent(new CurrentStudyRegionUpdatedEvent(studyRegion));
+							// fire a new event with the minimal info required
+							StudyRegion minimal = new StudyRegion();
+							minimal.setId(studyRegion.getId());
+							minimal.setName(studyRegion.getName());
+							minimal.setMapCenter(studyRegion.getMapCenter());
+							minimal.setMapZoomLevel(studyRegion.getMapZoomLevel());
+							GWT.log("RegionListing firing CurrentStudyRegionUpdatedEvent from RegionListing");
+							eventBus.fireEvent(new CurrentStudyRegionUpdatedEvent(minimal));
 						}
 						
 						
@@ -609,7 +641,13 @@ public class RegionListing extends Composite {
 	
 	public void loadRegionDetails(StudyRegion studyRegion)
 	{
-		
+		/*
+		 * TODO: If the user clicks on the text for this region in the list,
+		 * we don't have a handle on the currentPolygon, so when it is updated
+		 * it assumes the same shape as the last current polygon, which was
+		 * probably loaded when the user clicked on map shape instead of the
+		 * text list.
+		 */
 		// send a message to RegionMap to set the associated polygon to editable
 		String id = studyRegion.getId();
 		Vertex v = studyRegion.getMapCenter();
@@ -623,6 +661,16 @@ public class RegionListing extends Composite {
 		currentStudyRegionId = studyRegion.getId();
 		polyline.setText(studyRegion.getId());
 		currentStudyRegionCheckBox.setValue(studyRegion.isCurrentRegion());
+		
+		// synchronize the zoneType
+		for (int i = 0; i < zoneTypes.getItemCount(); i++) {
+			String value = zoneTypes.getValue(i);
+			if( studyRegion.getDefaultZoneType().equalsIgnoreCase(value))
+			{
+				zoneTypes.setSelectedIndex(i);
+				break;
+			}
+		}
 		
 		save.setText("Update");
 		
