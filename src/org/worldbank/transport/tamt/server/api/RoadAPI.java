@@ -15,7 +15,7 @@ public class RoadAPI {
 	
 	public RoadAPI()
 	{
-		roadBO = new RoadBO();
+		roadBO = RoadBO.get();
 	}
 	
 	public ArrayList<RoadDetails> getRoadDetails(StudyRegion region) throws Exception

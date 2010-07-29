@@ -16,6 +16,14 @@ public class TagDAO extends DAO {
 
 	static Logger logger = Logger.getLogger(TagDAO.class);
 	
+	private static TagDAO singleton = null;
+	public static TagDAO get() {
+		if (singleton == null) {
+			singleton = new TagDAO();
+		}
+		return singleton;
+	}
+	
 	public TagDAO()
 	{
 		
@@ -33,7 +41,7 @@ public class TagDAO extends DAO {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "select * from \"tagdetails\" where region = '"+region.getName()+"' ORDER BY name";
+			String sql = "select * from \"tagdetails\" where region = '"+region.getId()+"' ORDER BY name";
 			ResultSet r = s.executeQuery(sql); 
 			while( r.next() ) { 
 			      /* 
@@ -43,24 +51,15 @@ public class TagDAO extends DAO {
 				  String id = r.getString(1);
 			      String name = r.getString(2);
 			      String description = r.getString(3);
-			      String regionName = r.getString(4);
+			      String regionId = r.getString(4);
 			      
 			      TagDetails tagDetails = new TagDetails();
 			      tagDetails.setId(id);
 			      tagDetails.setName(name);
 			      tagDetails.setDescription(description);
 			      
-					/*
-					Vertex t1c1 = new Vertex();
-					t1c1.setLat(40.78);
-					t1c1.setLng(-111.05);
-					
-					Vertex t1c2 = new Vertex();
-					t1c2.setLat(40.73);
-					t1c2.setLng(-111.10);
-					*/
-			      
 			      //TODO: include StudyRegion inside TagDetails?
+			      tagDetails.setRegion(region);
 			      
 			      tagDetailsList.add(tagDetails);
 			} 
@@ -85,7 +84,11 @@ public class TagDAO extends DAO {
 			// name, description, regionName
 			// TODO: extend the model to include regionName string or region StudyRegion as property of TagDetails
 			// for now we just use 'default'
-			String sql = "INSERT INTO \"tagdetails\" (id, name, description, region) VALUES ('"+tagDetails.getId()+"', '"+tagDetails.getName()+"','"+tagDetails.getDescription()+"','default')";
+			String sql = "INSERT INTO \"tagdetails\" (id, name, description, region) VALUES (" +
+					"'"+tagDetails.getId()+"', " +
+					"'"+tagDetails.getName()+"'," +
+					"'"+tagDetails.getDescription()+"'," +
+					"'"+tagDetails.getRegion().getId()+"')";
 			logger.debug("sql=" + sql);
 			logger.debug("native sql=" + connection.nativeSQL(sql));
 			s.executeUpdate(sql); 
@@ -111,7 +114,7 @@ public class TagDAO extends DAO {
 			String sql = "UPDATE \"tagdetails\" SET " +
 					" name = '"+tagDetails.getName()+"'," +
 					" description = '"+tagDetails.getDescription()+"'," +
-					" region = 'default' " +
+					" region = '"+tagDetails.getRegion().getId()+"'" +
 					"WHERE id = '"+tagDetails.getId()+"'";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
@@ -161,5 +164,6 @@ public class TagDAO extends DAO {
 		}
 		return tagDetails;
 	}
+
 	 
 }

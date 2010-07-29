@@ -22,6 +22,17 @@
 	cursor: hand;
 }
 
+.studyRegionTitleNoLink {
+	font-size: 14px;
+	font-weight: bold;
+	padding-top: 4px;
+	padding-left: 4px;
+	padding-right: 4px;
+	padding-bottom: 8px;
+	color: blue;
+	color: #5D5D5D;
+}
+
 .saveMapView
 {
 	padding: 4px;

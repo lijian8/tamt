@@ -18,10 +18,20 @@ public class RoadBO {
 
 	private RoadDAO roadDAO;
 	private static Logger logger = Logger.getLogger(RoadBO.class);
-		
+	
+	private static RoadBO singleton = null;
+	public static RoadBO get()
+	{
+		if(singleton == null)
+		{
+			singleton = new RoadBO();
+		}
+		return singleton;		
+	}
+	
 	public RoadBO()
 	{
-		roadDAO = new RoadDAO();
+		roadDAO = RoadDAO.get();
 	}
 	
 	public ArrayList<RoadDetails> getRoadDetails(StudyRegion region) throws Exception

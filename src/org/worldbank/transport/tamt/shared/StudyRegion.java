@@ -9,6 +9,8 @@ public class StudyRegion implements Serializable {
 	private String id;
 	private String name;
 	private String description;
+	private String defaultZoneType;
+	
 	private ArrayList<Vertex> vertices;
 	private Vertex centroid;
 	
@@ -62,29 +64,6 @@ public class StudyRegion implements Serializable {
 		return centroid;
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("StudyRegion [centroid=");
-		builder.append(centroid);
-		builder.append(", currentRegion=");
-		builder.append(currentRegion);
-		builder.append(", description=");
-		builder.append(description);
-		builder.append(", id=");
-		builder.append(id);
-		builder.append(", mapCenter=");
-		builder.append(mapCenter);
-		builder.append(", mapZoomLevel=");
-		builder.append(mapZoomLevel);
-		builder.append(", name=");
-		builder.append(name);
-		builder.append(", vertices=");
-		builder.append(vertices);
-		builder.append("]");
-		return builder.toString();
-	}
-
 	public int getMapZoomLevel() {
 		return mapZoomLevel;
 	}
@@ -107,5 +86,38 @@ public class StudyRegion implements Serializable {
 
 	public boolean isCurrentRegion() {
 		return currentRegion;
+	}
+
+	public void setDefaultZoneType(String defaultZoneType) {
+		this.defaultZoneType = defaultZoneType;
+	}
+
+	public String getDefaultZoneType() {
+		return defaultZoneType;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("StudyRegion [centroid=");
+		builder.append(centroid);
+		builder.append(", currentRegion=");
+		builder.append(currentRegion);
+		builder.append(", defaultZoneType=");
+		builder.append(defaultZoneType);
+		builder.append(", description=");
+		builder.append(description);
+		builder.append(", id=");
+		builder.append(id);
+		builder.append(", mapCenter=");
+		builder.append(mapCenter);
+		builder.append(", mapZoomLevel=");
+		builder.append(mapZoomLevel);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", vertices=");
+		builder.append(vertices);
+		builder.append("]");
+		return builder.toString();
 	}
 }

@@ -21,7 +21,7 @@ public class TagServiceImpl extends RemoteServiceServlet implements TagService {
 	}
 
 	@Override
-	public ArrayList<TagDetails> getTagDetails(StudyRegion region) {
+	public ArrayList<TagDetails> getTagDetails(StudyRegion region) throws Exception {
 		
 		return tagAPI.getTagDetails(region);
 	}

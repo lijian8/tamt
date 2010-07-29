@@ -19,6 +19,8 @@ import org.worldbank.transport.tamt.client.event.CreatePolyLineEvent;
 import org.worldbank.transport.tamt.client.event.CreatePolyLineEventHandler;
 import org.worldbank.transport.tamt.client.event.CreatePolygonEvent;
 import org.worldbank.transport.tamt.client.event.CreatePolygonEventHandler;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
 import org.worldbank.transport.tamt.client.event.DebugEvent;
 import org.worldbank.transport.tamt.client.event.DebugEventHandler;
 import org.worldbank.transport.tamt.client.event.DisableLineEditingEvent;
@@ -47,6 +49,8 @@ import org.worldbank.transport.tamt.client.event.SentUpdatedPolygonEvent;
 import org.worldbank.transport.tamt.client.event.SentUpdatedPolylineEvent;
 import org.worldbank.transport.tamt.client.event.ShowRoadsEvent;
 import org.worldbank.transport.tamt.client.event.ShowRoadsEventHandler;
+import org.worldbank.transport.tamt.client.event.ShowTagsEvent;
+import org.worldbank.transport.tamt.client.event.ShowTagsEventHandler;
 import org.worldbank.transport.tamt.client.event.ShowZonesEvent;
 import org.worldbank.transport.tamt.client.event.ShowZonesEventHandler;
 import org.worldbank.transport.tamt.client.event.SwitchModuleEvent;
@@ -54,6 +58,7 @@ import org.worldbank.transport.tamt.client.event.SwitchModuleEventHandler;
 import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
 import org.worldbank.transport.tamt.client.event.TAMTResizeEventHandler;
 import org.worldbank.transport.tamt.client.tag.TagModule.TagModuleUiBinder;
+import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.Vertex;
 
 import com.google.gwt.core.client.GWT;
@@ -171,6 +176,7 @@ public class TagMap extends Composite {
 	
 	// handlers
 	private TagPolylineEndLineHandler tagPolylineEndLineHandler = new TagPolylineEndLineHandler();
+	protected StudyRegion currentStudyRegion;
 	
 	public TagMap(HandlerManager eventBus) {
 		
@@ -217,6 +223,30 @@ public class TagMap extends Composite {
 	public void bind()
 	{
 		
+		eventBus.addHandler(CurrentStudyRegionUpdatedEvent.TYPE, new CurrentStudyRegionUpdatedEventHandler() {
+			
+			@Override
+			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
+				currentStudyRegion = event.studyRegion;
+				Vertex v = currentStudyRegion.getMapCenter();
+				final LatLng center = LatLng.newInstance(v.getLat(), v.getLng());
+				
+				// since we have a new current study region, clear map overlays
+				map.clearOverlays();
+				
+				// do this as a deferred command
+            	DeferredCommand.addCommand(new Command() {
+          	      public void execute() {
+          	    	  GWT.log("TagMap - update to current study region" + currentStudyRegion);
+          	    	  map.setZoomLevel(currentStudyRegion.getMapZoomLevel());
+          	    	  map.setCenter(center);
+          	    	  map.checkResizeAndCenter();
+          	       }
+          	    });				
+
+			}
+		});	
+		
 		eventBus.addHandler(TAMTResizeEvent.TYPE, new TAMTResizeEventHandler() {
 			
 			@Override
@@ -256,12 +286,12 @@ public class TagMap extends Composite {
 			            	
 			            	//if( event.isVisible())
 			            	//{
-			            	GWT.log("SIZE MAP: deferred command to check and resize center");
+			            	GWT.log("TagMap: SwitchModuleEventHandler; deferred command to check and resize center");
 			            	// single instead of double deferred
 			            	DeferredCommand.addCommand(new Command() {
 			            	      public void execute() {
-			            	            //map.checkResizeAndCenter();
-			            	    	  	map.checkResize();
+			            	            map.checkResizeAndCenter();
+			            	    	  	//map.checkResize();
 			            	       }
 			            	    });
 			            	
@@ -559,6 +589,8 @@ public class TagMap extends Composite {
   private static class DrawingToolsControl extends CustomControl {
 
 	private HandlerManager eventBus;
+	private Image lineButton;
+	private Image shapeButton;
 	public DrawingToolsControl(HandlerManager eventBus) {
 		super(new ControlPosition(ControlAnchor.TOP_LEFT, 80, 7));
 		this.eventBus = eventBus;
@@ -569,7 +601,7 @@ public class TagMap extends Composite {
 		//GWT.log("initialize DrawingToolsControls with map=" + map);
 		final HandlerManager bus = this.eventBus;
 		Panel container = new FlowPanel();
-		  Image lineButton = new Image(ToolResources.INSTANCE.lineUp());
+		  lineButton = new Image(ToolResources.INSTANCE.lineUp());
 	      lineButton.addClickHandler(new ClickHandler() {
 	        public void onClick(ClickEvent clickEvent) {
 	        	//GWT.log("create polyline...");
@@ -577,7 +609,7 @@ public class TagMap extends Composite {
 	        }
 	      });
 	      
-	      Image shapeButton = new Image(ToolResources.INSTANCE.polygonUp());
+	      shapeButton = new Image(ToolResources.INSTANCE.polygonUp());
 	      shapeButton.addClickHandler(new ClickHandler() {
 	        public void onClick(ClickEvent clickEvent) {
 	        	//GWT.log("create polygon...");
@@ -597,7 +629,43 @@ public class TagMap extends Composite {
 	    container.add(lineButton);
 	    container.add(shapeButton);
 	    //container.add(debug);
+	    
+	    bind();
+	    
 	    return container;
+	}
+	
+	private void bind()
+	{
+		eventBus.addHandler(ShowTagsEvent.TYPE, new ShowTagsEventHandler() {
+			
+			@Override
+			public void onShowTags(ShowTagsEvent event) {
+				// turn off both the drawing tools
+				lineButton.setVisible(false);
+				shapeButton.setVisible(false);
+			}
+		});
+		
+		eventBus.addHandler(ShowRoadsEvent.TYPE, new ShowRoadsEventHandler() {
+			
+			@Override
+			public void onShowRoads(ShowRoadsEvent event) {
+				// make sure line button is on and shape button is off
+				lineButton.setVisible(true);
+				shapeButton.setVisible(false);
+			}
+		});		
+		
+		eventBus.addHandler(ShowZonesEvent.TYPE, new ShowZonesEventHandler() {
+			
+			@Override
+			public void onShowZones(ShowZonesEvent event) {
+				// make sure line button is off and shape button is on
+				lineButton.setVisible(false);
+				shapeButton.setVisible(true);
+			}
+		});				
 	}
 
 	@Override
@@ -615,7 +683,7 @@ public class TagMap extends Composite {
 			eventBus.fireEvent(new GetZonesEvent());
 		} else 
 		{
-			currentPolygon = null;	
+			
 			polygons = new ArrayList<TagPolygon>();
 			this.zoneListingVertexHash = zoneListingVertexHash;
 			
@@ -637,7 +705,13 @@ public class TagMap extends Composite {
 				{
 					GWT.log(e.getMessage());
 				}
-			}			
+			}	
+			
+			if( currentPolygon != null )
+			{
+				map.removeOverlay(currentPolygon);
+				currentPolygon = null;
+			}
 		}
 		
 	}
@@ -649,14 +723,16 @@ public class TagMap extends Composite {
 		{
 			eventBus.fireEvent(new GetRoadsEvent());
 		} else {
-			currentPolyline = null;	
 			polylines = new ArrayList<TagPolyline>();
+			
+			GWT.log("Inspect roadListingVertexHash...");
 			this.roadListingVertexHash = roadListingVertexHash;
 			
 			GWT.log("TIMER start building polylines from hash");
 			Set<String> keys = this.roadListingVertexHash.keySet();
 			for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
 				String roadDetailsId = (String) iterator.next();
+				GWT.log("key=" + roadDetailsId);
 				ArrayList<Vertex> vertices = this.roadListingVertexHash.get(roadDetailsId);
 				TagPolyline newPolyline = null;
 				try {
@@ -673,11 +749,19 @@ public class TagMap extends Composite {
 			GWT.log("TIMER stop clearing overlays");
 			
 			GWT.log("TIMER start adding overlays");
+			GWT.log("DOUBLE size of polylines=" + polylines.size());
 			for (Iterator iterator = polylines.iterator(); iterator.hasNext();) {
 				TagPolyline p = (TagPolyline) iterator.next();
+				GWT.log("DOUBLE polyline=" + p);
 				map.addOverlay(p);
 			}
-			GWT.log("TIMER stop adding overlays");			
+			GWT.log("TIMER stop adding overlays");	
+			
+			if( currentPolyline != null)
+			{
+				map.removeOverlay(currentPolyline);
+				currentPolyline = null;	
+			}
 		}
 		
 	}
@@ -707,6 +791,7 @@ public class TagMap extends Composite {
 		/**
 		 * For new lines ONLY, send a copy across the wire
 		 */
+		GWT.log("bindPolylineHandlers isNew=" + isNew);
 		if( isNew )
 		{
 			//
@@ -715,6 +800,8 @@ public class TagMap extends Composite {
 		      public void onEnd(PolylineEndLineEvent event) {
 		    	  
 		    	  currentPolyline = polyline;
+		    	  GWT.log("hashCode: currentPolyline=" + currentPolyline.hashCode());
+		    	  GWT.log("hashCode: polyline=" + polyline.hashCode());
 		    	  
 		    	  //Window.alert("TagMap: PolylineEndLineHandler currentPolyline getVertexCount=" + currentPolyline.getVertexCount());
 		  		  LatLng points[] = new LatLng[currentPolyline.getVertexCount()];
@@ -725,12 +812,19 @@ public class TagMap extends Composite {
 		    	  }
 		  	  	  final TagPolyline p = new TagPolyline(points);
 		  	  	  p.setRoadDetailsId(currentPolyline.getRoadDetailsId());
+		  	  	  
+		  	  	  // remove the temporary poly from the map
+		  	  	  /*
+		  	  	   * This is a workaround, and not a good one. It
+		  	  	   * removes the line from the map while the user
+		  	  	   * gives it a name, a tag, and clicks save.
+		  	  	   */
+		  	  	  //map.removeOverlay(polyline);
+		  	  	  
 		    	  eventBus.fireEvent(new EndEditPolyLineEvent(p));
 		      }
 		    });	
-		    //
-			// instead of anonymous functions, try an instantiated object
-			//polyline.addPolylineEndLineHandler(new TagPolylineEndLineHandler());
+		    
 		} else {
 			/**
 		     * Send a copy of the TagPolyline to RoadListing
@@ -755,7 +849,7 @@ public class TagMap extends Composite {
 		    	  }
 		  	  	  final TagPolyline p = new TagPolyline(points);
 		  	  	  p.setRoadDetailsId(currentPolyline.getRoadDetailsId());
-		    	  eventBus.fireEvent(new BindPolyLineToRoadEvent(p)); //sfm not sure if this has vertices
+		    	  eventBus.fireEvent(new BindPolyLineToRoadEvent(p));
 		      }
 		    });
 			
@@ -898,7 +992,7 @@ public class TagMap extends Composite {
 		    PolyStyleOptions style = PolyStyleOptions.newInstance(polylineColor, weight, opacity);
 		    polyline.setStrokeStyle(style);
 		    
-		    polylines.add(polyline);
+		    //polylines.add(polyline);
 		    
 		    return polyline;
 		    

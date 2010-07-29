@@ -3,6 +3,8 @@ package org.worldbank.transport.tamt.client.tag;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
 import org.worldbank.transport.tamt.client.event.GetTagsEvent;
 import org.worldbank.transport.tamt.client.event.GetTagsEventHandler;
 import org.worldbank.transport.tamt.client.event.ReceivedTagsEvent;
@@ -70,6 +72,8 @@ public class TagListing extends Composite {
 	private boolean isUpdate = false;
 
 	private ArrayList<CheckBox> checkboxes;
+
+	protected StudyRegion currentStudyRegion;
 	
 	public TagListing(HandlerManager eventBus) {
 		this.eventBus = eventBus;
@@ -85,10 +89,21 @@ public class TagListing extends Composite {
 
 	public void bind()
 	{
+		
+		eventBus.addHandler(CurrentStudyRegionUpdatedEvent.TYPE, new CurrentStudyRegionUpdatedEventHandler() {
+			
+			@Override
+			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
+				currentStudyRegion = event.studyRegion;
+				
+			}
+		});	
+		
 		eventBus.addHandler(GetTagsEvent.TYPE,
 			new GetTagsEventHandler() {
 		    	public void onGetTags(GetTagsEvent event) {
 		    		clearTagDetailView();
+		    		GWT.log("TAG TagListing GetTagsEventHandler; going to fetchTagDetails for currentStudyRegion" + currentStudyRegion);
 		    		fetchTagDetails();
 		        }
 		});	
@@ -146,6 +161,22 @@ public class TagListing extends Composite {
 		tagDetails.setName(name.getText());
 		tagDetails.setDescription(description.getText());
 		tagDetails.setId(currentTagDetailsId);
+		tagDetails.setRegion(currentStudyRegion);
+		
+
+		/*
+		 * Just a little client-side validation, the rest
+		 * is done on the server
+		 */
+		ArrayList<String> reservedZoneTypes = new ArrayList<String>();
+		reservedZoneTypes.add(ZoneListing.ZONETYPE_COMMERCIAL);
+		reservedZoneTypes.add(ZoneListing.ZONETYPE_INDUSTRIAL);
+		reservedZoneTypes.add(ZoneListing.ZONETYPE_RESIDENTIAL);
+		if (reservedZoneTypes.contains(tagDetails.getName()))
+		{
+			Window.alert("The tag name is not valid");
+			return;
+		}
 		
 		tagService.saveTagDetails(tagDetails, new AsyncCallback<TagDetails>() {
 
@@ -203,16 +234,17 @@ public class TagListing extends Composite {
 	
 	private void fetchTagDetails() {
 		
-		if( refreshTagDetails )
-		{
-			tagList.removeAllRows();
-    		tagList.setWidget(0, 0, new HTML("Reloading tags..."));
+		//GWT.log("refreshTagDetails=" + refreshTagDetails);
+		//if( refreshTagDetails )
+		//{
+			//tagList.removeAllRows();
+    		//tagList.setWidget(0, 0, new HTML("Reloading tags..."));
             
     		// TODO: for now we just use a Default region
-    		StudyRegion region = new StudyRegion();
-    		region.setName("default");
+    		//StudyRegion region = new StudyRegion();
+    		//region.setName("default");
     		
-			tagService.getTagDetails(region, new AsyncCallback<ArrayList<TagDetails>>() {
+			tagService.getTagDetails(currentStudyRegion, new AsyncCallback<ArrayList<TagDetails>>() {
 		      
 				public void onSuccess(ArrayList<TagDetails> result) {
 		          
@@ -263,7 +295,7 @@ public class TagListing extends Composite {
 		        GWT.log(caught.getMessage());
 		      }
 		    });
-		}
+		//}
 	}	
 	
 	protected void clearTagDetailView() {

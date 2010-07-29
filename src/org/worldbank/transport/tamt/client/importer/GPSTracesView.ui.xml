@@ -58,7 +58,7 @@
 			font-weight: bold;
 		}
 		.top {
-			vertical-align: top;	
+			vertical-align: top;
 		}
 		.columnHeader {
 			font-weight: bold;	
@@ -76,6 +76,7 @@
 				<g:HorizontalPanel styleName="{style.detailRow}">
 					<g:HTML styleName="{style.label}">Name:</g:HTML>
 					<g:TextBox ui:field="name" name="myName"/>
+					<g:Hidden ui:field="studyRegionId" name="studyRegionId"/>
 				</g:HorizontalPanel>
 				<!-- 
 				<g:HorizontalPanel styleName="{style.detailRow}">

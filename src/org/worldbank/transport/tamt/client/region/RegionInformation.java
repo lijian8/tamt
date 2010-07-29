@@ -51,7 +51,7 @@ public class RegionInformation extends Composite {
 		title = new HTML("Current study region:");
 		title.setStyleName("studyRegionLabel");
 		curentStudyRegionName = new HTML("< Not Set >");
-		curentStudyRegionName.setStyleName("studyRegionTitle");
+		curentStudyRegionName.setStyleName("studyRegionTitleNoLink");
 		
 		hPanel = new HorizontalPanel();
 		hPanel.add(title);

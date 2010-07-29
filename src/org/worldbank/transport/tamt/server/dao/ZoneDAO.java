@@ -23,6 +23,14 @@ public class ZoneDAO extends DAO {
 	
 	static Logger logger = Logger.getLogger(ZoneDAO.class);
 	
+	private static ZoneDAO singleton = null;
+	public static ZoneDAO get() {
+		if (singleton == null) {
+			singleton = new ZoneDAO();
+		}
+		return singleton;
+	}
+	
 	public ZoneDAO()
 	{
 		
@@ -30,11 +38,13 @@ public class ZoneDAO extends DAO {
 	
 	public ArrayList<ZoneDetails> getZoneDetails(StudyRegion region) throws Exception
 	{
-		ArrayList<ZoneDetails> roadDetailsList = new ArrayList<ZoneDetails>();
+		ArrayList<ZoneDetails> zoneDetailsList = new ArrayList<ZoneDetails>();
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "select id, name, description, region, zoneType, AsText(geometry) from \"zonedetails\" where region = '"+region.getName()+"' ORDER BY name";
+			String sql = "select id, name, description, region, zoneType, " +
+					"AsText(geometry) from \"zonedetails\" where " +
+					"region = '"+region.getId()+"' ORDER BY name";
 			ResultSet r = s.executeQuery(sql); 
 			while( r.next() ) { 
 			      /* 
@@ -44,7 +54,7 @@ public class ZoneDAO extends DAO {
 				  String id = r.getString(1);
 			      String name = r.getString(2);
 			      String description = r.getString(3);
-			      String regionName = r.getString(4);
+			      String regionId = r.getString(4);
 			      String zoneType = r.getString(5);
 			      String lineString = r.getString(6);
 			      
@@ -71,10 +81,9 @@ public class ZoneDAO extends DAO {
 			      zoneDetails.setCentroid(centroid);
 			      
 			      //TODO: do I need to include the study region id, description here?
-			      StudyRegion sr = new StudyRegion();
-			      sr.setName(regionName);
+			      zoneDetails.setRegion(region);
 			      
-			      roadDetailsList.add(zoneDetails);
+			      zoneDetailsList.add(zoneDetails);
 			} 
 			connection.close(); // returns connection to the pool
 		} 
@@ -87,7 +96,7 @@ public class ZoneDAO extends DAO {
 			throw new Exception("Cannot convert geometry string to geometry object: " + e.getMessage());
 		}
 		
-		return roadDetailsList;
+		return zoneDetailsList;
 		
 	}
 	
@@ -102,7 +111,7 @@ public class ZoneDAO extends DAO {
 					"'"+zoneDetails.getId()+"', " +
 					"'"+zoneDetails.getName()+"'," +
 					"'"+zoneDetails.getDescription()+"'," +
-					"'default'," +
+					"'"+zoneDetails.getRegion().getId()+"'," +
 					"'"+zoneDetails.getZoneType()+"'," +
 					"GeometryFromText('"+geometry.toText()+"', 4326)" +
 					")";
@@ -130,7 +139,7 @@ public class ZoneDAO extends DAO {
 			String sql = "UPDATE \"zonedetails\" SET " +
 					" name = '"+zoneDetails.getName()+"'," +
 					" description = '"+zoneDetails.getDescription()+"'," +
-					" region = 'default', " +
+					" region = '"+zoneDetails.getRegion().getId()+"'," +
 					" zoneType = '"+zoneDetails.getZoneType()+"', " +
 					" geometry = GeometryFromText('"+geometry.toText()+"', 4326) " + 
 					"WHERE id = '"+zoneDetails.getId()+"'";

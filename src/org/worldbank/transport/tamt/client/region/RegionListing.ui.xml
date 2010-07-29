@@ -35,11 +35,12 @@
 			font-size: 10px;;	
 		}
 		.label {
-			width: 100px;	
+			width: 150px;
 		}
 		.detailRow {
 			vertical-align: middle;
 			padding: 4px;
+			
 		}
 		.zoneList td {
 			text-align: left;	
@@ -60,6 +61,10 @@
 			<g:HTML styleName="{style.label}">Description:</g:HTML>
 			<g:TextBox ui:field="description"/>
 		</g:HorizontalPanel>
+		<g:HorizontalPanel styleName="{style.detailRow}">
+			<g:HTML styleName="{style.label}">Default zone type:</g:HTML>
+			<g:ListBox ui:field="zoneTypes"/>
+		</g:HorizontalPanel>		
 		<g:HorizontalPanel styleName="{style.detailRow}">
 			<g:HTML styleName="{style.label}">Current region?</g:HTML>
 			<g:CheckBox ui:field="currentStudyRegionCheckBox" /> 
