@@ -371,8 +371,8 @@ public class GPSTracesView extends Composite {
 					gpsTraceList.getCellFormatter().setWidth(row, 0, "20px");
 					gpsTraceList.setWidget(row, 1, name);
 					gpsTraceList.setWidget(row, 2, desc);
-					gpsTraceList.setWidget(row, 3, records);
-					gpsTraceList.setWidget(row, 4, upload);
+					gpsTraceList.setWidget(row, 3, upload);
+					gpsTraceList.setWidget(row, 4, records);
 					gpsTraceList.setWidget(row, 5, matchedRecords);
 					gpsTraceList.setWidget(row, 6, processedDate);
 					
