@@ -118,7 +118,12 @@ public class RegionInformation extends Composite {
 			@Override
 			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
 				StudyRegion currentStudyRegion = event.studyRegion;
-				curentStudyRegionName.setText(currentStudyRegion.getName());
+				GWT.log("CURRENT STUDY REGION RegionInformation handler: " + currentStudyRegion);
+				if (currentStudyRegion != null){
+					curentStudyRegionName.setText(currentStudyRegion.getName());;
+				} else {
+					curentStudyRegionName.setText("<Not Set>");
+				}
 			}
 		});	
 		

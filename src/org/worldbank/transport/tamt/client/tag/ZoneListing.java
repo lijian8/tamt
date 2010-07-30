@@ -316,9 +316,12 @@ public class ZoneListing extends Composite {
 			@Override
 			public void onTAMTResize(TAMTResizeEvent event) {
 				int h = event.height - 280; // account for other UI
-				String height = Integer.toString(h) + "px";
-				GWT.log("SIZE: ZoneListing scroll panel height: " + height);
-				scrollPanel.setHeight(height);
+				if( h > -1)
+				{
+					String height = Integer.toString(h) + "px";
+					GWT.log("SIZE: ZoneListing scroll panel height: " + height);
+					scrollPanel.setHeight(height);
+				}
 			}
 		});		
 	

@@ -253,18 +253,21 @@ public class RegionMap extends Composite implements RequiresResize {
 				if( mapFirstLoad )
 				{
 					currentStudyRegion = event.studyRegion;
-					Vertex v = currentStudyRegion.getMapCenter();
-					final LatLng center = LatLng.newInstance(v.getLat(), v.getLng());
-					
-					// do this as a deferred command
-	            	DeferredCommand.addCommand(new Command() {
-	          	      public void execute() {
-	          	    	  GWT.log("RegionMap - (on first load only) update to current study region" + currentStudyRegion);
-	          	    	  map.setZoomLevel(currentStudyRegion.getMapZoomLevel());
-	          	    	  map.setCenter(center);
-	          	    	  map.checkResizeAndCenter();
-	          	       }
-	          	    });				
+					if( currentStudyRegion != null )
+					{
+						Vertex v = currentStudyRegion.getMapCenter();
+						final LatLng center = LatLng.newInstance(v.getLat(), v.getLng());
+						
+						// do this as a deferred command
+		            	DeferredCommand.addCommand(new Command() {
+		          	      public void execute() {
+		          	    	  GWT.log("RegionMap - (on first load only) update to current study region" + currentStudyRegion);
+		          	    	  map.setZoomLevel(currentStudyRegion.getMapZoomLevel());
+		          	    	  map.setCenter(center);
+		          	    	  map.checkResizeAndCenter();
+		          	       }
+		          	    });
+					}
 				}
 			}
 		});	
@@ -278,6 +281,8 @@ public class RegionMap extends Composite implements RequiresResize {
 				int mapW = event.width - (400 + 50); // set in RegionInformation
 				
 				int mapH = event.height - 40; // margins
+				if( mapH > -1 && mapW > -1)
+				{
 				String mapHeight = Integer.toString(mapH) + "px";
 				String mapWidth = Integer.toString(mapW) + "px";
 				
@@ -287,6 +292,7 @@ public class RegionMap extends Composite implements RequiresResize {
 				
 				map.setWidth(mapWidth);
 				map.setHeight(mapHeight);
+				}
 				
 				// workaround for bad alignment
             	DeferredCommand.addCommand(new Command() {

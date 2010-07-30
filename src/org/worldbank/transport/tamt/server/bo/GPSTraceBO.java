@@ -73,11 +73,11 @@ public class GPSTraceBO {
 					break;
 				}
 			}
-			if( region != null )
-			{
-				gpsTraces = gpsTraceDAO.getGPSTraces(region);
-			}
 		}
+		if( region != null )
+		{
+			gpsTraces = gpsTraceDAO.getGPSTraces(region);
+		}		
 		return gpsTraces;
 	}
 

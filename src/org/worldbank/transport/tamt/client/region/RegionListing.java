@@ -99,6 +99,7 @@ public class RegionListing extends Composite {
 	private HashMap<String, ArrayList<Vertex>> vertexHash;
 
 	protected RegionPolygon currentPolygon;
+	private boolean wasDeletingCurrentStudyRegion;
 	
 	public RegionListing(HandlerManager eventBus) {
 		
@@ -165,7 +166,9 @@ public class RegionListing extends Composite {
 	
 	@UiHandler("delete")
 	void onClickDelete(ClickEvent e) {
-		if( Window.confirm("Delete all checked regions?") )
+		if( Window.confirm("Delete all checked regions?" +
+				"\nThis will delete all associated roads, zones" +
+				", GPS traces, any tagged points.") )
 		{
 			deleteRegionDetails();
 		}
@@ -251,10 +254,12 @@ public class RegionListing extends Composite {
 				
 				int h = event.height - 318; // account for other study region UI
 				
+				if( h > -1 )
+				{
 				String height = Integer.toString(h) + "px";
 				GWT.log("SIZE: RegionListing scroll panel height: " + height);
-				
 				scrollPanel.setHeight(height);
+				}
 				
 			}
 		});		
@@ -389,15 +394,6 @@ public class RegionListing extends Composite {
 				
 				// add the id to the list to be deleted
 				studyRegionIds.add(studyRegionId);
-				
-				// also remove the associated study region from
-				// the map meta data cache
-				/*
-				if( cacheRegionMapMetaData.containsKey(studyRegionId) )
-				{
-					cacheRegionMapMetaData.remove(studyRegionId);
-				}
-				*/
 				
 			}
 			
@@ -573,14 +569,27 @@ public class RegionListing extends Composite {
 					 // store the result
 					  studyRegionList = result;
 			          
-					  refreshStudyRegions = false;
+					  
 			          clearRegionEditView();
-			          
+					  
+					  refreshStudyRegions = false;
+					  
 			          GWT.log("studyRegionList=" + studyRegionList);
 			          regionList.removeAllRows();
 			          
+					  /*
+					   * If there are no study regions...
+					   */
+					  if( studyRegionList.size() == 0 )
+					  {
+						  GWT.log("CURRENT STUDY REGION: No study regions, set current study region to NULL");
+						  eventBus.fireEvent(new CurrentStudyRegionUpdatedEvent(null));
+					  }
+					  
 			          // create a hash of <roadId>|vertex array to throw over to RegionMap for rendering
 			          vertexHash = new HashMap<String, ArrayList<Vertex>>();
+			          
+			          boolean hasCurrentStudyRegion = false;
 			          
 			          for (int i = 0; i < studyRegionList.size(); i++) {
 			        	final int count = i;
@@ -595,6 +604,9 @@ public class RegionListing extends Composite {
 							minimal.setName(studyRegion.getName());
 							minimal.setMapCenter(studyRegion.getMapCenter());
 							minimal.setMapZoomLevel(studyRegion.getMapZoomLevel());
+							
+							hasCurrentStudyRegion = true;
+							
 							GWT.log("RegionListing firing CurrentStudyRegionUpdatedEvent from RegionListing");
 							eventBus.fireEvent(new CurrentStudyRegionUpdatedEvent(minimal));
 						}
@@ -632,6 +644,16 @@ public class RegionListing extends Composite {
 			          // now tell RegionMap to pick up the vertexHash and render the shapes
 			          GWT.log("Fire RenderRegionsEvent");
 			          eventBus.fireEvent(new RenderRegionsEvent(vertexHash));
+			          
+			          /*
+			           * If none of the study regions were set as current..
+			           */
+			          if( !hasCurrentStudyRegion )
+			          {
+			        	  GWT.log("CURRENT STUDY REGION: None of the study regions are set as current");
+			        	  eventBus.fireEvent(new CurrentStudyRegionUpdatedEvent(null));
+			          }
+			          
 				}
 			});
 			

@@ -192,7 +192,11 @@ public class TagInformation extends Composite {
 			@Override
 			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
 				currentStudyRegion = event.studyRegion;
-				studyRegion.setText(currentStudyRegion.getName());
+				if (currentStudyRegion != null){
+					studyRegion.setText(currentStudyRegion.getName());
+				} else {
+					studyRegion.setText("<Not Set>");
+				}
 				panel.selectTab(0);
 	
 			}
