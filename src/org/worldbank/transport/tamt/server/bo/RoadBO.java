@@ -2,10 +2,13 @@ package org.worldbank.transport.tamt.server.bo;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.worldbank.transport.tamt.server.dao.RegionDAO;
 import org.worldbank.transport.tamt.server.dao.RoadDAO;
+import org.worldbank.transport.tamt.shared.GPSTrace;
 import org.worldbank.transport.tamt.shared.RoadDetails;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.Vertex;
@@ -17,6 +20,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 public class RoadBO {
 
 	private RoadDAO roadDAO;
+	private RegionDAO regionDAO;
 	private static Logger logger = Logger.getLogger(RoadBO.class);
 	
 	private static RoadBO singleton = null;
@@ -32,12 +36,29 @@ public class RoadBO {
 	public RoadBO()
 	{
 		roadDAO = RoadDAO.get();
+		regionDAO = RegionDAO.get();
 	}
 	
 	public ArrayList<RoadDetails> getRoadDetails(StudyRegion region) throws Exception
 	{
-		//TODO: validate study region name
-		return roadDAO.getRoadDetails(region);
+		ArrayList<RoadDetails> roadDetails = new ArrayList<RoadDetails>();
+		if ( region == null )
+		{
+			ArrayList<StudyRegion> regions = regionDAO.getStudyRegions();
+			for (Iterator iterator = regions.iterator(); iterator.hasNext();) {
+				StudyRegion studyRegion = (StudyRegion) iterator.next();
+				if(studyRegion.isCurrentRegion())
+				{
+					region = studyRegion;
+					break;
+				}
+			}
+			if( region != null )
+			{
+				roadDetails = roadDAO.getRoadDetails(region);
+			}
+		}
+		return roadDetails;
 	}
 
 	public RoadDetails saveRoadDetails(RoadDetails roadDetails) throws Exception {

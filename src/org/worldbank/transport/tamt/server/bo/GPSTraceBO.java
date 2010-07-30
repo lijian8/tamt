@@ -5,12 +5,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.worldbank.transport.tamt.server.dao.AssignStatusDAO;
 import org.worldbank.transport.tamt.server.dao.GPSTraceDAO;
 import org.worldbank.transport.tamt.server.dao.NonZipFileException;
+import org.worldbank.transport.tamt.server.dao.RegionDAO;
 import org.worldbank.transport.tamt.server.dao.RoadDAO;
 import org.worldbank.transport.tamt.server.dao.ZoneDAO;
 import org.worldbank.transport.tamt.shared.AssignStatus;
@@ -18,6 +20,7 @@ import org.worldbank.transport.tamt.shared.GPSTrace;
 import org.worldbank.transport.tamt.shared.GPSTraceException;
 import org.worldbank.transport.tamt.shared.RoadDetails;
 import org.worldbank.transport.tamt.shared.StudyRegion;
+import org.worldbank.transport.tamt.shared.TagDetails;
 import org.worldbank.transport.tamt.shared.Vertex;
 import org.worldbank.transport.tamt.shared.ZoneDetails;
 
@@ -30,6 +33,7 @@ public class GPSTraceBO {
 
 	private GPSTraceDAO gpsTraceDAO;
 	private AssignStatusDAO assignStatusDAO;
+	private RegionDAO regionDAO;
 	private static Logger logger = Logger.getLogger(GPSTraceBO.class);
 	
 	private static GPSTraceBO singleton = null;
@@ -46,6 +50,7 @@ public class GPSTraceBO {
 	{
 		gpsTraceDAO = GPSTraceDAO.get();
 		assignStatusDAO = AssignStatusDAO.get();
+		regionDAO = RegionDAO.get();
 	}
 	
 	public GPSTrace getGPSTrace(GPSTrace gpsTrace) throws Exception
@@ -55,8 +60,25 @@ public class GPSTraceBO {
 	}
 	public ArrayList<GPSTrace> getGPSTraces(StudyRegion region) throws Exception
 	{
-		//TODO: validate study region name
-		return gpsTraceDAO.getGPSTraces(region);
+		ArrayList<GPSTrace> gpsTraces = new ArrayList<GPSTrace>();
+		// if the region is null, return the traces for the current study region
+		if ( region == null )
+		{
+			ArrayList<StudyRegion> regions = regionDAO.getStudyRegions();
+			for (Iterator iterator = regions.iterator(); iterator.hasNext();) {
+				StudyRegion studyRegion = (StudyRegion) iterator.next();
+				if(studyRegion.isCurrentRegion())
+				{
+					region = studyRegion;
+					break;
+				}
+			}
+			if( region != null )
+			{
+				gpsTraces = gpsTraceDAO.getGPSTraces(region);
+			}
+		}
+		return gpsTraces;
 	}
 
 	public void saveGPSTrace(GPSTrace gpsTrace, File file) throws Exception {
