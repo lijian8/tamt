@@ -84,6 +84,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
@@ -99,6 +101,7 @@ import com.google.gwt.maps.client.control.MenuMapTypeControl;
 import com.google.gwt.maps.client.control.Control.CustomControl;
 import com.google.gwt.maps.client.event.MapAddOverlayHandler;
 import com.google.gwt.maps.client.event.MapDragEndHandler;
+import com.google.gwt.maps.client.event.MapRightClickHandler;
 import com.google.gwt.maps.client.event.MapZoomEndHandler;
 import com.google.gwt.maps.client.event.PolygonCancelLineHandler;
 import com.google.gwt.maps.client.event.PolygonClickHandler;
@@ -114,13 +117,17 @@ import com.google.gwt.maps.client.event.PolylineMouseOutHandler;
 import com.google.gwt.maps.client.event.PolylineMouseOverHandler;
 import com.google.gwt.maps.client.event.MapAddOverlayHandler.MapAddOverlayEvent;
 import com.google.gwt.maps.client.event.MapDragEndHandler.MapDragEndEvent;
+import com.google.gwt.maps.client.event.MapRightClickHandler.MapRightClickEvent;
 import com.google.gwt.maps.client.event.MapZoomEndHandler.MapZoomEndEvent;
+import com.google.gwt.maps.client.event.PolygonClickHandler.PolygonClickEvent;
+import com.google.gwt.maps.client.event.PolygonMouseOverHandler.PolygonMouseOverEvent;
 import com.google.gwt.maps.client.event.PolylineCancelLineHandler.PolylineCancelLineEvent;
 import com.google.gwt.maps.client.event.PolylineClickHandler.PolylineClickEvent;
 import com.google.gwt.maps.client.event.PolylineMouseOutHandler.PolylineMouseOutEvent;
 import com.google.gwt.maps.client.event.PolylineMouseOverHandler.PolylineMouseOverEvent;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.LatLngBounds;
+import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.PolyEditingOptions;
 import com.google.gwt.maps.client.overlay.PolyStyleOptions;
@@ -170,6 +177,11 @@ public class RegionMap extends Composite implements RequiresResize {
 	protected StudyRegion currentStudyRegion;
 	private boolean mapFirstLoad;
 	
+	// context menu
+	private VerticalPanel contextMenu;
+	protected boolean polyIsLoadedFromPanel = false;
+	
+	
 	public RegionMap(HandlerManager eventBus) {
 		
 		this.eventBus = eventBus;
@@ -193,12 +205,44 @@ public class RegionMap extends Composite implements RequiresResize {
 		
 		polygons = new ArrayList<RegionPolygon>();
 		
+		// context menu
+		contextMenu = new VerticalPanel();
+		
+		
         bind();
         
 	}
 	
 	public void bind()
 	{
+		
+		/*
+		 * Faking a right-clickhandler for RegionPolygon
+		 */
+		map.addMapRightClickHandler(new MapRightClickHandler() {
+			
+			@Override
+			public void onRightClick(MapRightClickEvent event) {
+				final HandlerManager eb = eventBus;
+				if( event.getOverlay() != null)
+				{
+					GWT.log("MapRightClickHandler OVERLAY:" + event.getOverlay().getClass());
+					if( event.getOverlay() instanceof RegionPolygon )
+					{
+						RegionPolygon polygon = (RegionPolygon) event.getOverlay();
+						// TODO: only add the control if the polygon information is already loaded in the edit panel
+						if( polyIsLoadedFromPanel )
+						{
+							GWT.log("Clicked on RegionPolygon:" + polygon.getRegionDetailsId());
+							Point clickedPoint = event.getPoint();
+							GWT.log("Clicked point:" + clickedPoint.toString());
+							map.addControl(new RegionContextMenuControl(eb, clickedPoint));
+						}
+						
+					}
+				}
+			}
+		});
 		
 		eventBus.addHandler(CurrentStudyRegionUpdatedEvent.TYPE, new CurrentStudyRegionUpdatedEventHandler() {
 			
@@ -293,10 +337,9 @@ public class RegionMap extends Composite implements RequiresResize {
 		eventBus.addHandler(EditRegionSegmentEvent.TYPE,
 			new EditRegionSegmentEventHandler() {
 		    	public void onEditRegionSegment(EditRegionSegmentEvent event) {
-		    		
-		    		/*
-		    		 * We may get a LatLng center and a zoomLevel
-		    		 */
+
+		    	   /* We don't mess this for StudyRegions
+		    	    * because they have their own centering data
 		    	   if(event.center != null)
 		    	   {
 		    		   map.setCenter(event.center);
@@ -305,7 +348,9 @@ public class RegionMap extends Composite implements RequiresResize {
 		    	   {
 		    		   map.setZoomLevel(event.zoomLevel);
 		    	   }
+		    	   */
 		           setEditingRegionsEnabled(event.id);
+		           polyIsLoadedFromPanel = true;
 		    }
 		});
 		
@@ -320,6 +365,7 @@ public class RegionMap extends Composite implements RequiresResize {
 			new DisableRegionEditingEventHandler() {
 		    	public void onDisableRegionEditing(DisableRegionEditingEvent event) {
 		    		setEditingRegionsEnabled("");
+		    		polyIsLoadedFromPanel = false;
 		        }
 		});
 		
@@ -371,7 +417,8 @@ public class RegionMap extends Composite implements RequiresResize {
 			{
 				  polygon.setEditingEnabled(true);
 				  LatLngBounds bounds = polygon.getBounds();
-				  map.panTo(bounds.getCenter());
+				  // For Regions, we don't want to recenter on the polygon
+				  // map.panTo(bounds.getCenter());
 				  currentPolygon = polygon;
 				  LatLng points[] = new LatLng[currentPolygon.getVertexCount()];
 		    	  for (int i = 0; i < currentPolygon.getVertexCount(); i++) {
@@ -418,6 +465,90 @@ public class RegionMap extends Composite implements RequiresResize {
 		@Source("Tpu.png")
 		ImageResource polygonUp();
 
+  }
+  
+  private static class RegionContextMenuControl extends CustomControl {
+
+	private HandlerManager eventBus;
+	private VerticalPanel container;
+	private RegionContextMenuControl self;
+	private HTML setMapView;
+	private HTML setAsCurrentRegion;
+	private HTML simplify;
+	
+	public RegionContextMenuControl(HandlerManager eventBus, Point clickedPoint) {
+		super(new ControlPosition(ControlAnchor.TOP_LEFT, clickedPoint.getX(), clickedPoint.getY()));
+		this.eventBus = eventBus;
+		this.self = this;
+	}
+	
+	@Override
+	protected Widget initialize(MapWidget map) {
+		final HandlerManager bus = this.eventBus;
+		final MapWidget m = map;
+		container = new VerticalPanel();
+		container.setStyleName("mapContextMenuContainer");
+		
+		setMapView = new HTML("Set map view");
+		setMapView.setStyleName("mapContextMenuItem");
+		setMapView.addStyleName("contextDisabled");
+		setMapView.addMouseOverHandler(new MouseOverHandler() {
+			public void onMouseOver(MouseOverEvent event) {
+				setMapView.removeStyleName("contextDisabled");
+			}
+		});
+		setMapView.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+					bus.fireEvent(new CacheRegionMapMetaDataEvent(m.getCenter(), m.getZoomLevel()));
+					m.removeControl(self);
+				}
+		});
+	      
+		setAsCurrentRegion = new HTML("Set as current region");
+		setAsCurrentRegion.setStyleName("mapContextMenuItem");
+		setAsCurrentRegion.addStyleName("contextDisabled");
+		setAsCurrentRegion.addMouseOverHandler(new MouseOverHandler() {
+			public void onMouseOver(MouseOverEvent event) {
+				setAsCurrentRegion.removeStyleName("contextDisabled");
+			}
+		});
+		setAsCurrentRegion.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+					Window.alert("fire the set as current region event");
+					m.removeControl(self);
+				}
+		});	      
+	    
+		simplify = new HTML("Simplify geometry");
+		simplify.setStyleName("mapContextMenuItem");
+		simplify.addStyleName("contextDisabled");
+		simplify.addMouseOverHandler(new MouseOverHandler() {
+			public void onMouseOver(MouseOverEvent event) {
+				simplify.removeStyleName("contextDisabled");
+			}
+		});
+		simplify.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+					Window.alert("fire the simplify event");
+					m.removeControl(self);
+				}
+		});	      
+		
+		
+	    container.add(setMapView);
+	    
+	    // TODO: add these when the features are ready
+	    //container.add(setAsCurrentRegion);
+	    //container.add(simplify);
+	    
+		return container;
+	}
+
+	@Override
+	public boolean isSelectable() {
+		return false;
+	}
+	  
   }
   
   private static class DrawingToolsControl extends CustomControl {
@@ -482,13 +613,18 @@ public class RegionMap extends Composite implements RequiresResize {
 	
 	private void bind()
 	{
-		eventBus.addHandler(EditRegionSegmentEvent.TYPE,
+		/*
+		 * TODO: remove saveMapView from DrawingToolsControl,
+		 * we have moved it to the right-click handler and
+		 * tucked it inside RegionContextMenuControl
+		 * 
+		 * eventBus.addHandler(EditRegionSegmentEvent.TYPE,
 				new EditRegionSegmentEventHandler() {
 			    	public void onEditRegionSegment(EditRegionSegmentEvent event) {
 			          saveMapView.setVisible(true);
 			    }
 		});
-		
+		*/
 		eventBus.addHandler(DisableRegionEditingEvent.TYPE,
 				new DisableRegionEditingEventHandler() {
 			    	public void onDisableRegionEditing(DisableRegionEditingEvent event) {
@@ -588,6 +724,7 @@ public class RegionMap extends Composite implements RequiresResize {
 		      }
 		    });	
 		} else {
+			
 			/**
 		     * Send a copy of the RegionPolygon to RoadListing
 		     */
