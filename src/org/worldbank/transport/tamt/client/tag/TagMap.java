@@ -228,22 +228,24 @@ public class TagMap extends Composite {
 			@Override
 			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
 				currentStudyRegion = event.studyRegion;
-				Vertex v = currentStudyRegion.getMapCenter();
-				final LatLng center = LatLng.newInstance(v.getLat(), v.getLng());
+				if( currentStudyRegion != null)
+				{
+					Vertex v = currentStudyRegion.getMapCenter();
+					final LatLng center = LatLng.newInstance(v.getLat(), v.getLng());
+					
+					// since we have a new current study region, clear map overlays
+					map.clearOverlays();
 				
-				// since we have a new current study region, clear map overlays
-				map.clearOverlays();
-				
-				// do this as a deferred command
-            	DeferredCommand.addCommand(new Command() {
-          	      public void execute() {
-          	    	  GWT.log("TagMap - update to current study region" + currentStudyRegion);
-          	    	  map.setZoomLevel(currentStudyRegion.getMapZoomLevel());
-          	    	  map.setCenter(center);
-          	    	  map.checkResizeAndCenter();
-          	       }
-          	    });				
-
+					// do this as a deferred command
+	            	DeferredCommand.addCommand(new Command() {
+	          	      public void execute() {
+	          	    	  GWT.log("TagMap - update to current study region" + currentStudyRegion);
+	          	    	  map.setZoomLevel(currentStudyRegion.getMapZoomLevel());
+	          	    	  map.setCenter(center);
+	          	    	  map.checkResizeAndCenter();
+	          	       }
+	          	    });				
+				}
 			}
 		});	
 		
@@ -256,16 +258,18 @@ public class TagMap extends Composite {
 				int mapW = event.width - (400 + 50);
 				
 				int mapH = event.height - 40; // margins
-				String mapHeight = Integer.toString(mapH) + "px";
-				String mapWidth = Integer.toString(mapW) + "px";
-				
-				GWT.log("SIZE: TagMap resize map height to: " + mapHeight);
-				GWT.log("SIZE: TagMap resize map width to: " + mapWidth);
-				GWT.log("SIZE: TagMap center: " + map.getCenter());
-				
-				map.setWidth(mapWidth);
-				map.setHeight(mapHeight);
-				
+				if( mapW > -1 && mapH > -1)
+				{
+					String mapHeight = Integer.toString(mapH) + "px";
+					String mapWidth = Integer.toString(mapW) + "px";
+					
+					GWT.log("SIZE: TagMap resize map height to: " + mapHeight);
+					GWT.log("SIZE: TagMap resize map width to: " + mapWidth);
+					GWT.log("SIZE: TagMap center: " + map.getCenter());
+					
+					map.setWidth(mapWidth);
+					map.setHeight(mapHeight);
+				}
 				// workaround for bad alignment
             	DeferredCommand.addCommand(new Command() {
             	      public void execute() {

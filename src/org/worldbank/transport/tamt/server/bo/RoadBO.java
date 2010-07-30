@@ -53,11 +53,11 @@ public class RoadBO {
 					break;
 				}
 			}
-			if( region != null )
-			{
-				roadDetails = roadDAO.getRoadDetails(region);
-			}
 		}
+		if( region != null )
+		{
+			roadDetails = roadDAO.getRoadDetails(region);
+		}		
 		return roadDetails;
 	}
 

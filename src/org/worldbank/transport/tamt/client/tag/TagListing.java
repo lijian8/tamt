@@ -95,7 +95,6 @@ public class TagListing extends Composite {
 			@Override
 			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
 				currentStudyRegion = event.studyRegion;
-				
 			}
 		});	
 		
@@ -113,9 +112,12 @@ public class TagListing extends Composite {
 			@Override
 			public void onTAMTResize(TAMTResizeEvent event) {
 				int h = event.height - 250; // account for other UI
+				if( h > -1)
+				{
 				String height = Integer.toString(h) + "px";
 				GWT.log("SIZE: TagListsing scroll panel height: " + height);
 				scrollPanel.setHeight(height);
+				}
 			}
 		});					
 	}
@@ -233,6 +235,8 @@ public class TagListing extends Composite {
 	}
 	
 	private void fetchTagDetails() {
+		
+		GWT.log("TAG fetch tag details with current study region:" + currentStudyRegion);
 		
 		tagService.getTagDetails(currentStudyRegion, new AsyncCallback<ArrayList<TagDetails>>() {
 	      

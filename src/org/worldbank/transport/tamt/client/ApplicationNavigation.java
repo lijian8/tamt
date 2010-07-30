@@ -62,7 +62,7 @@ public class ApplicationNavigation extends Composite {
 		// TODO: Add il8n
 		regionNav.setText("Home");
 		tagNav.setText("Tag");
-		importNav.setText("Import");
+		importNav.setText("Import / Assign");
 		queryNav.setText("Query");
 		exportNav.setText("Export");
 		

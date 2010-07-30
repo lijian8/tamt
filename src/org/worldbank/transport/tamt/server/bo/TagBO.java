@@ -48,16 +48,16 @@ public class TagBO {
 					break;
 				}
 			}
-			/*
-			 * If region is still null, it is because there are NO
-			 * study regions configured (ie, first time use).
-			 * If this is the case, pass back an empty TagDetails list
-			 */
-			if( region != null )
-			{
-				tagDetails = tagDAO.getTagDetails(region);	
-			}
 		}
+		/*
+		 * If region is still null, it is because there are NO
+		 * study regions configured (ie, first time use).
+		 * If this is the case, pass back an empty TagDetails list
+		 */
+		if( region != null )
+		{
+			tagDetails = tagDAO.getTagDetails(region);	
+		}		
 		return tagDetails;
 	}
 

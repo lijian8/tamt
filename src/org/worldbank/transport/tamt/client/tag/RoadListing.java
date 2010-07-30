@@ -332,9 +332,12 @@ public class RoadListing extends Composite {
 			@Override
 			public void onTAMTResize(TAMTResizeEvent event) {
 				int h = event.height - 284; // account for other UI
+				if( h > -1 )
+				{
 				String height = Integer.toString(h) + "px";
 				GWT.log("SIZE: RoadListing scroll panel height: " + height);
 				scrollPanel.setHeight(height);
+				}
 			}
 		});
 	}

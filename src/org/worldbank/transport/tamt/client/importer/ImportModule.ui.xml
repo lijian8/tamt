@@ -59,7 +59,7 @@
 	<g:HorizontalPanel ui:field="hpanel">
 		<g:TabLayoutPanel ui:field="tabLayoutPanel" barUnit="PX" barHeight="20">
 			<g:tab>
-				<g:header>Upload</g:header>
+				<g:header>Import / Assign</g:header>
 				<importm:GPSTracesView ui:field="gpsTracesView"/>
 			</g:tab>
 		</g:TabLayoutPanel>

@@ -135,12 +135,11 @@ public class GPSTracesView extends Composite {
 		// eventBus.fireEvent(new GetGPSTracesEvent());
 		
 		// Set up the status dialog layout
-		dialogBox.setText("Matching GPS Points with Roads");
+		dialogBox.setText("Matching GPS Points to Roads and Zones");
 		VerticalPanel dialogVerticalPanel = new VerticalPanel();
 		HTML dialogDesc = new HTML("The system is currently matching " +
-				"GPS points to roads by nearness and direction." +
-				"The GPS record then inherits the tag of the matched road. " +
-				"This may take some time depending on the number of roads and points in the system.<hr/>");
+				"GPS points to roads and zones." +
+				"This may take some time depending on the number of points, roads and zones in the study region.<hr/>");
 		dialogVerticalPanel.add(dialogDesc);
 		
 		// elements in the table
@@ -255,7 +254,10 @@ public class GPSTracesView extends Composite {
 			@Override
 			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
 				currentStudyRegion = event.studyRegion;
-				studyRegionId.setValue( currentStudyRegion.getId() );
+				if( currentStudyRegion != null)
+				{
+					studyRegionId.setValue( currentStudyRegion.getId() );
+				}
 			}
 		});
 		
@@ -275,12 +277,14 @@ public class GPSTracesView extends Composite {
 				
 				int h = event.height - 275; // account for other study region UI
 				
+				if( h > -1)
+				{
 				String height = Integer.toString(h) + "px";
 				GWT.log("SIZE: GPSTracesView scroll panel height: " + height);
 				
 				scrollPanel.setHeight(height);
 				panel.setHeight(height);
-				
+				}
 			}
 		});				
 	}
@@ -450,7 +454,8 @@ public class GPSTracesView extends Composite {
 		dialogTable.setWidget(4, 1, dialogLastUpdated);
 		dialogTable.setWidget(5, 1, dialogStatus);
 		
-		closeDialog = new Button("OK");
+		closeDialog = new Button("Processing...");
+		closeDialog.setEnabled(false);
 		closeDialog.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -474,7 +479,7 @@ public class GPSTracesView extends Composite {
 				fetchGPSTraces();
 			}
 		});
-		closeDialog.setVisible(false);
+		//closeDialog.setVisible(false);
 		dialogTable.setWidget(6, 1, closeDialog);
 		
 		dialogBox.setAutoHideEnabled(false);
@@ -527,6 +532,8 @@ public class GPSTracesView extends Composite {
 						if( returnedStatus.isComplete() )
 						{
 							updateDialog(returnedStatus);
+							closeDialog.setEnabled(true);
+							closeDialog.setText("OK");
 							closeDialog.setVisible(true); // instead of auto hide with dialogBox.hide()
 						} else {
 							updateDialog(returnedStatus);

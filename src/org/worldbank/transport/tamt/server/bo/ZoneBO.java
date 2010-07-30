@@ -56,11 +56,11 @@ public class ZoneBO {
 					break;
 				}
 			}
-			if( region != null )
-			{
-				zoneDetails = zoneDAO.getZoneDetails(region);
-			}
 		}
+		if( region != null )
+		{
+			zoneDetails = zoneDAO.getZoneDetails(region);
+		}		
 		return zoneDetails;		
 	}
 

@@ -78,7 +78,12 @@ public class ImportModule extends Composite {
 			@Override
 			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
 				currentStudyRegion = event.studyRegion;
-				studyRegionName.setText(currentStudyRegion.getName());
+				if (currentStudyRegion != null){
+					studyRegionName.setText(currentStudyRegion.getName());
+				} else {
+					studyRegionName.setText("<Not Set>");
+				}
+				
 			}
 		});
 		
@@ -91,15 +96,15 @@ public class ImportModule extends Composite {
 				int h = event.height - 60; // account for other study region UI
 				int w = event.width;
 				
+				if( h > -1 && w > -1)
+				{
 				String height = Integer.toString(h) + "px";
 				
 				String width = Integer.toString(w) + "px";
 				GWT.log("SIZE: ImportModule tabLayoutPanel height: " + height);
 				GWT.log("SIZE: ImportModule tabLayoutPanel width: " + width);
-				
-				
 				tabLayoutPanel.setHeight(height);
-				
+				}
 			}
 		});		
 		eventBus.addHandler(SwitchModuleEvent.TYPE,
