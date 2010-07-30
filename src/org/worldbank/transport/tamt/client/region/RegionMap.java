@@ -340,6 +340,7 @@ public class RegionMap extends Composite implements RequiresResize {
 
 		    	   /* We don't mess this for StudyRegions
 		    	    * because they have their own centering data
+		    	    * */
 		    	   if(event.center != null)
 		    	   {
 		    		   map.setCenter(event.center);
@@ -348,7 +349,7 @@ public class RegionMap extends Composite implements RequiresResize {
 		    	   {
 		    		   map.setZoomLevel(event.zoomLevel);
 		    	   }
-		    	   */
+		    	   /**/
 		           setEditingRegionsEnabled(event.id);
 		           polyIsLoadedFromPanel = true;
 		    }
