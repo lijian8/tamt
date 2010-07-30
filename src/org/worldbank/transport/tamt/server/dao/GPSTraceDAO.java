@@ -530,6 +530,8 @@ public class GPSTraceDAO extends DAO {
 								sb.append("\\N"); // null for tag_id;
 								sb.append(DELIMITER);
 								sb.append("\\N"); // null for road_id;
+								sb.append(DELIMITER);
+								sb.append("\\N"); // null for zone_id;
 
 								// sb.append(geometry);// will print WKT
 								// sb.append("GeometryFromText('"+geometry.toText()+"', 4326)");
@@ -607,6 +609,7 @@ public class GPSTraceDAO extends DAO {
 		/*
 		 * Some imported points may be outside the study region boundary.
 		 * Delete them.
+		 */
 		StudyRegion studyRegion = gpsTrace.getRegion();
 		if( studyRegion != null )
 		{
@@ -614,17 +617,30 @@ public class GPSTraceDAO extends DAO {
 			try {
 				Connection connection = getConnection();
 				Statement s = connection.createStatement();
-				String sql = "TODO";
+				String sql = "DELETE FROM gpspoints WHERE id NOT IN " +
+						"(SELECT p.id FROM gpspoints p, studyregion r " +
+						"WHERE r.id = '"+studyRegion.getId()+"' " +
+						"AND (ST_Contains(r.geometry, p.geometry)))";
 				logger.debug(sql);
-				s.executeQuery(sql);
+			
+				/*
+				 * TODO: we aren't executing this SQL yet, because
+				 * when we do, the assign algorithm doesn't process
+				 * any points -- even if the study area includes the
+				 * intersection of Winneba and Dansoman where we 
+				 * know there are points contained in the small.zip
+				 * test GPS archive.
+				 */
+				//s.executeUpdate(sql);
+			
 			} catch (SQLException e) {
-				logger.error(e.getMessage());
-				throw new Exception(
-						"There was an error deleting points outside the study region boundary: "
-								+ e.getMessage());
+				logger.error("Delete points outside of region error:" + e.getMessage());
+					throw new Exception(
+							"There was an error deleting points outside the study region boundary: "
+									+ e.getMessage());	
 			}
 		}
-		*/
+		
 
 		// now, update the postgis point geometry based on the lat / lng that we
 		// COPYd in
