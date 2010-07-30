@@ -234,68 +234,57 @@ public class TagListing extends Composite {
 	
 	private void fetchTagDetails() {
 		
-		//GWT.log("refreshTagDetails=" + refreshTagDetails);
-		//if( refreshTagDetails )
-		//{
-			//tagList.removeAllRows();
-    		//tagList.setWidget(0, 0, new HTML("Reloading tags..."));
-            
-    		// TODO: for now we just use a Default region
-    		//StudyRegion region = new StudyRegion();
-    		//region.setName("default");
-    		
-			tagService.getTagDetails(currentStudyRegion, new AsyncCallback<ArrayList<TagDetails>>() {
-		      
-				public void onSuccess(ArrayList<TagDetails> result) {
-		          
-				  // store the result
-				  tagDetailsList = result;
-		          
-				  // tell others that we have the result
-				  eventBus.fireEvent(new ReceivedTagsEvent());
-				  
-				  refreshTagDetails = false;
-		          clearTagDetailView();
-		          
-		          GWT.log("tagDetailsList=" + tagDetailsList);
-		          tagList.removeAllRows();
-		          
-		          for (int i = 0; i < tagDetailsList.size(); i++) {
-		        	final int count = i;
-					final TagDetails tagDetails = tagDetailsList.get(i);
-					GWT.log(tagDetails.getName());
-					
-					CheckBox cb = new CheckBox();
-					cb.setFormValue(tagDetails.getId()); //store the id in the checkbox value
-					checkboxes.add(cb); // keep track for selecting all|none to delete
-					cb.setStyleName(style.checkbox());
-					cb.addClickHandler(new ClickHandler() {
-						@Override
-						public void onClick(ClickEvent event) {
-							GWT.log("handle click for checkbox of tagDetail("+count+")");
-						}
-					});
-					Label name = new Label(tagDetails.getName());
-					name.setStyleName(style.tagList());
-					name.addStyleName(style.clickable());
-					name.addClickHandler(new ClickHandler() {
-						@Override
-						public void onClick(ClickEvent event) {
-							loadTagDetails(tagDetails);
-						}
-					});
-					tagList.setWidget(i, 0, cb);
-					tagList.getCellFormatter().setWidth(i, 0, "20px");
-					tagList.setWidget(i, 1, name);
-		          }
-		      }
-		     
-		      public void onFailure(Throwable caught) {
-		        Window.alert("Error fetching tag details");
-		        GWT.log(caught.getMessage());
-		      }
-		    });
-		//}
+		tagService.getTagDetails(currentStudyRegion, new AsyncCallback<ArrayList<TagDetails>>() {
+	      
+			public void onSuccess(ArrayList<TagDetails> result) {
+	          
+			  // store the result
+			  tagDetailsList = result;
+	          
+			  // tell others that we have the result
+			  eventBus.fireEvent(new ReceivedTagsEvent());
+			  
+			  refreshTagDetails = false;
+	          clearTagDetailView();
+	          
+	          GWT.log("tagDetailsList=" + tagDetailsList);
+	          tagList.removeAllRows();
+	          
+	          for (int i = 0; i < tagDetailsList.size(); i++) {
+	        	final int count = i;
+				final TagDetails tagDetails = tagDetailsList.get(i);
+				GWT.log(tagDetails.getName());
+				
+				CheckBox cb = new CheckBox();
+				cb.setFormValue(tagDetails.getId()); //store the id in the checkbox value
+				checkboxes.add(cb); // keep track for selecting all|none to delete
+				cb.setStyleName(style.checkbox());
+				cb.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						GWT.log("handle click for checkbox of tagDetail("+count+")");
+					}
+				});
+				Label name = new Label(tagDetails.getName());
+				name.setStyleName(style.tagList());
+				name.addStyleName(style.clickable());
+				name.addClickHandler(new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						loadTagDetails(tagDetails);
+					}
+				});
+				tagList.setWidget(i, 0, cb);
+				tagList.getCellFormatter().setWidth(i, 0, "20px");
+				tagList.setWidget(i, 1, name);
+	          }
+	      }
+	     
+	      public void onFailure(Throwable caught) {
+	        Window.alert("Error fetching tag details");
+	        GWT.log(caught.getMessage());
+	      }
+	    });
 	}	
 	
 	protected void clearTagDetailView() {
