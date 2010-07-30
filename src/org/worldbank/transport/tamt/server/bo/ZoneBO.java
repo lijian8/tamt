@@ -2,9 +2,11 @@ package org.worldbank.transport.tamt.server.bo;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.worldbank.transport.tamt.server.dao.RegionDAO;
 import org.worldbank.transport.tamt.server.dao.RoadDAO;
 import org.worldbank.transport.tamt.server.dao.ZoneDAO;
 import org.worldbank.transport.tamt.shared.RoadDetails;
@@ -21,6 +23,7 @@ import com.vividsolutions.jts.geom.Point;
 public class ZoneBO {
 
 	private ZoneDAO zoneDAO;
+	private RegionDAO regionDAO;
 	private static Logger logger = Logger.getLogger(ZoneBO.class);
 		
 	private static ZoneBO singleton = null;
@@ -36,12 +39,29 @@ public class ZoneBO {
 	public ZoneBO()
 	{
 		zoneDAO = ZoneDAO.get();
+		regionDAO = RegionDAO.get();
 	}
 	
 	public ArrayList<ZoneDetails> getZoneDetails(StudyRegion region) throws Exception
 	{
-		//TODO: validate study region name
-		return zoneDAO.getZoneDetails(region);
+		ArrayList<ZoneDetails> zoneDetails = new ArrayList<ZoneDetails>();
+		if ( region == null )
+		{
+			ArrayList<StudyRegion> regions = regionDAO.getStudyRegions();
+			for (Iterator iterator = regions.iterator(); iterator.hasNext();) {
+				StudyRegion studyRegion = (StudyRegion) iterator.next();
+				if(studyRegion.isCurrentRegion())
+				{
+					region = studyRegion;
+					break;
+				}
+			}
+			if( region != null )
+			{
+				zoneDetails = zoneDAO.getZoneDetails(region);
+			}
+		}
+		return zoneDetails;		
 	}
 
 	public ZoneDetails saveZoneDetails(ZoneDetails zoneDetails) throws Exception {
