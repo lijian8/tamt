@@ -1,4 +1,22 @@
 /** Add css rules here for your application. */
+.mapContextMenuContainer {
+	border: 1px solid black;
+	background-color: white;
+}
+.mapContextMenuItem contextDisabled {
+	background-color: #eaeaea;
+	text-decoration: none;
+	color: #999;
+}
+.mapContextMenuItem {
+	padding: 8px;
+	background-color: white;
+	border-bottom: 1px solid #999;
+	text-decoration: underline;
+	color: blue;
+	cursor: pointer;
+	cursor: hand;	
+}
 .studyRegionLabel {
 	background-color: white;
 	font-size: 14px;
