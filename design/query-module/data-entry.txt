@@ -1,0 +1,22 @@
+Query Module Design: Traffic flow data entry
+============================================
+
+(Taken from http://tamt.googlecode.com/files/tamt-query-uisketch-response-001.pdf)
+
+Data entry screen
+
+    Tag     Date       Start   End   2W   3W   PC   TAXI   LDV   LDC   HDC   MDB   HDB
+ex  HWY001  8/9/2010   3:00    3:15  34   2    435  37     12    38    99    45    11
+    
+The Road tags must be those already in the system (including the default zone tags).
+
+There will be multiple lines of capture with data for different time of day on 
+each Tag and for multiple days. 
+
+Usually vehicle flow counts are conducted over a one week  to three week period 
+(depending on the accuracy required) and hourly from say 5:00 AM to 10:00 pm.
+
+Whilst we probably do need a screen for data entry, it would also be most 
+useful to allow this same data to be captured in Excel (or Open Office) and 
+imported from say a csv file. This would be far quicker for the user, 
+since he can use copy/paste from the field documents.
