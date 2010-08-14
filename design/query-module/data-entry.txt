@@ -20,3 +20,9 @@ Whilst we probably do need a screen for data entry, it would also be most
 useful to allow this same data to be captured in Excel (or Open Office) and 
 imported from say a csv file. This would be far quicker for the user, 
 since he can use copy/paste from the field documents.
+
+From this, the equivalent number of vehicles per hour can be calculated (if the 
+traffic count is over 15 mins, then the number of vehicles counted would be 
+multiplied by 60/15 to get the hourly figure. The day type would need to be 
+stored (eg 1=Weekday, 2=Saturday, 3=Sunday and holidays) and hour (eg 0:00 to 
+0:59:59=0, 1:00 to 1:59:59=1) so that average can be calculated.
