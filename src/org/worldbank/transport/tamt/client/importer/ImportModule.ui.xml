@@ -61,7 +61,7 @@
 			<g:tab>
 				<g:header>Import / Assign</g:header>
 				<importm:GPSTracesView ui:field="gpsTracesView"/>
-			</g:tab>
+			</g:tab>			
 		</g:TabLayoutPanel>
 	</g:HorizontalPanel>
 	</g:VerticalPanel>
