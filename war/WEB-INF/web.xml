@@ -115,6 +115,16 @@ version="2.4">
     <servlet-name>zoneServiceServlet</servlet-name>
     <url-pattern>/tamt/zoneService</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>trafficCountServiceServlet</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.TrafficCountRecordServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>trafficCountServiceServlet</servlet-name>
+    <url-pattern>/tamt/trafficCountService</url-pattern>
+  </servlet-mapping>  
         
   <servlet>
     <servlet-name>uploadGPSServlet</servlet-name>

@@ -1,0 +1,26 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+		.vpanel {
+			width: 100%;
+		}
+		.checkAll {
+			margin-top: 2px;	
+		}	
+		.button {
+			margin-left: 10px;	
+		}	
+	</ui:style>
+	<g:VerticalPanel ui:field="vpanel" styleName="{style.vpanel}">
+		<g:HorizontalPanel>
+			<g:CheckBox ui:field="toggleAllCheckboxes" styleName="{style.checkAll}"/>
+			<g:Button ui:field="add" styleName="{style.button}">Add</g:Button>
+			<g:Button ui:field="delete" styleName="{style.button}">Delete checked</g:Button>
+		</g:HorizontalPanel>
+		<g:HTML><hr noshade="noshade" size="1"/></g:HTML>
+		<g:ScrollPanel>
+			<g:HTML>put a table in this scroll panel</g:HTML>
+		</g:ScrollPanel>
+	</g:VerticalPanel>
+</ui:UiBinder> 

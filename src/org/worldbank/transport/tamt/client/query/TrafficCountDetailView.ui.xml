@@ -1,0 +1,55 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style type="org.worldbank.transport.tamt.client.query.TrafficCountDetailView.Style">
+		.vpanel {
+			width: 100%;
+		}	
+		.hpanel {
+			width: 100%;
+		}		
+		.vertical-line {
+			display: inline;
+			background-color: #000;
+			width: 1px;
+			height: 100%;
+		}	
+		.button {
+			margin-left: 10px;	
+		}	
+		.caption {
+			font-size: 12px;
+			color: #666666;
+		}
+		.textBoxSmall {
+			width: 100px;	
+		}
+		.textBoxLarge {
+			width: 200px;	
+		}
+		.leftPane {
+			width: 325px;	
+		}
+		.rightPane {
+			width: 400px;
+		}
+	</ui:style>
+	<g:VerticalPanel ui:field="vpanel" styleName="{style.vpanel}">
+		<g:HTML styleName="{style.caption}">Insert a traffic count record from the field</g:HTML>
+		<g:HTML><hr noshade="noshade" size="1"/></g:HTML>
+		<g:HorizontalPanel ui:field="hpanel" styleName="{style.hpanel}">
+			<g:VerticalPanel ui:field="leftPane" styleName="{style.leftPane}">
+				<g:FlexTable ui:field="dateTimeTag"/>
+			</g:VerticalPanel>
+			<g:VerticalPanel ui:field="rightPane" styleName="{style.rightPane}">
+				<g:FlexTable ui:field="vehicles"/>
+			</g:VerticalPanel>
+		</g:HorizontalPanel>
+		<g:HTML><hr noshade="noshade" size="1"/></g:HTML>
+		<g:HorizontalPanel>
+			<g:Button ui:field="save" styleName="{style.button}">Save</g:Button>
+			<g:Button ui:field="cancel" styleName="{style.button}">Cancel</g:Button>
+			<g:Button ui:field="delete" styleName="{style.button}">Delete</g:Button>
+		</g:HorizontalPanel>	
+	</g:VerticalPanel>
+</ui:UiBinder> 

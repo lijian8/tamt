@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
+import org.worldbank.transport.tamt.client.event.FetchedTagsEvent;
 import org.worldbank.transport.tamt.client.event.GetTagsEvent;
 import org.worldbank.transport.tamt.client.event.GetTagsEventHandler;
 import org.worldbank.transport.tamt.client.event.ReceivedTagsEvent;
@@ -245,8 +246,11 @@ public class TagListing extends Composite {
 			  // store the result
 			  tagDetailsList = result;
 	          
-			  // tell others that we have the result
+			  // tell taginformation that we have the result
 			  eventBus.fireEvent(new ReceivedTagsEvent());
+			  
+			  // pass the tags to other UI bits (eg, TrafficCount)
+			  eventBus.fireEvent(new FetchedTagsEvent(result));
 			  
 			  refreshTagDetails = false;
 	          clearTagDetailView();
