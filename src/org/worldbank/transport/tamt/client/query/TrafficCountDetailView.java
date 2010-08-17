@@ -8,12 +8,20 @@ import org.worldbank.transport.tamt.client.common.UUID;
 import org.worldbank.transport.tamt.client.event.AddTrafficCountRecordEvent;
 import org.worldbank.transport.tamt.client.event.AddTrafficCountRecordEventHandler;
 import org.worldbank.transport.tamt.client.event.CancelTrafficCountRecordEvent;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
+import org.worldbank.transport.tamt.client.event.EditTrafficCountRecordEvent;
+import org.worldbank.transport.tamt.client.event.EditTrafficCountRecordEventHandler;
 import org.worldbank.transport.tamt.client.event.FetchedTagsEvent;
 import org.worldbank.transport.tamt.client.event.FetchedTagsEventHandler;
 import org.worldbank.transport.tamt.client.event.GetTrafficCountRecordsEvent;
+import org.worldbank.transport.tamt.client.event.OpenWaitModelDialogEvent;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
+import org.worldbank.transport.tamt.client.event.TAMTResizeEventHandler;
 import org.worldbank.transport.tamt.client.services.TrafficCountRecordService;
 import org.worldbank.transport.tamt.client.services.TrafficCountRecordServiceAsync;
 import org.worldbank.transport.tamt.client.util.Pattern;
+import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
 import org.worldbank.transport.tamt.shared.TrafficCountRecord;
 
@@ -30,6 +38,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
@@ -39,6 +48,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -114,6 +124,8 @@ public class TrafficCountDetailView extends Composite {
 	private TrafficCountRecordServiceAsync trafficCountRecordService;
 
 	protected Date lastChosenDate;
+
+	protected StudyRegion currentStudyRegion;
 	
 
 	public TrafficCountDetailView(HandlerManager eventBus) {
@@ -139,6 +151,42 @@ public class TrafficCountDetailView extends Composite {
 	}
 
 	private void bind() {
+		
+		/*
+		eventBus.addHandler(TAMTResizeEvent.TYPE, new TAMTResizeEventHandler() {
+			
+			@Override
+			public void onTAMTResize(TAMTResizeEvent event) {
+				GWT.log("TrafficCountDetailView event height=" + event.height);
+				// 490 - 300 = 190
+				int h = event.height - 200; // account for other query module UI
+				if( h > -1)
+				{
+					String height = Integer.toString(h) + "px";
+					scrollPanel.setHeight(height);
+				}
+			}
+		});		
+		*/
+		
+		eventBus.addHandler(EditTrafficCountRecordEvent.TYPE, 
+				new EditTrafficCountRecordEventHandler() {
+		
+				@Override
+				public void onEditTrafficCountRecord(EditTrafficCountRecordEvent event) {
+					currentTrafficCountRecord = event.record;
+					lastChosenDate = currentTrafficCountRecord.getDate();
+					updateFormFields(currentTrafficCountRecord);
+				}
+		});
+		
+		eventBus.addHandler(CurrentStudyRegionUpdatedEvent.TYPE, new CurrentStudyRegionUpdatedEventHandler() {
+			
+			@Override
+			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
+				currentStudyRegion = event.studyRegion;
+			}
+		});
 		
 		eventBus.addHandler(AddTrafficCountRecordEvent.TYPE, 
 				new AddTrafficCountRecordEventHandler() {
@@ -203,6 +251,12 @@ public class TrafficCountDetailView extends Composite {
 		// last chosen date was set from the date picker
 		currentTrafficCountRecord.setDate(lastChosenDate);
 		
+		// set the current study region id
+		if( currentStudyRegion != null)
+		{
+			currentTrafficCountRecord.setRegion(currentStudyRegion.getName());
+		}
+		
 		// get the selected day type
 		String selectedDayType = dayType.getValue(dayType.getSelectedIndex());
 		currentTrafficCountRecord.setDayType(selectedDayType);
@@ -229,6 +283,8 @@ public class TrafficCountDetailView extends Composite {
 		}
 		currentTrafficCountRecord.setEndTime(endDate);
 
+		try 
+		{
 		currentTrafficCountRecord.setTag(tag.getValue());
 		currentTrafficCountRecord.setW2(Integer.parseInt(W2.getValue()));
 		currentTrafficCountRecord.setW3(Integer.parseInt(W3.getValue()));
@@ -239,7 +295,19 @@ public class TrafficCountDetailView extends Composite {
 		currentTrafficCountRecord.setHDC(Integer.parseInt(HDC.getValue()));
 		currentTrafficCountRecord.setMDB(Integer.parseInt(MDB.getValue()));
 		currentTrafficCountRecord.setHDB(Integer.parseInt(HDB.getValue()));
-	
+		} catch (NumberFormatException e)
+		{
+			Window.alert("Counts should only contain digits.");
+			return;
+		}
+		
+		// start time should be before end time
+		if( startDate.after(endDate))
+		{
+			Window.alert("Start time should be before end time");
+			return;
+		}
+		
 		GWT.log(currentTrafficCountRecord.toString());
 		
 		// save the record
@@ -264,11 +332,16 @@ public class TrafficCountDetailView extends Composite {
 		eventBus.fireEvent(new CancelTrafficCountRecordEvent());
 	}
 	
+	/*
 	@UiHandler("delete")
 	void onClickDelete(ClickEvent e) {
-		//TODO
-	}	
-	
+		if( Window.confirm("Delete this traffic count record?") )
+		{
+			// not implemented
+		}
+	}
+	*/
+
 	private void updateFormFields(TrafficCountRecord trafficCountRecord)
 	{
 		

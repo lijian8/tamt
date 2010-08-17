@@ -4,8 +4,13 @@ import org.worldbank.transport.tamt.client.event.AddTrafficCountRecordEvent;
 import org.worldbank.transport.tamt.client.event.AddTrafficCountRecordEventHandler;
 import org.worldbank.transport.tamt.client.event.CancelTrafficCountRecordEvent;
 import org.worldbank.transport.tamt.client.event.CancelTrafficCountRecordEventHandler;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
+import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
+import org.worldbank.transport.tamt.client.event.EditTrafficCountRecordEvent;
+import org.worldbank.transport.tamt.client.event.EditTrafficCountRecordEventHandler;
 import org.worldbank.transport.tamt.client.event.GetTrafficCountRecordsEvent;
 import org.worldbank.transport.tamt.client.event.GetTrafficCountRecordsEventHandler;
+import org.worldbank.transport.tamt.shared.StudyRegion;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
@@ -28,6 +33,8 @@ public class TrafficCount extends Composite {
 	@UiField TrafficCountListView trafficCountListView;
 	@UiField TrafficCountDetailView trafficCountDetailView;
 
+	protected StudyRegion currentStudyRegion;
+
 	public TrafficCount(HandlerManager eventBus) {
 		this.eventBus = eventBus;
 		initWidget(uiBinder.createAndBindUi(this));
@@ -47,6 +54,16 @@ public class TrafficCount extends Composite {
 				trafficCountDetailView.setVisible(false);
 				trafficCountListView.setVisible(true);
 			}
+		});
+
+		eventBus.addHandler(EditTrafficCountRecordEvent.TYPE, 
+					new EditTrafficCountRecordEventHandler() {
+			
+					@Override
+					public void onEditTrafficCountRecord(EditTrafficCountRecordEvent event) {
+						trafficCountListView.setVisible(false);
+						trafficCountDetailView.setVisible(true);
+					}
 		});
 		
 		eventBus.addHandler(AddTrafficCountRecordEvent.TYPE, 

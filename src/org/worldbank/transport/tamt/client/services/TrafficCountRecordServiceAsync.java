@@ -14,5 +14,5 @@ public interface TrafficCountRecordServiceAsync {
 
 	void getTrafficCountRecords(StudyRegion region, AsyncCallback<ArrayList<TrafficCountRecord>> asyncCallback);
 	void saveTrafficCountRecord(TrafficCountRecord trafficCountRecord, AsyncCallback<TrafficCountRecord> asyncCallback);
-	void deleteTrafficCountRecords(ArrayList<String> gpsTraceIds, AsyncCallback<Void> asyncCallback);
+	void deleteTrafficCountRecords(ArrayList<String> trafficCountRecordIds, AsyncCallback<Void> asyncCallback);
 }
