@@ -1,10 +1,13 @@
 package org.worldbank.transport.tamt.client.query;
 
+import org.worldbank.transport.tamt.client.event.GetTrafficCountRecordsEvent;
 import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
 import org.worldbank.transport.tamt.client.event.TAMTResizeEventHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
@@ -37,6 +40,29 @@ public class VehicleFlow extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		
 		bind();
+		
+		tabLayoutPanel.addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>() {
+			
+			@Override
+			public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
+				int almostSelected = event.getItem();
+				switch (almostSelected) {
+				// 0 = traffic count
+				case 0:
+					getTrafficCountRecords();
+					break;
+				}
+			}
+		});
+		
+		// get the traffic count by default
+		getTrafficCountRecords();
+		
+	}
+	
+	private void getTrafficCountRecords()
+	{
+		eventBus.fireEvent(new GetTrafficCountRecordsEvent());
 	}
 	
 	@UiFactory TrafficCount initTrafficCount() {

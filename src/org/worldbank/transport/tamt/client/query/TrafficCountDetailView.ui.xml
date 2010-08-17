@@ -33,23 +33,26 @@
 		.rightPane {
 			width: 400px;
 		}
+		.scroll {
+			background-color: red;
+		}
 	</ui:style>
-	<g:VerticalPanel ui:field="vpanel" styleName="{style.vpanel}">
+		<g:VerticalPanel ui:field="vpanel" styleName="{style.vpanel}">
 		<g:HTML styleName="{style.caption}">Insert a traffic count record from the field</g:HTML>
 		<g:HTML><hr noshade="noshade" size="1"/></g:HTML>
-		<g:HorizontalPanel ui:field="hpanel" styleName="{style.hpanel}">
-			<g:VerticalPanel ui:field="leftPane" styleName="{style.leftPane}">
-				<g:FlexTable ui:field="dateTimeTag"/>
-			</g:VerticalPanel>
-			<g:VerticalPanel ui:field="rightPane" styleName="{style.rightPane}">
-				<g:FlexTable ui:field="vehicles"/>
-			</g:VerticalPanel>
-		</g:HorizontalPanel>
+			<g:HorizontalPanel ui:field="hpanel" styleName="{style.hpanel}">
+				<g:VerticalPanel ui:field="leftPane" styleName="{style.leftPane}">
+					<g:FlexTable ui:field="dateTimeTag"/>
+				</g:VerticalPanel>
+				<g:VerticalPanel ui:field="rightPane" styleName="{style.rightPane}">
+					<g:FlexTable ui:field="vehicles"/>
+				</g:VerticalPanel>
+			</g:HorizontalPanel>
 		<g:HTML><hr noshade="noshade" size="1"/></g:HTML>
 		<g:HorizontalPanel>
 			<g:Button ui:field="save" styleName="{style.button}">Save</g:Button>
 			<g:Button ui:field="cancel" styleName="{style.button}">Cancel</g:Button>
-			<g:Button ui:field="delete" styleName="{style.button}">Delete</g:Button>
+			<!-- <g:Button ui:field="delete" styleName="{style.button}">Delete</g:Button>  -->
 		</g:HorizontalPanel>	
 	</g:VerticalPanel>
 </ui:UiBinder> 

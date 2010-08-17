@@ -1,7 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<ui:style>
+	<ui:style type="org.worldbank.transport.tamt.client.query.TrafficCountListView.Style">
 		.vpanel {
 			width: 100%;
 		}
@@ -11,6 +11,24 @@
 		.button {
 			margin-left: 10px;	
 		}	
+		.columnHeader {
+			font-weight: bold;	
+			padding-right: 40px;
+		}
+		.record {
+			margin-right: 40px;	
+		}
+		.checkbox {
+			width: 10px;
+		}	
+		.clickable {
+			cursor: pointer;
+			text-decoration: underline;
+			color: blue;	
+		}
+		.scroll {
+			background-color: white;	
+		}		
 	</ui:style>
 	<g:VerticalPanel ui:field="vpanel" styleName="{style.vpanel}">
 		<g:HorizontalPanel>
@@ -19,8 +37,8 @@
 			<g:Button ui:field="delete" styleName="{style.button}">Delete checked</g:Button>
 		</g:HorizontalPanel>
 		<g:HTML><hr noshade="noshade" size="1"/></g:HTML>
-		<g:ScrollPanel>
-			<g:HTML>put a table in this scroll panel</g:HTML>
+		<g:ScrollPanel ui:field="scrollPanel" height="318px" styleName="{style.scroll}">
+			<g:FlexTable ui:field="trafficCountRecordsTable"/>
 		</g:ScrollPanel>
 	</g:VerticalPanel>
 </ui:UiBinder> 

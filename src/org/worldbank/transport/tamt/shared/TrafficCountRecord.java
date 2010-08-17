@@ -16,6 +16,7 @@ public class TrafficCountRecord implements Serializable {
 	private Date startTime;
 	private Date endTime;
 	private String tag;
+	private String region;
 	private int W2;
 	private int W3;
 	private int PC;
@@ -151,6 +152,14 @@ public class TrafficCountRecord implements Serializable {
 		return id;
 	}
 
+	public void setRegion(String regionName) {
+		this.region = regionName;
+	}
+
+	public String getRegion() {
+		return region;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -180,6 +189,8 @@ public class TrafficCountRecord implements Serializable {
 		builder.append(endTime);
 		builder.append(", id=");
 		builder.append(id);
+		builder.append(", regionId=");
+		builder.append(region);		
 		builder.append(", startTime=");
 		builder.append(startTime);
 		builder.append(", tag=");
