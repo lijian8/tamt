@@ -13,7 +13,9 @@ import org.worldbank.transport.tamt.server.api.TrafficCountRecordAPI;
 import org.worldbank.transport.tamt.server.api.ZoneAPI;
 import org.worldbank.transport.tamt.shared.GPSTrace;
 import org.worldbank.transport.tamt.shared.StudyRegion;
+import org.worldbank.transport.tamt.shared.TagDetails;
 import org.worldbank.transport.tamt.shared.TrafficCountRecord;
+import org.worldbank.transport.tamt.shared.TrafficCountReport;
 import org.worldbank.transport.tamt.shared.ZoneDetails;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -49,5 +51,10 @@ public class TrafficCountRecordServiceImpl extends RemoteServiceServlet implemen
 		return api.saveTrafficCountRecord(trafficCountRecord);
 	}
 	
+	@Override
+	public TrafficCountReport getTrafficCountReport(TagDetails tagDetails) throws Exception
+	{
+		return api.getTrafficCountReport(tagDetails);
+	}
 	
 }

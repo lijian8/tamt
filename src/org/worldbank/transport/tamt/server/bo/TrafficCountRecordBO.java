@@ -9,7 +9,9 @@ import org.apache.log4j.Logger;
 import org.worldbank.transport.tamt.server.dao.RegionDAO;
 import org.worldbank.transport.tamt.server.dao.TrafficCountRecordDAO;
 import org.worldbank.transport.tamt.shared.StudyRegion;
+import org.worldbank.transport.tamt.shared.TagDetails;
 import org.worldbank.transport.tamt.shared.TrafficCountRecord;
+import org.worldbank.transport.tamt.shared.TrafficCountReport;
 
 public class TrafficCountRecordBO {
 
@@ -31,6 +33,12 @@ public class TrafficCountRecordBO {
 	{
 		trafficCountRecordDAO = trafficCountRecordDAO.get();
 		regionDAO = RegionDAO.get();
+	}
+	
+	public TrafficCountReport getTrafficCountReport(TagDetails tagDetails) throws Exception
+	{
+		// TODO: try/catch and validation of tagDetails for tag name and study region name
+		return trafficCountRecordDAO.getTrafficCountReport(tagDetails);
 	}
 	
 	public TrafficCountRecord getTrafficCountRecord(TrafficCountRecord trafficCountRecord) throws Exception

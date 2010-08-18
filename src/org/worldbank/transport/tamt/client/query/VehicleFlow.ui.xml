@@ -17,8 +17,8 @@
 				<querym:TrafficCount ui:field="trafficCount"/>
 			</g:tab>
 			<g:tab>
-				<g:header>Count By Tag</g:header>
-				<g:HTML>report on traffic counts by tag</g:HTML>
+				<g:header>Tag Count Report</g:header>
+				<querym:TagCountReport ui:field="tagCountReport"/>
 			</g:tab>	
 			<g:tab>
 				<g:header>Day Type Per Year</g:header>

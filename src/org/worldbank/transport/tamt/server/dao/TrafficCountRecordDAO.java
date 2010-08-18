@@ -26,9 +26,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.log4j.Logger;
+import org.worldbank.transport.tamt.shared.TagDetails;
 import org.worldbank.transport.tamt.shared.TrafficCountRecord;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TAMTPoint;
+import org.worldbank.transport.tamt.shared.TrafficCountReport;
 
 public class TrafficCountRecordDAO extends DAO {
 
@@ -109,6 +111,143 @@ public class TrafficCountRecordDAO extends DAO {
 
 		return trafficCountRecordList;
 
+	}
+	
+	private ArrayList<TrafficCountRecord> getTrafficCountReportLong(String tagName, String regionName, String dayType) throws Exception {
+		ArrayList<TrafficCountRecord> records = new ArrayList<TrafficCountRecord>();
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			// get the WEEKDAY counts for this tag
+			String sql = "SELECT * FROM trafficCountReport('"+tagName+"', '"+regionName+"', '"+dayType+"')" +
+							" AS foo(hour int, w2 bigint, w3 bigint, pc bigint, tx bigint," + 
+							" ldv bigint, ldc bigint, hdc bigint, mdb bigint, hdb bigint)";
+			
+			logger.debug("SQL for getTrafficCountReportLong: " + sql);
+			
+			ResultSet r = s.executeQuery(sql);
+			
+			
+			// there will always be 24 results from the trafficCountReport function
+			while (r.next()) {
+				// Piggy-back on the TrafficCount model
+				// realizing it is not a real TrafficCount, 
+				// but it has the placeholders we like
+				TrafficCountRecord record = new TrafficCountRecord();
+				int hour = r.getInt(1);
+				//logger.debug("hour="+hour);
+				int w2 = r.getInt(2);
+				//logger.debug("w2="+w2);
+				int w3 = r.getInt(3);
+				//logger.debug("w3="+w3);
+				int pc = r.getInt(4);
+				//logger.debug("pc="+pc);
+				int tx = r.getInt(5);
+				//logger.debug("tx="+tx);
+				int ldv = r.getInt(6);
+				//logger.debug("ldv="+ldv);
+				int ldc = r.getInt(7);
+				//logger.debug("ldc="+ldc);
+				int hdc = r.getInt(8);
+				//logger.debug("hdc="+hdc);
+				int mdb = r.getInt(9);
+				//logger.debug("mdb="+mdb);
+				int hdb = r.getInt(10);
+				//logger.debug("hdb="+hdb);
+				
+				// nowhere to set the hour as int in TrafficCountRecord
+				record.setW2(w2);
+				record.setW3(w3);
+				record.setPC(pc);
+				record.setTX(tx);
+				record.setLDV(ldv);
+				record.setLDC(ldc);
+				record.setHDC(hdc);
+				record.setMDB(mdb);
+				record.setHDB(hdb);
+				
+				//logger.debug("hour=("+hour+"), record=" + record);
+				
+				records.add(record);
+				
+			}
+			
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw new Exception("There was an error executing the SQL: "
+					+ e.getMessage());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new Exception("Unknown exception: " + e.getMessage());
+		}
+		return records;
+	}
+	
+	private ArrayList<Integer> getTrafficCountReportShort(String tagName, String regionName, String dayType) throws Exception {
+		ArrayList<Integer> totals = new ArrayList<Integer>();
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			// get the WEEKDAY counts for this tag
+			String sql = "SELECT * FROM trafficCountReportShort('"+tagName+"', '"+regionName+"', '"+dayType+"')" +
+							" AS foo(hour int, t bigint)";
+			
+			logger.debug("SQL for getTrafficCountReportShort: " + sql);
+			
+			ResultSet r = s.executeQuery(sql);
+			
+			
+			// there will always be 24 results from the trafficCountReport function
+			while (r.next()) {
+				int total = r.getInt(2);
+				totals.add(total);
+			}
+			
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw new Exception("There was an error executing the SQL: "
+					+ e.getMessage());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new Exception("Unknown exception: " + e.getMessage());
+		}
+		return totals;
+	}
+	
+	public TrafficCountReport getTrafficCountReport(TagDetails tagDetails) throws Exception {
+		
+		// get the name of the tag
+		String tagName = tagDetails.getName();
+		
+		// get the name of the region
+		String regionName = tagDetails.getRegion().getName();
+		
+		TrafficCountReport trafficCountReport = new TrafficCountReport();
+		
+		/* The LONG version (ie, broken out by vehicle type
+		ArrayList<TrafficCountRecord> weekdayCounts = getTrafficCountReportLong(tagName, regionName, TrafficCountRecord.DAYTYPE_WEEKDAY);
+		trafficCountReport.setWeekdayCounts(weekdayCounts);
+		
+		ArrayList<TrafficCountRecord> saturdayCounts = getTrafficCountReportLong(tagName, regionName, TrafficCountRecord.DAYTYPE_SATURDAY);
+		trafficCountReport.setSaturdayCounts(saturdayCounts);
+		
+		ArrayList<TrafficCountRecord> sundayHolidayCounts = getTrafficCountReportLong(tagName, regionName, TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY);
+		trafficCountReport.setSundayHolidayCounts(sundayHolidayCounts);
+		*/
+		
+		// The short version, where we have totals just by tag/hour of day
+		ArrayList<Integer> weekdayTotals = getTrafficCountReportShort(tagName, regionName, TrafficCountRecord.DAYTYPE_WEEKDAY);
+		trafficCountReport.setWeekdayTotals(weekdayTotals);
+		
+		ArrayList<Integer> saturdayTotals = getTrafficCountReportShort(tagName, regionName, TrafficCountRecord.DAYTYPE_SATURDAY);
+		trafficCountReport.setSaturdayTotals(saturdayTotals);
+		
+		ArrayList<Integer> sundayHolidayTotals = getTrafficCountReportShort(tagName, regionName, TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY);
+		trafficCountReport.setSundayHolidayTotals(sundayHolidayTotals);
+		
+		return trafficCountReport;
 	}
 
 	public TrafficCountRecord getTrafficCountRecordById(String id) throws Exception {

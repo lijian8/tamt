@@ -34,7 +34,8 @@ public class VehicleFlow extends Composite {
 	@UiField TabLayoutPanel tabLayoutPanel;
 	@UiField HorizontalPanel hpanel;
 	@UiField TrafficCount trafficCount;
-
+	@UiField TagCountReport tagCountReport;
+	
 	public VehicleFlow(HandlerManager eventBus) {
 		this.eventBus = eventBus;
 		initWidget(uiBinder.createAndBindUi(this));
@@ -51,6 +52,10 @@ public class VehicleFlow extends Composite {
 				case 0:
 					getTrafficCountRecords();
 					break;
+				// 1 = tag count report
+				case 1:
+					getTagCountReport();
+					break;
 				}
 			}
 		});
@@ -58,6 +63,11 @@ public class VehicleFlow extends Composite {
 		// get the traffic count by default
 		getTrafficCountRecords();
 		
+	}
+	
+	private void getTagCountReport()
+	{
+		// need to fetch the report from the first tag, or not at all?
 	}
 	
 	private void getTrafficCountRecords()
@@ -68,6 +78,10 @@ public class VehicleFlow extends Composite {
 	@UiFactory TrafficCount initTrafficCount() {
 		return new TrafficCount(this.eventBus);
 	}	
+	
+	@UiFactory TagCountReport initTagCountReport() {
+		return new TagCountReport(this.eventBus);
+	}
 
 	private void bind() {
 
