@@ -22,7 +22,7 @@
 			</g:tab>	
 			<g:tab>
 				<g:header>Day Type Per Year</g:header>
-				<g:HTML>Configure day types per year</g:HTML>
+				<querym:DayTypesPerYear ui:field="dayTypesPerYear"/>
 			</g:tab>				
 		</g:TabLayoutPanel>
 	</g:HorizontalPanel>

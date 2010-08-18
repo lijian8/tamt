@@ -2,6 +2,7 @@ package org.worldbank.transport.tamt.client.query;
 
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
+import org.worldbank.transport.tamt.client.event.LoadCurrentStudyRegionEvent;
 import org.worldbank.transport.tamt.client.event.SwitchModuleEvent;
 import org.worldbank.transport.tamt.client.event.SwitchModuleEventHandler;
 import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
@@ -11,10 +12,12 @@ import org.worldbank.transport.tamt.client.importer.ImportModule;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -69,6 +72,12 @@ public class QueryModule extends Composite {
 	
 	@UiFactory EngineSoakTimes initEngineSoakTimes() {
 		return new EngineSoakTimes(this.eventBus);
+	}	
+	
+	@UiHandler("studyRegionName")
+	void onClickCancel(ClickEvent e) {
+		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.REGION, true));
+		eventBus.fireEvent(new LoadCurrentStudyRegionEvent());				
 	}	
 	
 	public void bind()
