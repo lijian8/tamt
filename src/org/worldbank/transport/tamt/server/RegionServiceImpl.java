@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.worldbank.transport.tamt.client.services.RegionService;
 import org.worldbank.transport.tamt.server.api.RegionAPI;
+import org.worldbank.transport.tamt.shared.DayTypePerYearOption;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -33,6 +34,18 @@ public class RegionServiceImpl extends RemoteServiceServlet implements RegionSer
 	public StudyRegion saveStudyRegion(StudyRegion studyRegion)
 			throws Exception {
 		return regionAPI.saveStudyRegion(studyRegion);
+	}
+
+	@Override
+	public DayTypePerYearOption getDayTypePerYearOption(String studyRegionId)
+			throws Exception {
+		return regionAPI.getDayTypePerYearOption(studyRegionId);
+	}
+
+	@Override
+	public DayTypePerYearOption saveDayTypePerYearOption(
+			DayTypePerYearOption option) throws Exception {
+		return regionAPI.saveDayTypePerYearOption(option);
 	}	
 	
 }

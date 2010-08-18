@@ -7,6 +7,7 @@ import org.worldbank.transport.tamt.server.bo.RegionBO;
 import org.worldbank.transport.tamt.server.bo.RoadBO;
 import org.worldbank.transport.tamt.server.bo.TagBO;
 import org.worldbank.transport.tamt.server.bo.ZoneBO;
+import org.worldbank.transport.tamt.shared.DayTypePerYearOption;
 import org.worldbank.transport.tamt.shared.RoadDetails;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
@@ -31,6 +32,15 @@ public class RegionAPI {
 
 	public StudyRegion saveStudyRegion(StudyRegion studyRegion) throws Exception {
 		return bo.saveStudyRegion(studyRegion);
+	}
+
+	public DayTypePerYearOption getDayTypePerYearOption(String studyRegionId) throws Exception {
+		return bo.getDayTypePerYearOption(studyRegionId);
+	}
+
+	public DayTypePerYearOption saveDayTypePerYearOption(
+			DayTypePerYearOption option) throws Exception {
+		return bo.saveDayTypePerYearOption(option);
 	}
 	
 }

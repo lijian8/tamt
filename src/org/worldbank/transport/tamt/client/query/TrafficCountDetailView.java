@@ -254,7 +254,7 @@ public class TrafficCountDetailView extends Composite {
 		// set the current study region id
 		if( currentStudyRegion != null)
 		{
-			currentTrafficCountRecord.setRegion(currentStudyRegion.getName());
+			currentTrafficCountRecord.setRegion(currentStudyRegion.getId());
 		}
 		
 		// get the selected day type

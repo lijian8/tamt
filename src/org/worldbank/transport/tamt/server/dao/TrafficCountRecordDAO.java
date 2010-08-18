@@ -56,7 +56,7 @@ public class TrafficCountRecordDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "select id, tag, countdate, daytype, starttime," +
 					"endtime, w2, w3, pc, tx, ldv, ldc, hdc, mdb, hdb from trafficcount "
-					+ "where region = '" + region.getName()+ "' ORDER BY countdate ASC, starttime ASC";
+					+ "where region = '" + region.getId()+ "' ORDER BY countdate ASC, starttime ASC";
 			logger.debug("SQL for getTrafficCountRecords: " + sql);
 			ResultSet r = s.executeQuery(sql);
 			while (r.next()) {
@@ -114,6 +114,10 @@ public class TrafficCountRecordDAO extends DAO {
 	}
 	
 	private ArrayList<TrafficCountRecord> getTrafficCountReportLong(String tagName, String regionName, String dayType) throws Exception {
+		
+		// TODO: we changed regionName to regionId for the short report, so if we want to use
+		// the long report we'll need to update the stored procedure
+		
 		ArrayList<TrafficCountRecord> records = new ArrayList<TrafficCountRecord>();
 		try {
 			Connection connection = getConnection();
@@ -184,14 +188,14 @@ public class TrafficCountRecordDAO extends DAO {
 		return records;
 	}
 	
-	private ArrayList<Integer> getTrafficCountReportShort(String tagName, String regionName, String dayType) throws Exception {
+	private ArrayList<Integer> getTrafficCountReportShort(String tagName, String regionId, String dayType) throws Exception {
 		ArrayList<Integer> totals = new ArrayList<Integer>();
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
 			
 			// get the WEEKDAY counts for this tag
-			String sql = "SELECT * FROM trafficCountReportShort('"+tagName+"', '"+regionName+"', '"+dayType+"')" +
+			String sql = "SELECT * FROM trafficCountReportShort('"+tagName+"', '"+regionId+"', '"+dayType+"')" +
 							" AS foo(hour int, t bigint)";
 			
 			logger.debug("SQL for getTrafficCountReportShort: " + sql);
@@ -222,7 +226,7 @@ public class TrafficCountRecordDAO extends DAO {
 		String tagName = tagDetails.getName();
 		
 		// get the name of the region
-		String regionName = tagDetails.getRegion().getName();
+		String regionId = tagDetails.getRegion().getId();
 		
 		TrafficCountReport trafficCountReport = new TrafficCountReport();
 		
@@ -238,13 +242,13 @@ public class TrafficCountRecordDAO extends DAO {
 		*/
 		
 		// The short version, where we have totals just by tag/hour of day
-		ArrayList<Integer> weekdayTotals = getTrafficCountReportShort(tagName, regionName, TrafficCountRecord.DAYTYPE_WEEKDAY);
+		ArrayList<Integer> weekdayTotals = getTrafficCountReportShort(tagName, regionId, TrafficCountRecord.DAYTYPE_WEEKDAY);
 		trafficCountReport.setWeekdayTotals(weekdayTotals);
 		
-		ArrayList<Integer> saturdayTotals = getTrafficCountReportShort(tagName, regionName, TrafficCountRecord.DAYTYPE_SATURDAY);
+		ArrayList<Integer> saturdayTotals = getTrafficCountReportShort(tagName, regionId, TrafficCountRecord.DAYTYPE_SATURDAY);
 		trafficCountReport.setSaturdayTotals(saturdayTotals);
 		
-		ArrayList<Integer> sundayHolidayTotals = getTrafficCountReportShort(tagName, regionName, TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY);
+		ArrayList<Integer> sundayHolidayTotals = getTrafficCountReportShort(tagName, regionId, TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY);
 		trafficCountReport.setSundayHolidayTotals(sundayHolidayTotals);
 		
 		return trafficCountReport;

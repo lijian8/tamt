@@ -14,6 +14,7 @@ import org.worldbank.transport.tamt.server.dao.RegionDAO;
 import org.worldbank.transport.tamt.server.dao.RoadDAO;
 import org.worldbank.transport.tamt.server.dao.TagDAO;
 import org.worldbank.transport.tamt.server.dao.ZoneDAO;
+import org.worldbank.transport.tamt.shared.DayTypePerYearOption;
 import org.worldbank.transport.tamt.shared.GPSTrace;
 import org.worldbank.transport.tamt.shared.RoadDetails;
 import org.worldbank.transport.tamt.shared.StudyRegion;
@@ -212,6 +213,44 @@ public class RegionBO {
 			logger.error("An unknown error occured while trying to save a study region");
 			throw new Exception("An unknown error occured while trying to save a study region");
 		}
+	}
+
+	public DayTypePerYearOption saveDayTypePerYearOption(DayTypePerYearOption option) throws Exception {
+		
+		logger.debug("saving option=" + option);
+		
+		// must have a related study region
+		if( option.getRegionId() == "" )
+		{
+			throw new Exception("Cannot save day type option without study region id");
+		}
+		
+		// if we don't have an ID, this is the first save
+		if( option.getId() == null)
+		{
+			option.setId( UUID.randomUUID().toString() );
+			return dao.saveDayTypePerYearOption(option);
+		} else {
+			// otherwise this is an update
+			return dao.updateDayTypePerYearOption(option);
+		}
+		
+	}
+	
+	public DayTypePerYearOption getDayTypePerYearOption(String studyRegionId) throws Exception {
+		DayTypePerYearOption option = dao.getDayTypePerYearOption(studyRegionId);
+		/*
+		if( option == null )
+		{
+			// we might not yet have an option of this study region, so create a default
+			option = new DayTypePerYearOption();
+			option.setId( UUID.randomUUID().toString() );
+			option.setActiveOption("1");
+			option.setOption1weekday("0");
+			option.setRegionId(studyRegionId);
+			option = saveDayTypePerYearOption(option);
+		}*/
+		return option;
 	}
 	
 }

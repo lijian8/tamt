@@ -1,5 +1,6 @@
 package org.worldbank.transport.tamt.client.query;
 
+import org.worldbank.transport.tamt.client.event.GetDayTypePerYearOptionEvent;
 import org.worldbank.transport.tamt.client.event.GetTrafficCountRecordsEvent;
 import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
 import org.worldbank.transport.tamt.client.event.TAMTResizeEventHandler;
@@ -56,6 +57,9 @@ public class VehicleFlow extends Composite {
 				case 1:
 					getTagCountReport();
 					break;
+				case 2:
+					getDayTypePerYearOption();
+					break;
 				}
 			}
 		});
@@ -65,6 +69,10 @@ public class VehicleFlow extends Composite {
 		
 	}
 	
+	protected void getDayTypePerYearOption() {
+		eventBus.fireEvent(new GetDayTypePerYearOptionEvent());
+	}
+
 	private void getTagCountReport()
 	{
 		// need to fetch the report from the first tag, or not at all?
@@ -81,6 +89,10 @@ public class VehicleFlow extends Composite {
 	
 	@UiFactory TagCountReport initTagCountReport() {
 		return new TagCountReport(this.eventBus);
+	}
+	
+	@UiFactory DayTypesPerYear initDayTypesPerYear() {
+		return new DayTypesPerYear(this.eventBus);
 	}
 
 	private void bind() {

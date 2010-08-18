@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.worldbank.transport.tamt.server.bo.RoadBO;
 import org.worldbank.transport.tamt.server.bo.TagBO;
 import org.worldbank.transport.tamt.server.bo.ZoneBO;
+import org.worldbank.transport.tamt.shared.DayTypePerYearOption;
 import org.worldbank.transport.tamt.shared.RoadDetails;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
@@ -225,6 +226,100 @@ public class RegionDAO extends DAO {
 			String id = (String) iterator.next();
 			deleteStudyRegionById(id);
 		}
+	}
+
+	public DayTypePerYearOption getDayTypePerYearOption(String studyRegionId) 
+		throws Exception {
+		DayTypePerYearOption dayTypePerYearOption = null;
+		/*
+		 * Granted, this method does not access the study region table, but it
+		 * was only one option and creating a new API/BO/DAO structure for it
+		 * seemed overkill. Since it is most closely related to a StudyRegion,
+		 * we sunk it in this DAO.
+		 */
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "SELECT id, regionid, activeoption, option1weekday, " +
+					"option2weekday, option2saturday, option2sundayholiday " +
+					"FROM daytypeperyearoption";
+			logger.debug("getDayTypePerYearOption sql=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			while( r.next() ) { 
+				dayTypePerYearOption = new DayTypePerYearOption();
+				dayTypePerYearOption.setId(r.getString(1));
+				dayTypePerYearOption.setRegionId(r.getString(2));
+				dayTypePerYearOption.setActiveOption(r.getString(3));
+				dayTypePerYearOption.setOption1weekday(r.getString(4));
+				dayTypePerYearOption.setOption2weekday(r.getString(5));
+				dayTypePerYearOption.setOption2saturday(r.getString(6));
+				dayTypePerYearOption.setOption2sundayHoliday(r.getString(7));
+			}
+			connection.close(); // returns connection to the pool
+
+		} 
+	    catch (SQLException e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+			throw e;
+			
+		} 		
+		return dayTypePerYearOption;
+	}
+
+	public DayTypePerYearOption saveDayTypePerYearOption(DayTypePerYearOption option) throws Exception {
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "INSERT INTO daytypeperyearoption (id, regionid, " +
+					"activeoption, option1weekday, option2weekday, " +
+					"option2saturday, option2sundayholiday) " +
+			"VALUES (" + 
+			"'"+option.getId()+"', " +
+			"'"+option.getRegionId()+"'," +
+			"'"+option.getActiveOption()+"'," +
+			option.getOption1weekday()+"," +
+			option.getOption2weekday()+"," +
+			option.getOption2saturday()+"," +
+			option.getOption2sundayHoliday()+" " +
+			")";
+			logger.debug("sql=" + sql);
+			s.executeUpdate(sql); 
+			connection.close(); // returns connection to the pool
+
+		} 
+	    catch (SQLException e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+			throw e;
+			
+		} 
+	    return option;
+	}
+
+	public DayTypePerYearOption updateDayTypePerYearOption(
+			DayTypePerYearOption option) throws SQLException {
+
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "UPDATE daytypeperyearoption SET " +
+					"activeoption = "+option.getActiveOption()+", " +
+					"option1weekday = "+option.getOption1weekday()+", " +
+					"option2weekday = "+option.getOption2weekday()+", " +
+					"option2saturday = "+option.getOption2saturday()+", " +
+					"option2sundayholiday = "+option.getOption2sundayHoliday()+" " +
+					"WHERE id = '"+option.getId()+"'";
+			logger.debug("sql=" + sql);
+			s.executeUpdate(sql);
+			connection.close(); // returns connection to the pool				
+		} catch (SQLException e)
+		{
+			logger.error(e.getMessage());
+			throw e;
+		}
+		
+		return option;
 	}
 
 	

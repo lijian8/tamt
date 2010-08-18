@@ -108,7 +108,12 @@ public class TagCountReport extends Composite {
 			
 			@Override
 			public void onFetchedTags(FetchedTagsEvent event) {
+				
+				// clear out the old selected tag and report table
 				selectedTag.setHTML("");
+				reportTable.clear();
+				reportTable.removeAllRows();
+				
 				renderTags(event.getTags());
 			}
 		});
