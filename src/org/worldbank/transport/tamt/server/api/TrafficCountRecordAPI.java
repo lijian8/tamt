@@ -12,6 +12,7 @@ import org.worldbank.transport.tamt.shared.TrafficCountRecord;
 import org.worldbank.transport.tamt.shared.RoadDetails;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
+import org.worldbank.transport.tamt.shared.TrafficCountReport;
 import org.worldbank.transport.tamt.shared.ZoneDetails;
 
 public class TrafficCountRecordAPI {
@@ -21,6 +22,11 @@ public class TrafficCountRecordAPI {
 	public TrafficCountRecordAPI()
 	{
 		trafficCountRecordBO = trafficCountRecordBO.get();
+	}
+	
+	public TrafficCountReport getTrafficCountReport(TagDetails tagDetails) throws Exception
+	{
+		return trafficCountRecordBO.getTrafficCountReport(tagDetails);
 	}
 	
 	public ArrayList<TrafficCountRecord> getTrafficCountRecords(StudyRegion region) throws Exception
