@@ -24,4 +24,5 @@ public interface RegionServiceAsync {
 			AsyncCallback<DefaultFlow> callback);
 	void saveDefaultFlow(DefaultFlow defaultFlow,
 			AsyncCallback<DefaultFlow> callback);
+	void deleteDefaultFlow(DefaultFlow defaultFlow, AsyncCallback<Void> callback);
 }

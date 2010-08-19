@@ -58,6 +58,11 @@ public class RegionServiceImpl extends RemoteServiceServlet implements RegionSer
 	public DefaultFlow saveDefaultFlow(DefaultFlow defaultFlow)
 			throws Exception {
 		return regionAPI.saveDefaultFlow(defaultFlow);
+	}
+
+	@Override
+	public void deleteDefaultFlow(DefaultFlow defaultFlow) throws Exception {
+		regionAPI.deleteDefaultFlow(defaultFlow);
 	}	
 	
 }

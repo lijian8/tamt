@@ -527,6 +527,23 @@ public class RegionDAO extends DAO {
 		} 		
 		return fetched;
 	}
+	
+	public void deleteDefaultFlow(DefaultFlow defaultFlow) throws Exception
+	{
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			String sql = "DELETE FROM defaulttrafficflow WHERE id = '"+defaultFlow.getId()+"'";
+			logger.debug("deleteDefaultFlow sql=" + sql);
+			s.execute(sql); 
+			connection.close(); // returns connection to the pool
+		} 
+		catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw e;
+		}		
+	}
 
 	
 }

@@ -24,4 +24,5 @@ public interface RegionService extends RemoteService {
 	DayTypePerYearOption saveDayTypePerYearOption(DayTypePerYearOption option) throws Exception;
 	DefaultFlow getDefaultFlow(DefaultFlow defaultFlow) throws Exception;
 	DefaultFlow saveDefaultFlow(DefaultFlow defaultFlow) throws Exception;
+	void deleteDefaultFlow(DefaultFlow defaultFlow) throws Exception;
 }
