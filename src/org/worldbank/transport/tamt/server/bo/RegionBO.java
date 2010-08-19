@@ -15,6 +15,7 @@ import org.worldbank.transport.tamt.server.dao.RoadDAO;
 import org.worldbank.transport.tamt.server.dao.TagDAO;
 import org.worldbank.transport.tamt.server.dao.ZoneDAO;
 import org.worldbank.transport.tamt.shared.DayTypePerYearOption;
+import org.worldbank.transport.tamt.shared.DefaultFlow;
 import org.worldbank.transport.tamt.shared.GPSTrace;
 import org.worldbank.transport.tamt.shared.RoadDetails;
 import org.worldbank.transport.tamt.shared.StudyRegion;
@@ -239,18 +240,96 @@ public class RegionBO {
 	
 	public DayTypePerYearOption getDayTypePerYearOption(String studyRegionId) throws Exception {
 		DayTypePerYearOption option = dao.getDayTypePerYearOption(studyRegionId);
-		/*
-		if( option == null )
-		{
-			// we might not yet have an option of this study region, so create a default
-			option = new DayTypePerYearOption();
-			option.setId( UUID.randomUUID().toString() );
-			option.setActiveOption("1");
-			option.setOption1weekday("0");
-			option.setRegionId(studyRegionId);
-			option = saveDayTypePerYearOption(option);
-		}*/
 		return option;
+	}
+
+	public DefaultFlow saveDefaultFlow(DefaultFlow defaultFlow) throws Exception {
+		
+		logger.debug("saving default flow=" + defaultFlow);
+		
+		// must have a tag id
+		if( defaultFlow.getTagDetails() == null || defaultFlow.getTagDetails().getId().equalsIgnoreCase("") )
+		{
+			throw new Exception("Cannot save default flow without valid tag details");
+		}
+		
+		// must have a study region
+		if( defaultFlow.getTagDetails().getRegion() == null && defaultFlow.getTagDetails().getRegion().getId().equalsIgnoreCase("") )
+		{
+			throw new Exception("Cannot save default flow without valid study region");
+		}
+		
+		/*
+		 * Empty form fields in the UI create empty strings. But when we save
+		 * the default flow, the database is expected integers or null. So,
+		 * walk through every integer field. If it is empty, make it null
+		 */
+		cleanDefaultFlowFields(defaultFlow);
+		
+		// if we don't have an ID, this is the first save
+		if( defaultFlow.getId() == null)
+		{
+			defaultFlow.setId( UUID.randomUUID().toString() );
+			return dao.saveDefaultFlow(defaultFlow);
+		} else {
+			// otherwise this is an update
+			return dao.updateDefaultFlow(defaultFlow);
+		}
+		
+	}
+	
+	private void cleanDefaultFlowFields(DefaultFlow defaultFlow) {
+		
+		defaultFlow.setW2Weekday( swapEmptyStringsForNull(defaultFlow.getW2Weekday()) );
+		defaultFlow.setW2Saturday( swapEmptyStringsForNull(defaultFlow.getW2Saturday()) );
+		defaultFlow.setW2SundayHoliday( swapEmptyStringsForNull(defaultFlow.getW2SundayHoliday()) );
+		
+		defaultFlow.setW3Weekday( swapEmptyStringsForNull(defaultFlow.getW3Weekday()) );
+		defaultFlow.setW3Saturday( swapEmptyStringsForNull(defaultFlow.getW3Saturday()) );
+		defaultFlow.setW3SundayHoliday( swapEmptyStringsForNull(defaultFlow.getW3SundayHoliday()) );
+		
+		defaultFlow.setPcWeekday( swapEmptyStringsForNull(defaultFlow.getPcWeekday()) );
+		defaultFlow.setPcSaturday( swapEmptyStringsForNull(defaultFlow.getPcSaturday()) );
+		defaultFlow.setPcSundayHoliday( swapEmptyStringsForNull(defaultFlow.getPcSundayHoliday()) );
+		
+		defaultFlow.setTxWeekday( swapEmptyStringsForNull(defaultFlow.getTxWeekday()) );
+		defaultFlow.setTxSaturday( swapEmptyStringsForNull(defaultFlow.getTxSaturday()) );
+		defaultFlow.setTxSundayHoliday( swapEmptyStringsForNull(defaultFlow.getTxSundayHoliday()) );
+		
+		defaultFlow.setLdvWeekday( swapEmptyStringsForNull(defaultFlow.getLdvWeekday()) );
+		defaultFlow.setLdvSaturday( swapEmptyStringsForNull(defaultFlow.getLdvSaturday()) );
+		defaultFlow.setLdvSundayHoliday( swapEmptyStringsForNull(defaultFlow.getLdvSundayHoliday()) );
+		
+		defaultFlow.setLdcWeekday( swapEmptyStringsForNull(defaultFlow.getLdcWeekday()) );
+		defaultFlow.setLdcSaturday( swapEmptyStringsForNull(defaultFlow.getLdcSaturday()) );
+		defaultFlow.setLdcSundayHoliday( swapEmptyStringsForNull(defaultFlow.getLdcSundayHoliday()) );
+		
+		defaultFlow.setHdcWeekday( swapEmptyStringsForNull(defaultFlow.getHdcWeekday()) );
+		defaultFlow.setHdcSaturday( swapEmptyStringsForNull(defaultFlow.getHdcSaturday()) );
+		defaultFlow.setHdcSundayHoliday( swapEmptyStringsForNull(defaultFlow.getHdcSundayHoliday()) );
+		
+		defaultFlow.setMdbWeekday( swapEmptyStringsForNull(defaultFlow.getMdbWeekday()) );
+		defaultFlow.setMdbSaturday( swapEmptyStringsForNull(defaultFlow.getMdbSaturday()) );
+		defaultFlow.setMdbSundayHoliday( swapEmptyStringsForNull(defaultFlow.getMdbSundayHoliday()) );
+		
+		defaultFlow.setHdbWeekday( swapEmptyStringsForNull(defaultFlow.getHdbWeekday()) );
+		defaultFlow.setHdbSaturday( swapEmptyStringsForNull(defaultFlow.getHdbSaturday()) );
+		defaultFlow.setHdbSundayHoliday( swapEmptyStringsForNull(defaultFlow.getHdbSundayHoliday()) );
+		
+	}
+	
+	private String swapEmptyStringsForNull(String field) {
+		if( field.equalsIgnoreCase(""))
+		{
+			return null;
+		} else {
+			return field;
+		}
+	}
+
+	public DefaultFlow getDefaultFlow(DefaultFlow defaultFlow) throws Exception {
+		// TODO: validate tagDetails.id and StudyRegion.id
+		return dao.getDefaultFlow(defaultFlow);
 	}
 	
 }

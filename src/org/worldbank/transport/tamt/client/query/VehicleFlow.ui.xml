@@ -17,13 +17,21 @@
 				<querym:TrafficCount ui:field="trafficCount"/>
 			</g:tab>
 			<g:tab>
-				<g:header>Tag Count Report</g:header>
-				<querym:TagCountReport ui:field="tagCountReport"/>
-			</g:tab>	
-			<g:tab>
 				<g:header>Day Type Per Year</g:header>
 				<querym:DayTypesPerYear ui:field="dayTypesPerYear"/>
-			</g:tab>				
+			</g:tab>	
+			<g:tab>
+				<g:header>Default Flow</g:header>
+				<querym:DefaultFlowConfiguration ui:field="defaultFlowConfiguration"/>
+			</g:tab>						
+			<g:tab>
+				<g:header>Tag Count Report</g:header>
+				<querym:TagCountReport ui:field="tagCountReport"/>
+			</g:tab>
+			<g:tab>
+				<g:header>Traffic Flow Report</g:header>
+				<g:HTML>detailed traffic flow report</g:HTML>
+			</g:tab>							
 		</g:TabLayoutPanel>
 	</g:HorizontalPanel>
 </ui:UiBinder> 

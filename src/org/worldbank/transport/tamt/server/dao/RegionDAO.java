@@ -13,6 +13,7 @@ import org.worldbank.transport.tamt.server.bo.RoadBO;
 import org.worldbank.transport.tamt.server.bo.TagBO;
 import org.worldbank.transport.tamt.server.bo.ZoneBO;
 import org.worldbank.transport.tamt.shared.DayTypePerYearOption;
+import org.worldbank.transport.tamt.shared.DefaultFlow;
 import org.worldbank.transport.tamt.shared.RoadDetails;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
@@ -320,6 +321,211 @@ public class RegionDAO extends DAO {
 		}
 		
 		return option;
+	}
+	
+	public DefaultFlow saveDefaultFlow(DefaultFlow defaultFlow) throws Exception {
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "INSERT INTO defaulttrafficflow (id, regionid, tagid, " +
+							"w2wk, w2sa, w2sh, " +
+							"w3wk, w3sa, w3sh, " +
+							"pcwk, pcsa, pcsh, " +
+							"txwk, txsa, txsh, " +
+							"ldvwk, ldvsa, ldvsh, " +
+							"ldcwk, ldcsa, ldcsh, " +
+							"hdcwk, hdcsa, hdcsh, " +
+							"mdbwk, mdbsa, mdbsh, " +
+							"hdbwk, hdbsa, hdbsh) " +
+			"VALUES (" + 
+			"'"+defaultFlow.getId()+"', " +
+			"'"+defaultFlow.getTagDetails().getRegion().getId()+"'," +
+			"'"+defaultFlow.getTagDetails().getId()+"'," +
+			
+			defaultFlow.getW2Weekday()+"," +
+			defaultFlow.getW2Saturday()+"," +
+			defaultFlow.getW2SundayHoliday()+"," +
+			
+			defaultFlow.getW3Weekday()+"," +
+			defaultFlow.getW3Saturday()+"," +
+			defaultFlow.getW3SundayHoliday()+"," +
+			
+			defaultFlow.getPcWeekday()+"," +
+			defaultFlow.getPcSaturday()+"," +
+			defaultFlow.getPcSundayHoliday()+"," +
+			
+			defaultFlow.getTxWeekday()+"," +
+			defaultFlow.getTxSaturday()+"," +
+			defaultFlow.getTxSundayHoliday()+"," +
+			
+			defaultFlow.getLdvWeekday()+"," +
+			defaultFlow.getLdvSaturday()+"," +
+			defaultFlow.getLdvSundayHoliday()+"," +
+			
+			defaultFlow.getLdcWeekday()+"," +
+			defaultFlow.getLdcSaturday()+"," +
+			defaultFlow.getLdcSundayHoliday()+"," +
+			
+			defaultFlow.getHdcWeekday()+"," +
+			defaultFlow.getHdcSaturday()+"," +
+			defaultFlow.getHdcSundayHoliday()+"," +
+			
+			defaultFlow.getMdbWeekday()+"," +
+			defaultFlow.getMdbSaturday()+"," +
+			defaultFlow.getMdbSundayHoliday()+"," +
+			
+			defaultFlow.getHdbWeekday()+"," +
+			defaultFlow.getHdbSaturday()+"," +
+			defaultFlow.getHdbSundayHoliday()+" " +
+			
+			")";
+			logger.debug("sql=" + sql);
+			s.executeUpdate(sql); 
+			connection.close(); // returns connection to the pool
+
+		} 
+	    catch (SQLException e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+			throw e;
+			
+		} 
+	    return defaultFlow;
+	}
+	
+	public DefaultFlow updateDefaultFlow(
+			DefaultFlow defaultFlow) throws SQLException {
+
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "UPDATE defaulttrafficflow SET " +
+			
+					"w2wk = "+defaultFlow.getW2Weekday()+", " +
+					"w2sa = "+defaultFlow.getW2Saturday()+", " +
+					"w2sh = "+defaultFlow.getW2SundayHoliday()+", " +
+					
+					"w3wk = "+defaultFlow.getW3Weekday()+", " +
+					"w3sa = "+defaultFlow.getW3Saturday()+", " +
+					"w3sh = "+defaultFlow.getW3SundayHoliday()+", " +
+					
+					"pcwk = "+defaultFlow.getPcWeekday()+", " +
+					"pcsa = "+defaultFlow.getPcSaturday()+", " +
+					"pcsh = "+defaultFlow.getPcSundayHoliday()+", " +
+					
+					"txwk = "+defaultFlow.getTxWeekday()+", " +
+					"txsa = "+defaultFlow.getTxSaturday()+", " +
+					"txsh = "+defaultFlow.getTxSundayHoliday()+", " +
+					
+					"ldvwk = "+defaultFlow.getLdvWeekday()+", " +
+					"ldvsa = "+defaultFlow.getLdvSaturday()+", " +
+					"ldvsh = "+defaultFlow.getLdvSundayHoliday()+", " +
+					
+					"ldcwk = "+defaultFlow.getLdcWeekday()+", " +
+					"ldcsa = "+defaultFlow.getLdcSaturday()+", " +
+					"ldcsh = "+defaultFlow.getLdcSundayHoliday()+", " +
+					
+					"hdcwk = "+defaultFlow.getHdcWeekday()+", " +
+					"hdcsa = "+defaultFlow.getHdcSaturday()+", " +
+					"hdcsh = "+defaultFlow.getHdcSundayHoliday()+", " +
+					
+					"mdbwk = "+defaultFlow.getMdbWeekday()+", " +
+					"mdbsa = "+defaultFlow.getMdbSaturday()+", " +
+					"mdbsh = "+defaultFlow.getMdbSundayHoliday()+", " +
+					
+					"hdbwk = "+defaultFlow.getHdbWeekday()+", " +
+					"hdbsa = "+defaultFlow.getHdbSaturday()+", " +
+					"hdbsh = "+defaultFlow.getHdbSundayHoliday()+" " +
+					
+					"WHERE id = '"+defaultFlow.getId()+"'";
+			logger.debug("sql=" + sql);
+			s.executeUpdate(sql);
+			connection.close(); // returns connection to the pool				
+		} catch (SQLException e)
+		{
+			logger.error(e.getMessage());
+			throw e;
+		}
+		
+		return defaultFlow;
+	}
+
+	public DefaultFlow getDefaultFlow(DefaultFlow defaultFlow) throws Exception {
+
+		DefaultFlow fetched = null;
+		String tagId = defaultFlow.getTagDetails().getId();
+		String regionId = defaultFlow.getTagDetails().getRegion().getId();
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "SELECT id, " +
+					"w2wk, w2sa, w2sh, " +
+					"w3wk, w3sa, w3sh, " +
+					"pcwk, pcsa, pcsh, " +
+					"txwk, txsa, txsh, " +
+					"ldvwk, ldvsa, ldvsh, " +
+					"ldcwk, ldcsa, ldcsh, " +
+					"hdcwk, hdcsa, hdcsh, " +
+					"mdbwk, mdbsa, mdbsh, " +
+					"hdbwk, hdbsa, hdbsh " +
+					"FROM defaulttrafficflow " +
+					"WHERE regionid = '"+regionId+"' " +
+					"AND tagid = '"+tagId+"'";
+			logger.debug("getDefaultFlow sql=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			while( r.next() ) { 
+				
+				fetched = new DefaultFlow();
+				fetched.setId(r.getString(1));
+				fetched.setTagDetails(defaultFlow.getTagDetails());
+				
+				fetched.setW2Weekday(r.getString(2));
+				fetched.setW2Saturday(r.getString(3));
+				fetched.setW2SundayHoliday(r.getString(4));
+				
+				fetched.setW3Weekday(r.getString(5));
+				fetched.setW3Saturday(r.getString(6));
+				fetched.setW3SundayHoliday(r.getString(7));
+				
+				fetched.setPcWeekday(r.getString(8));
+				fetched.setPcSaturday(r.getString(9));
+				fetched.setPcSundayHoliday(r.getString(10));
+				
+				fetched.setTxWeekday(r.getString(11));
+				fetched.setTxSaturday(r.getString(12));
+				fetched.setTxSundayHoliday(r.getString(13));
+				
+				fetched.setLdvWeekday(r.getString(14));
+				fetched.setLdvSaturday(r.getString(15));
+				fetched.setLdvSundayHoliday(r.getString(16));
+				
+				fetched.setLdcWeekday(r.getString(17));
+				fetched.setLdcSaturday(r.getString(18));
+				fetched.setLdcSundayHoliday(r.getString(19));
+				
+				fetched.setHdcWeekday(r.getString(20));
+				fetched.setHdcSaturday(r.getString(21));
+				fetched.setHdcSundayHoliday(r.getString(22));
+				
+				fetched.setMdbWeekday(r.getString(23));
+				fetched.setMdbSaturday(r.getString(24));
+				fetched.setMdbSundayHoliday(r.getString(25));
+				
+				fetched.setHdbWeekday(r.getString(26));
+				fetched.setHdbSaturday(r.getString(27));
+				fetched.setHdbSundayHoliday(r.getString(28));
+				
+			}
+			connection.close(); // returns connection to the pool
+
+		} 
+	    catch (SQLException e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+			throw e;
+			
+		} 		
+		return fetched;
 	}
 
 	

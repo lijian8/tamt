@@ -61,10 +61,6 @@
 			<g:tab>
 				<g:header>Vehicle Flow</g:header>
 				<querym:VehicleFlow/>
-			</g:tab>
-			<g:tab>
-				<g:header>Data Interpolation</g:header>
-				<querym:DataInterpolation/>
 			</g:tab>	
 			<g:tab>
 				<g:header>Speed Bins</g:header>

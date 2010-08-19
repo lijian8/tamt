@@ -1,0 +1,87 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style type="org.worldbank.transport.tamt.client.query.DefaultFlowConfiguration.Style">
+		.outer {
+			background-color: white;
+			width: 100%;
+		}
+		.leftPane {
+			background-color: white;
+			width: 360px;
+		}	
+		.midPane {
+			background-color: white;
+			width: 20px;
+		}		
+		.rightPane {
+			background-color: white;
+			width: 100%;
+		}		
+		.hpanel {
+			width: 100%;
+		}	
+		.title {
+			font-size: 12px;
+			font-weight: bold;	
+		}
+		.subtitle {
+			font-size: 12px;
+		}	
+		.clickable {
+			cursor: pointer;
+			text-decoration: underline;
+			color: blue;	
+		}	
+		.scroll {
+			height: 358px;
+			background-color: white;
+			border: 1px solid #cccccc;
+		}	
+		.countHeader {
+			width: 200px;
+			vertical-align: bottom;
+		}
+		.table {
+			margin: 10px;
+			padding: 2px;
+		}
+		.tableheader {
+			height: 20px;	
+		}
+		.record {
+			width: 140px;
+		}
+		.hour {
+			width: 60px;
+			margin-right: 10px;
+		}
+		.textbox {
+			width: 80px;
+		}
+		.header {
+			font-weight: bold;	
+		}
+		.button {
+			margin-right: 10px;	
+		}
+	</ui:style>
+	<g:HorizontalPanel ui:field="outerHPanel" styleName="{style.outer}">
+		<!-- left pane for Tags -->
+		<g:VerticalPanel ui:field="leftPane" styleName="{style.leftPane}">
+			<g:HTML styleName="{style.title}">Tags</g:HTML>
+			<g:HTML>Select a tag to load its' default flow configuration</g:HTML>
+			<g:ScrollPanel ui:field="tagsScroll" styleName="{style.scroll}">
+				<g:FlexTable ui:field="tagsTable" styleName="{style.table}"/>
+			</g:ScrollPanel>
+		</g:VerticalPanel>
+		<!-- right pane for count report by tag -->
+		<g:VerticalPanel ui:field="rightPane" styleName="{style.rightPane}">
+			<g:HTML styleName="{style.title}">Default traffic flow</g:HTML>
+			<g:HTML ui:field="selectedTag">Selected tag: None selected</g:HTML>
+			<g:ScrollPanel ui:field="defaultFlowScroll" styleName="{style.scroll}">
+				<g:FlexTable ui:field="defaultFlowTable" styleName="{style.table}"/>
+			</g:ScrollPanel>		
+		</g:VerticalPanel>
+	</g:HorizontalPanel>
+</ui:UiBinder> 
