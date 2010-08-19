@@ -36,6 +36,7 @@ public class VehicleFlow extends Composite {
 	@UiField HorizontalPanel hpanel;
 	@UiField TrafficCount trafficCount;
 	@UiField TagCountReport tagCountReport;
+	@UiField DefaultFlowConfiguration defaultFlowConfiguration;
 	
 	public VehicleFlow(HandlerManager eventBus) {
 		this.eventBus = eventBus;
@@ -53,13 +54,17 @@ public class VehicleFlow extends Composite {
 				case 0:
 					getTrafficCountRecords();
 					break;
-				// 1 = tag count report
+				// 1 = day type configuration
 				case 1:
-					getTagCountReport();
-					break;
-				case 2:
 					getDayTypePerYearOption();
 					break;
+				// 2 = default flow configuration
+				case 2:
+					getDefaultFlowConfiguration();
+					break;
+				case 3:
+					getTagCountReport();
+					break;					
 				}
 			}
 		});
@@ -69,6 +74,10 @@ public class VehicleFlow extends Composite {
 		
 	}
 	
+	protected void getDefaultFlowConfiguration() {
+		// need to fetch the default flow config from the first tag, or not at all?
+	}
+
 	protected void getDayTypePerYearOption() {
 		eventBus.fireEvent(new GetDayTypePerYearOptionEvent());
 	}
@@ -95,6 +104,10 @@ public class VehicleFlow extends Composite {
 		return new DayTypesPerYear(this.eventBus);
 	}
 
+	@UiFactory DefaultFlowConfiguration initDefaultFlowConfiguration() {
+		return new DefaultFlowConfiguration(this.eventBus);
+	}
+	
 	private void bind() {
 
 		eventBus.addHandler(TAMTResizeEvent.TYPE, new TAMTResizeEventHandler() {

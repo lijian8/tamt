@@ -61,10 +61,6 @@ public class QueryModule extends Composite {
 	@UiFactory VehicleFlow initVehicleFlow() {
 		return new VehicleFlow(this.eventBus);
 	}
-
-	@UiFactory DataInterpolation initDataInterpolation() {
-		return new DataInterpolation(this.eventBus);
-	}
 	
 	@UiFactory SpeedBins initSpeedBins() {
 		return new SpeedBins(this.eventBus);

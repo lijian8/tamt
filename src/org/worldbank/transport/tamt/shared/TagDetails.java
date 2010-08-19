@@ -46,6 +46,21 @@ public class TagDetails implements Serializable {
 	public void setRegion(StudyRegion region) {
 		this.region = region;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("TagDetails [description=");
+		builder.append(description);
+		builder.append(", id=");
+		builder.append(id);
+		builder.append(", name=");
+		builder.append(name);
+		builder.append(", region=");
+		builder.append(region);
+		builder.append("]");
+		return builder.toString();
+	}
   
   
 }
