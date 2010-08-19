@@ -40,6 +40,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -125,6 +126,8 @@ public class DefaultFlowConfiguration extends Composite {
 	
 	private Button save = new Button("Save");
 	private Button cancel = new Button("Cancel");
+	private Button delete = new Button("Delete");
+	private HTML message = new HTML("");
 	
 	private StudyRegion currentStudyRegion;
 	
@@ -132,6 +135,7 @@ public class DefaultFlowConfiguration extends Composite {
 	private Date dummy = new Date();
 	private DefaultFlow currentDefaultFlow;
 	private TagDetails currentTagDetails;
+
 	
 	public DefaultFlowConfiguration(HandlerManager eventBus) {
 		
@@ -169,8 +173,7 @@ public class DefaultFlowConfiguration extends Composite {
 			public void onFetchedTags(FetchedTagsEvent event) {
 				
 				// if the tags have been updated, clear out the UI
-				selectedTag.setHTML("Selected tag: None selected");
-				resetForm();
+				resetRightPane();
 				renderTags(event.getTags());
 			}
 		});
@@ -197,6 +200,14 @@ public class DefaultFlowConfiguration extends Composite {
 				
 			}
 		});	
+	}
+
+	protected void resetRightPane() {
+		currentDefaultFlow = null;
+		currentTagDetails = null;
+		selectedTag.setHTML("Selected tag: None selected");
+		message.setHTML("");
+		resetForm();
 	}
 
 	protected void renderTags(ArrayList<TagDetails> tags) {
@@ -249,12 +260,24 @@ public class DefaultFlowConfiguration extends Composite {
 				{
 					currentDefaultFlow = result;
 					renderDefaultFlowConfiguration(currentDefaultFlow);
+					showDeleteButton();
+					message.setHTML("");
 				} else {
+					message.setHTML("No default flow set for this tag");
 					currentDefaultFlow = null;
 					resetForm();
+					hideDeleteButton();
 				}
 			}
 		});
+	}
+
+	protected void hideDeleteButton() {
+		delete.setVisible(false);
+	}
+
+	protected void showDeleteButton() {
+		delete.setVisible(true);
 	}
 
 	private void createTable()
@@ -374,18 +397,46 @@ public class DefaultFlowConfiguration extends Composite {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-					currentDefaultFlow = null;
-					currentTagDetails = null;
-					selectedTag.setHTML("Selected tag: None selected");
-					resetForm();
+					resetRightPane();
+			}
+		});
+		
+		delete.setStyleName(style.button());
+		delete.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				deleteDefaultFlow();
 			}
 		});
 		
 		HorizontalPanel buttonsPanel = new HorizontalPanel();
 		buttonsPanel.add(save);
 		buttonsPanel.add(cancel);
+		buttonsPanel.add(delete);
+		buttonsPanel.add(message);
+		
+		defaultFlowTable.getFlexCellFormatter().setColSpan(10, 0, 4);
 		defaultFlowTable.setWidget(10, 0, buttonsPanel);
 		
+		
+	}
+	
+	private void deleteDefaultFlow() {
+		//currentDefaultFlow has the id we need to delete it
+		regionService.deleteDefaultFlow(currentDefaultFlow, new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Error trying to delete default flow: " +caught.getMessage() );
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				Window.alert("Default flow deleted");
+				resetRightPane();
+			}
+		});
 	}
 	
 	private void saveDefaultFlow() {
@@ -464,6 +515,8 @@ public class DefaultFlowConfiguration extends Composite {
 					currentDefaultFlow = result;
 					GWT.log("TAG DETAILS post save:" + currentDefaultFlow.getTagDetails());
 					renderDefaultFlowConfiguration(currentDefaultFlow);
+					showDeleteButton();
+					message.setHTML("");
 				} else {
 					resetForm();
 				}
@@ -502,6 +555,8 @@ public class DefaultFlowConfiguration extends Composite {
 		sundayHolidayHDC.setValue("");
 		sundayHolidayMDB.setValue("");
 		sundayHolidayHDB.setValue("");
+		
+		hideDeleteButton();
 		
 	}
 

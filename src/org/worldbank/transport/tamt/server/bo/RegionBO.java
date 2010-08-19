@@ -35,6 +35,7 @@ public class RegionBO {
 	private TagDAO tagDAO;
 	private RoadDAO roadDAO;
 	private ZoneDAO zoneDAO;
+	private boolean allFlowValuesNull;
 	static Logger logger = Logger.getLogger(RegionBO.class);
 	
 	private static RegionBO singleton = null;
@@ -260,69 +261,170 @@ public class RegionBO {
 		}
 		
 		/*
+		 * Check for any non-digit characters. Empty strings are OK, because
+		 * they will be cleaned next. Throw an exception the user will understand.
+		 */
+		if( !validFlowValues(defaultFlow))
+		{
+			throw new Exception("Values must be positive integers");
+		}
+		
+		/*
 		 * Empty form fields in the UI create empty strings. But when we save
-		 * the default flow, the database is expected integers or null. So,
-		 * walk through every integer field. If it is empty, make it null
+		 * the default flow, the database is expecting integers or null. So,
+		 * walk through every integer field. If it is empty, make it null.
+		 * 
+		 * After this runs, we also know the status of allFlowValuesNull, 
+		 * and can act accordingly. If allFlowValuesNull and first save, don't
+		 * save it. If allFlowValuesNull and already saved, delete it. Otherwise
+		 * proceed with save or update.
 		 */
 		cleanDefaultFlowFields(defaultFlow);
 		
 		// if we don't have an ID, this is the first save
 		if( defaultFlow.getId() == null)
 		{
-			defaultFlow.setId( UUID.randomUUID().toString() );
-			return dao.saveDefaultFlow(defaultFlow);
+			// only save it if not all flow values are null
+			if(!allFlowValuesNull)
+			{
+				defaultFlow.setId( UUID.randomUUID().toString() );
+				defaultFlow = dao.saveDefaultFlow(defaultFlow);
+			} else 
+			{
+				throw new Exception("All values were empty");
+			}
 		} else {
-			// otherwise this is an update
-			return dao.updateDefaultFlow(defaultFlow);
+			// this is an update
+			
+			// if all flow values are null, delete it
+			//if( allFlowValuesNull )
+			//{
+			//	dao.deleteDefaultFlow(defaultFlow);
+			//	defaultFlow = null;
+			// otherwise update it
+			//}  else {
+				defaultFlow = dao.updateDefaultFlow(defaultFlow);
+			//}
 		}
 		
+		// refetch it to make sure weird stuff like '000000' is just '0'
+		return dao.getDefaultFlow(defaultFlow);
+		
 	}
 	
+	private boolean validFlowValues(DefaultFlow defaultFlow) {
+
+		try {
+			
+			validFlowValue(defaultFlow.getW2Weekday());
+			validFlowValue(defaultFlow.getW2Saturday());
+			validFlowValue(defaultFlow.getW2SundayHoliday());
+			
+			validFlowValue(defaultFlow.getW3Weekday());
+			validFlowValue(defaultFlow.getW3Saturday());
+			validFlowValue(defaultFlow.getW3SundayHoliday());
+			
+			validFlowValue(defaultFlow.getPcWeekday());
+			validFlowValue(defaultFlow.getPcSaturday());
+			validFlowValue(defaultFlow.getPcSundayHoliday());
+			
+			validFlowValue(defaultFlow.getTxWeekday());
+			validFlowValue(defaultFlow.getTxSaturday());
+			validFlowValue(defaultFlow.getTxSundayHoliday());
+			
+			validFlowValue(defaultFlow.getLdvWeekday());
+			validFlowValue(defaultFlow.getLdvSaturday());
+			validFlowValue(defaultFlow.getLdvSundayHoliday());
+			
+			validFlowValue(defaultFlow.getLdcWeekday());
+			validFlowValue(defaultFlow.getLdcSaturday());
+			validFlowValue(defaultFlow.getLdcSundayHoliday());
+			
+			validFlowValue(defaultFlow.getHdcWeekday());
+			validFlowValue(defaultFlow.getHdcSaturday());
+			validFlowValue(defaultFlow.getHdcSundayHoliday());
+			
+			validFlowValue(defaultFlow.getMdbWeekday());
+			validFlowValue(defaultFlow.getMdbSaturday());
+			validFlowValue(defaultFlow.getMdbSundayHoliday());
+			
+			validFlowValue(defaultFlow.getHdbWeekday());
+			validFlowValue(defaultFlow.getHdbSaturday());
+			validFlowValue(defaultFlow.getHdbSundayHoliday());
+			
+			return true;
+			
+		} catch (Exception e)
+		{
+			return false;
+		}
+
+	}
+	
+	private void validFlowValue(String value) throws Exception
+	{
+		// valid value can be null, empty string, or integer
+		// anything else (like string or float) will throw exception
+		if( value != null && !value.equalsIgnoreCase(""))
+		{
+			int v = Integer.parseInt(value);
+			if(v < 0)
+			{
+				throw new Exception("Value cannot be less than zero");
+			}
+		}
+	}
+
 	private void cleanDefaultFlowFields(DefaultFlow defaultFlow) {
 		
-		defaultFlow.setW2Weekday( swapEmptyStringsForNull(defaultFlow.getW2Weekday()) );
-		defaultFlow.setW2Saturday( swapEmptyStringsForNull(defaultFlow.getW2Saturday()) );
-		defaultFlow.setW2SundayHoliday( swapEmptyStringsForNull(defaultFlow.getW2SundayHoliday()) );
+		allFlowValuesNull = true;
 		
-		defaultFlow.setW3Weekday( swapEmptyStringsForNull(defaultFlow.getW3Weekday()) );
-		defaultFlow.setW3Saturday( swapEmptyStringsForNull(defaultFlow.getW3Saturday()) );
-		defaultFlow.setW3SundayHoliday( swapEmptyStringsForNull(defaultFlow.getW3SundayHoliday()) );
+		defaultFlow.setW2Weekday( swapEmptyStringsForZero(defaultFlow.getW2Weekday()) );
+		defaultFlow.setW2Saturday( swapEmptyStringsForZero(defaultFlow.getW2Saturday()) );
+		defaultFlow.setW2SundayHoliday( swapEmptyStringsForZero(defaultFlow.getW2SundayHoliday()) );
 		
-		defaultFlow.setPcWeekday( swapEmptyStringsForNull(defaultFlow.getPcWeekday()) );
-		defaultFlow.setPcSaturday( swapEmptyStringsForNull(defaultFlow.getPcSaturday()) );
-		defaultFlow.setPcSundayHoliday( swapEmptyStringsForNull(defaultFlow.getPcSundayHoliday()) );
+		defaultFlow.setW3Weekday( swapEmptyStringsForZero(defaultFlow.getW3Weekday()) );
+		defaultFlow.setW3Saturday( swapEmptyStringsForZero(defaultFlow.getW3Saturday()) );
+		defaultFlow.setW3SundayHoliday( swapEmptyStringsForZero(defaultFlow.getW3SundayHoliday()) );
 		
-		defaultFlow.setTxWeekday( swapEmptyStringsForNull(defaultFlow.getTxWeekday()) );
-		defaultFlow.setTxSaturday( swapEmptyStringsForNull(defaultFlow.getTxSaturday()) );
-		defaultFlow.setTxSundayHoliday( swapEmptyStringsForNull(defaultFlow.getTxSundayHoliday()) );
+		defaultFlow.setPcWeekday( swapEmptyStringsForZero(defaultFlow.getPcWeekday()) );
+		defaultFlow.setPcSaturday( swapEmptyStringsForZero(defaultFlow.getPcSaturday()) );
+		defaultFlow.setPcSundayHoliday( swapEmptyStringsForZero(defaultFlow.getPcSundayHoliday()) );
 		
-		defaultFlow.setLdvWeekday( swapEmptyStringsForNull(defaultFlow.getLdvWeekday()) );
-		defaultFlow.setLdvSaturday( swapEmptyStringsForNull(defaultFlow.getLdvSaturday()) );
-		defaultFlow.setLdvSundayHoliday( swapEmptyStringsForNull(defaultFlow.getLdvSundayHoliday()) );
+		defaultFlow.setTxWeekday( swapEmptyStringsForZero(defaultFlow.getTxWeekday()) );
+		defaultFlow.setTxSaturday( swapEmptyStringsForZero(defaultFlow.getTxSaturday()) );
+		defaultFlow.setTxSundayHoliday( swapEmptyStringsForZero(defaultFlow.getTxSundayHoliday()) );
 		
-		defaultFlow.setLdcWeekday( swapEmptyStringsForNull(defaultFlow.getLdcWeekday()) );
-		defaultFlow.setLdcSaturday( swapEmptyStringsForNull(defaultFlow.getLdcSaturday()) );
-		defaultFlow.setLdcSundayHoliday( swapEmptyStringsForNull(defaultFlow.getLdcSundayHoliday()) );
+		defaultFlow.setLdvWeekday( swapEmptyStringsForZero(defaultFlow.getLdvWeekday()) );
+		defaultFlow.setLdvSaturday( swapEmptyStringsForZero(defaultFlow.getLdvSaturday()) );
+		defaultFlow.setLdvSundayHoliday( swapEmptyStringsForZero(defaultFlow.getLdvSundayHoliday()) );
 		
-		defaultFlow.setHdcWeekday( swapEmptyStringsForNull(defaultFlow.getHdcWeekday()) );
-		defaultFlow.setHdcSaturday( swapEmptyStringsForNull(defaultFlow.getHdcSaturday()) );
-		defaultFlow.setHdcSundayHoliday( swapEmptyStringsForNull(defaultFlow.getHdcSundayHoliday()) );
+		defaultFlow.setLdcWeekday( swapEmptyStringsForZero(defaultFlow.getLdcWeekday()) );
+		defaultFlow.setLdcSaturday( swapEmptyStringsForZero(defaultFlow.getLdcSaturday()) );
+		defaultFlow.setLdcSundayHoliday( swapEmptyStringsForZero(defaultFlow.getLdcSundayHoliday()) );
 		
-		defaultFlow.setMdbWeekday( swapEmptyStringsForNull(defaultFlow.getMdbWeekday()) );
-		defaultFlow.setMdbSaturday( swapEmptyStringsForNull(defaultFlow.getMdbSaturday()) );
-		defaultFlow.setMdbSundayHoliday( swapEmptyStringsForNull(defaultFlow.getMdbSundayHoliday()) );
+		defaultFlow.setHdcWeekday( swapEmptyStringsForZero(defaultFlow.getHdcWeekday()) );
+		defaultFlow.setHdcSaturday( swapEmptyStringsForZero(defaultFlow.getHdcSaturday()) );
+		defaultFlow.setHdcSundayHoliday( swapEmptyStringsForZero(defaultFlow.getHdcSundayHoliday()) );
 		
-		defaultFlow.setHdbWeekday( swapEmptyStringsForNull(defaultFlow.getHdbWeekday()) );
-		defaultFlow.setHdbSaturday( swapEmptyStringsForNull(defaultFlow.getHdbSaturday()) );
-		defaultFlow.setHdbSundayHoliday( swapEmptyStringsForNull(defaultFlow.getHdbSundayHoliday()) );
+		defaultFlow.setMdbWeekday( swapEmptyStringsForZero(defaultFlow.getMdbWeekday()) );
+		defaultFlow.setMdbSaturday( swapEmptyStringsForZero(defaultFlow.getMdbSaturday()) );
+		defaultFlow.setMdbSundayHoliday( swapEmptyStringsForZero(defaultFlow.getMdbSundayHoliday()) );
+		
+		defaultFlow.setHdbWeekday( swapEmptyStringsForZero(defaultFlow.getHdbWeekday()) );
+		defaultFlow.setHdbSaturday( swapEmptyStringsForZero(defaultFlow.getHdbSaturday()) );
+		defaultFlow.setHdbSundayHoliday( swapEmptyStringsForZero(defaultFlow.getHdbSundayHoliday()) );
+		
+		logger.debug("allFlowValuesNull=" + allFlowValuesNull);
 		
 	}
 	
-	private String swapEmptyStringsForNull(String field) {
+	private String swapEmptyStringsForZero(String field) {
 		if( field.equalsIgnoreCase(""))
 		{
 			return null;
 		} else {
+			allFlowValuesNull = false;
 			return field;
 		}
 	}
@@ -332,4 +434,8 @@ public class RegionBO {
 		return dao.getDefaultFlow(defaultFlow);
 	}
 	
+	public void deleteDefaultFlow(DefaultFlow defaultFlow) throws Exception
+	{
+		dao.deleteDefaultFlow(defaultFlow);
+	}
 }

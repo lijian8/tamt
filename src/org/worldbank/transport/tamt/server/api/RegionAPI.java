@@ -52,4 +52,9 @@ public class RegionAPI {
 		return bo.saveDefaultFlow(defaultFlow);
 	}
 	
+	public void deleteDefaultFlow(DefaultFlow defaultFlow) throws Exception
+	{
+		bo.deleteDefaultFlow(defaultFlow);
+	}
+	
 }
