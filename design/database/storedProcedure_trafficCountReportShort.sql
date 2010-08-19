@@ -37,11 +37,11 @@ BEGIN
 				tagdetails t2
 			-- that match the incoming tag
 			WHERE 
-				t1.tag = t2.id
+				t1.tagid = t2.id
 			AND
 				t2.name = _tag
 			-- and match the incoming region
-			AND t1.region = _regionid
+			AND t1.regionid = _regionid
 			-- and match the incoming day type
 			AND t1.daytype = _daytype
 			-- and only those with starttimes between the time ranges
