@@ -7,6 +7,8 @@ import org.worldbank.transport.tamt.client.event.AddTrafficCountRecordEvent;
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
 import org.worldbank.transport.tamt.client.event.EditTrafficCountRecordEvent;
+import org.worldbank.transport.tamt.client.event.FetchedTagsEvent;
+import org.worldbank.transport.tamt.client.event.FetchedTagsEventHandler;
 import org.worldbank.transport.tamt.client.event.GetTrafficCountRecordsEvent;
 import org.worldbank.transport.tamt.client.event.GetTrafficCountRecordsEventHandler;
 import org.worldbank.transport.tamt.client.event.OpenWaitModelDialogEvent;
@@ -16,6 +18,7 @@ import org.worldbank.transport.tamt.client.services.TrafficCountRecordService;
 import org.worldbank.transport.tamt.client.services.TrafficCountRecordServiceAsync;
 import org.worldbank.transport.tamt.shared.GPSTrace;
 import org.worldbank.transport.tamt.shared.StudyRegion;
+import org.worldbank.transport.tamt.shared.TagDetails;
 import org.worldbank.transport.tamt.shared.TrafficCountRecord;
 
 import com.google.gwt.core.client.GWT;
@@ -101,6 +104,15 @@ public class TrafficCountListView extends Composite {
 				fetchTrafficCountRecords();
 			}
 		});
+		
+		// if a tag is updated in the tag module, refresh our list here
+		eventBus.addHandler(FetchedTagsEvent.TYPE, new FetchedTagsEventHandler() {
+			
+			@Override
+			public void onFetchedTags(FetchedTagsEvent event) {
+				fetchTrafficCountRecords();
+			}
+		});		
 		
 		eventBus.addHandler(TAMTResizeEvent.TYPE, new TAMTResizeEventHandler() {
 			

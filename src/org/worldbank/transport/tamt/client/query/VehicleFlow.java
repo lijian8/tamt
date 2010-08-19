@@ -43,7 +43,7 @@ public class VehicleFlow extends Composite {
 		initWidget(uiBinder.createAndBindUi(this));
 		
 		bind();
-		
+	
 		tabLayoutPanel.addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>() {
 			
 			@Override
