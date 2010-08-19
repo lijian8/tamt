@@ -168,8 +168,9 @@ public class DefaultFlowConfiguration extends Composite {
 			@Override
 			public void onFetchedTags(FetchedTagsEvent event) {
 				
-				// clear out the old selected tag
+				// if the tags have been updated, clear out the UI
 				selectedTag.setHTML("Selected tag: None selected");
+				resetForm();
 				renderTags(event.getTags());
 			}
 		});

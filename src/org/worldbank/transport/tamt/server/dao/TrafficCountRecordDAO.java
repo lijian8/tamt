@@ -54,9 +54,30 @@ public class TrafficCountRecordDAO extends DAO {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "select id, tag, countdate, daytype, starttime," +
-					"endtime, w2, w3, pc, tx, ldv, ldc, hdc, mdb, hdb from trafficcount "
-					+ "where region = '" + region.getId()+ "' ORDER BY countdate ASC, starttime ASC";
+			String sql = "SELECT " +
+					"t1.id, " +
+					"t2.name as tag, " +
+					"t1.countdate, " +
+					"t1.daytype, " +
+					"t1.starttime," +
+					"t1.endtime, " +
+					"t1.w2, " +
+					"t1.w3, " +
+					"t1.pc, " +
+					"t1.tx, " +
+					"t1.ldv, " +
+					"t1.ldc, " +
+					"t1.hdc, " +
+					"t1.mdb, " +
+					"t1.hdb " +
+					"FROM " +
+					"	trafficcount t1, " +
+					"	tagdetails t2 " +
+					"WHERE " +
+					"	t1.region = '" + region.getId()+ "' " +
+					"AND " +
+					"	t1.tag = t2.id " +
+					"ORDER BY t1.countdate ASC, t1.starttime ASC";
 			logger.debug("SQL for getTrafficCountRecords: " + sql);
 			ResultSet r = s.executeQuery(sql);
 			while (r.next()) {
@@ -318,7 +339,7 @@ public class TrafficCountRecordDAO extends DAO {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "INSERT INTO trafficcount (pid, id, region, tag, countdate, "
+			String sql = "INSERT INTO trafficcount (pid, id, regionid, tagid, countdate, "
 					+ "daytype, starttime, endtime, w2, w3, pc, tx, ldv, ldc, hdc, "
 					+ "mdb, hdb) " + "VALUES ("
 					+ "(SELECT nextval('studyregion_pid_seq')),"
@@ -327,7 +348,7 @@ public class TrafficCountRecordDAO extends DAO {
 					+ "', '"
 					+ trafficCountRecord.getRegion()
 					+ "', '"
-					+ trafficCountRecord.getTag()
+					+ "(SELECT id FROM tagdetails WHERE name='" + trafficCountRecord.getTag() + "')"
 					+ "', '"
 					+ trafficCountRecord.getDate()
 					+ "', '"
@@ -373,7 +394,7 @@ public class TrafficCountRecordDAO extends DAO {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
 			String sql = "UPDATE trafficcount SET " +
-					" tag = '"+trafficCountRecord.getTag()+"'," +
+					" tag = (SELECT id FROM tagdetails WHERE name='"+trafficCountRecord.getTag()+"'), " +
 					" countdate = '"+trafficCountRecord.getDate()+"'," +
 					" daytype = '"+trafficCountRecord.getDayType()+"'," +
 					" starttime = '"+trafficCountRecord.getStartTime()+"'," +
