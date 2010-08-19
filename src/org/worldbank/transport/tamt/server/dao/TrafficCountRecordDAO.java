@@ -74,9 +74,9 @@ public class TrafficCountRecordDAO extends DAO {
 					"	trafficcount t1, " +
 					"	tagdetails t2 " +
 					"WHERE " +
-					"	t1.region = '" + region.getId()+ "' " +
+					"	t1.regionid = '" + region.getId()+ "' " +
 					"AND " +
-					"	t1.tag = t2.id " +
+					"	t1.tagid = t2.id " +
 					"ORDER BY t1.countdate ASC, t1.starttime ASC";
 			logger.debug("SQL for getTrafficCountRecords: " + sql);
 			ResultSet r = s.executeQuery(sql);
@@ -347,9 +347,9 @@ public class TrafficCountRecordDAO extends DAO {
 					+ trafficCountRecord.getId()
 					+ "', '"
 					+ trafficCountRecord.getRegion()
-					+ "', '"
+					+ "', "
 					+ "(SELECT id FROM tagdetails WHERE name='" + trafficCountRecord.getTag() + "')"
-					+ "', '"
+					+ ", '"
 					+ trafficCountRecord.getDate()
 					+ "', '"
 					+ trafficCountRecord.getDayType()
@@ -394,7 +394,7 @@ public class TrafficCountRecordDAO extends DAO {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
 			String sql = "UPDATE trafficcount SET " +
-					" tag = (SELECT id FROM tagdetails WHERE name='"+trafficCountRecord.getTag()+"'), " +
+					" tagid = (SELECT id FROM tagdetails WHERE name='"+trafficCountRecord.getTag()+"'), " +
 					" countdate = '"+trafficCountRecord.getDate()+"'," +
 					" daytype = '"+trafficCountRecord.getDayType()+"'," +
 					" starttime = '"+trafficCountRecord.getStartTime()+"'," +
