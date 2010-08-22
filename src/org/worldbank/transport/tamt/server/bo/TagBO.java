@@ -94,18 +94,19 @@ public class TagBO {
 	}
 
 	public void deleteTagDetails(ArrayList<String> tagDetailIds) throws Exception {
-		//TODO: validate tagDetailIds
+		
 		try {
 			tagDAO.deleteTagDetails(tagDetailIds);
 		} catch (SQLException e) {
-			if( e.getMessage().indexOf("violates foreign key constraint \"roadDetails_tag_id_fkey\" on table \"roadDetails\"") != -1)
+			logger.error("Cannot delete tag: " + e.getMessage());
+			if( e.getMessage().indexOf("violates foreign key constraint") != -1)
 			{
 				String singularPlural = "The selected tag is";
 				if( tagDetailIds.size() > 1)
 				{
 					singularPlural = "One or more of the selected tags are";
 				}
-				throw new Exception( singularPlural + " associated with a road and cannot be deleted");
+				throw new Exception( singularPlural + " associated with a road or traffic flow information and cannot be deleted");
 			} else {
 				throw new Exception("Could not delete tag details");
 			}
@@ -113,5 +114,11 @@ public class TagBO {
 		{
 			logger.error("Unknown DAO error: " + e.getMessage());
 		}
+		
+		/*
+		 * TODO: Now that we have deleted the tag (or not, based on FK road details)
+		 * go ahead and delete all related (default traffic flows, traffic flow reports)
+		 */
+		
 	}
 }

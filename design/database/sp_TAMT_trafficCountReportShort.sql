@@ -1,8 +1,8 @@
--- Function: trafficcountreportshort(text, text, text)
+-- Function: TAMT_trafficCountReportShort(text, text, text)
 
--- DROP FUNCTION trafficcountreportshort(text, text, text);
+-- DROP FUNCTION TAMT_trafficCountReportShort(text, text, text);
 
-CREATE OR REPLACE FUNCTION trafficcountreportshort(_tag text, _regionid text, _daytype text)
+CREATE OR REPLACE FUNCTION TAMT_trafficCountReportShort(_tag text, _regionid text, _daytype text)
   RETURNS SETOF record AS
 $BODY$
 DECLARE
@@ -59,4 +59,4 @@ $BODY$
   LANGUAGE 'plpgsql' VOLATILE
   COST 100
   ROWS 1000;
-ALTER FUNCTION trafficcountreportshort(text, text, text) OWNER TO postgres;
+ALTER FUNCTION TAMT_trafficCountReportShort(text, text, text) OWNER TO postgres;

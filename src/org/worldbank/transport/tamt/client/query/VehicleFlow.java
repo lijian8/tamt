@@ -36,6 +36,7 @@ public class VehicleFlow extends Composite {
 	@UiField HorizontalPanel hpanel;
 	@UiField TrafficCount trafficCount;
 	@UiField TagCountReport tagCountReport;
+	@UiField TrafficFlowReportView trafficFlowReportView;
 	@UiField DefaultFlowConfiguration defaultFlowConfiguration;
 	
 	public VehicleFlow(HandlerManager eventBus) {
@@ -107,6 +108,10 @@ public class VehicleFlow extends Composite {
 	@UiFactory DefaultFlowConfiguration initDefaultFlowConfiguration() {
 		return new DefaultFlowConfiguration(this.eventBus);
 	}
+	
+	@UiFactory TrafficFlowReportView initTrafficFlowReport() {
+		return new TrafficFlowReportView(this.eventBus);
+	}	
 	
 	private void bind() {
 

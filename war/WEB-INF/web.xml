@@ -125,7 +125,17 @@ version="2.4">
     <servlet-name>trafficCountServiceServlet</servlet-name>
     <url-pattern>/tamt/trafficCountService</url-pattern>
   </servlet-mapping>  
-        
+
+  <servlet>
+    <servlet-name>trafficFlowReportServiceServlet</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.TrafficFlowReportServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>trafficFlowReportServiceServlet</servlet-name>
+    <url-pattern>/tamt/trafficFlowReportService</url-pattern>
+  </servlet-mapping>  
+          
   <servlet>
     <servlet-name>uploadGPSServlet</servlet-name>
     <servlet-class>org.worldbank.transport.tamt.server.UploadGPSTraceHandler</servlet-class>

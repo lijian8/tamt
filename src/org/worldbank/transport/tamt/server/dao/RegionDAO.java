@@ -525,6 +525,7 @@ public class RegionDAO extends DAO {
 			throw e;
 			
 		} 		
+	    logger.debug("fetched flow=" + fetched);
 		return fetched;
 	}
 	

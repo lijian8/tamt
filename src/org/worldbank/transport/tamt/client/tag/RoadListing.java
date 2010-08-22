@@ -21,6 +21,8 @@ import org.worldbank.transport.tamt.client.event.EditRoadSegmentEvent;
 import org.worldbank.transport.tamt.client.event.EndEditPolyLineEvent;
 import org.worldbank.transport.tamt.client.event.EndEditPolyLineEventHandler;
 import org.worldbank.transport.tamt.client.event.FetchUpdatedPolylineEvent;
+import org.worldbank.transport.tamt.client.event.FetchedTagsEvent;
+import org.worldbank.transport.tamt.client.event.FetchedTagsEventHandler;
 import org.worldbank.transport.tamt.client.event.GetRoadsEvent;
 import org.worldbank.transport.tamt.client.event.GetRoadsEventHandler;
 import org.worldbank.transport.tamt.client.event.GetTagsEvent;
@@ -171,7 +173,7 @@ public class RoadListing extends Composite {
 
 	@UiHandler("cancel")
 	void onClickCancel(ClickEvent e) {
-		if( currentRoadDetailId.indexOf("TEMP") != -1)
+		if( currentRoadDetailId != null && currentRoadDetailId.indexOf("TEMP") != -1)
 		{
 			eventBus.fireEvent(new CancelRoadEvent(currentRoadDetailId));
 		} else {
@@ -190,6 +192,20 @@ public class RoadListing extends Composite {
 
 	private void bind()
 	{
+		
+		eventBus.addHandler(FetchedTagsEvent.TYPE, new FetchedTagsEventHandler() {
+			
+			@Override
+			public void onFetchedTags(FetchedTagsEvent event) {
+				// update the oracle with the tags
+				tagSuggestions.clear();
+				tagDetailsList = event.getTags();
+				for (Iterator iterator = tagDetailsList.iterator(); iterator.hasNext();) {
+					TagDetails td = (TagDetails) iterator.next();
+					tagSuggestions.add(td.getName());
+				}
+			}
+		});
 		
 		eventBus.addHandler(CurrentStudyRegionUpdatedEvent.TYPE, new CurrentStudyRegionUpdatedEventHandler() {
 			

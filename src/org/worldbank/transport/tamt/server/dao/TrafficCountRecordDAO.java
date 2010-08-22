@@ -216,7 +216,7 @@ public class TrafficCountRecordDAO extends DAO {
 			Statement s = connection.createStatement();
 			
 			// get the WEEKDAY counts for this tag
-			String sql = "SELECT * FROM trafficCountReportShort('"+tagName+"', '"+regionId+"', '"+dayType+"')" +
+			String sql = "SELECT * FROM TAMT_trafficCountReportShort('"+tagName+"', '"+regionId+"', '"+dayType+"')" +
 							" AS foo(hour int, t bigint)";
 			
 			logger.debug("SQL for getTrafficCountReportShort: " + sql);

@@ -1,0 +1,116 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style type="org.worldbank.transport.tamt.client.query.TrafficFlowReportView.Style">
+		.outer {
+			background-color: white;
+			width: 100%;
+		}
+		.leftPane {
+			background-color: white;
+			width: 360px;
+		}	
+		.midPane {
+			background-color: white;
+			width: 20px;
+		}		
+		.rightPane {
+			background-color: white;
+			width: 100%;
+		}		
+		.hpanel {
+			width: 100%;
+		}	
+		.title {
+			font-size: 12px;
+			font-weight: bold;	
+		}
+		.subtitle {
+			font-size: 10px;
+			font-weight: bold;
+		}	
+		.clickable {
+			cursor: pointer;
+			text-decoration: underline;
+			color: blue;	
+		}	
+		.scroll {
+			height: 358px;
+			background-color: white;
+			border: 1px solid #cccccc;
+		}	
+		.countHeader {
+			width: 400px;
+			vertical-align: bottom;
+		}
+		.table {
+			margin: 10px;
+			padding: 2px;
+		}
+		.tableheader {
+			height: 20px;	
+		}
+		.record {
+			width: 140px;
+		}
+		.cell {
+			width: 50px;
+			border: 0px solid black
+		}
+		.cellHeader {
+			width: 50px;
+			padding: 2px;
+			border: 0px solid black
+		}
+		.hour {
+			width: 50px;
+			margin-left: 15px;
+			padding: 2px;
+			border: 0px solid black
+		}
+		.button {
+			margin-right: 10px;	
+			font-size: 8pt;
+		}
+	</ui:style>
+	<g:HorizontalPanel ui:field="outerHPanel" styleName="{style.outer}">
+		<!-- left pane for Tags -->
+		<g:VerticalPanel ui:field="leftPane" styleName="{style.leftPane}">
+			<g:HorizontalPanel ui:field="leftPaneHPanel" styleName="{style.countHeader}">
+				<g:HTML styleName="{style.title}">Tags</g:HTML>
+				<g:HTML ui:field="generateReports" styleName="{style.clickable}">Generate traffic flow reports for all tags</g:HTML>
+			</g:HorizontalPanel>
+			<g:HTML ui:field="selectedTag" styleName="{style.tableheader}">&nbsp;</g:HTML>
+			<g:ScrollPanel ui:field="tagsScroll" styleName="{style.scroll}">
+				<g:FlexTable ui:field="tagsTable" styleName="{style.table}"/>
+			</g:ScrollPanel>
+		</g:VerticalPanel>
+		<!-- 
+		<g:HTML ui:field="midPane" styleName="{style.midPane}">&nbsp;</g:HTML>
+		 -->
+		<!-- right pane for count report by tag -->
+		<g:VerticalPanel ui:field="rightPane" styleName="{style.rightPane}">
+			<g:HorizontalPanel ui:field="rightPaneHPanel" styleName="{style.countHeader}">
+				<g:HTML styleName="{style.title}">Traffic Flow Report</g:HTML>
+				<g:HTML ui:field="weekdayLink">Weekday</g:HTML>
+				<g:HTML ui:field="saturdayLink">Saturday</g:HTML>
+				<g:HTML ui:field="sundayHolidayLink">Sunday/Holiday</g:HTML>
+			</g:HorizontalPanel>
+			<g:HorizontalPanel styleName="{style.tableheader}">
+				<g:Label styleName="{style.hour}">Hour</g:Label>
+				<g:Label styleName="{style.cellHeader}">W2</g:Label>
+				<g:Label styleName="{style.cellHeader}">W3</g:Label>
+				<g:Label styleName="{style.cellHeader}">PC</g:Label>
+				<g:Label styleName="{style.cellHeader}">TX</g:Label>
+				<g:Label styleName="{style.cellHeader}">LDV</g:Label>
+				<g:Label styleName="{style.cellHeader}">LDC</g:Label>
+				<g:Label styleName="{style.cellHeader}">HDC</g:Label>
+				<g:Label styleName="{style.cellHeader}">MDB</g:Label>
+				<g:Label styleName="{style.cellHeader}">HDB</g:Label>
+			</g:HorizontalPanel>
+			<g:ScrollPanel ui:field="reportScroll" styleName="{style.scroll}">
+				<g:FlexTable ui:field="reportTable" styleName="{style.table}"/>
+			</g:ScrollPanel>		
+		</g:VerticalPanel>
+	</g:HorizontalPanel>
+</ui:UiBinder> 

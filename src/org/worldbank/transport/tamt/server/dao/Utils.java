@@ -15,16 +15,16 @@ public class Utils {
 	public static ArrayList<Vertex> geometryToVertexArrayList(Geometry geometry)
 	{
 		//TODO: verify type of geometry (using geometry.getType()?)
-		logger.debug("geometryToVertexArrayList...");
+		//logger.debug("geometryToVertexArrayList...");
 		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 		Coordinate[] coords = geometry.getCoordinates();
 		for (int i = 0; i < coords.length; i++) {
 			Coordinate c = coords[i];
-			logger.debug("coordinate=" + c);
+			//logger.debug("coordinate=" + c);
 			Vertex v = new Vertex();
 			v.setLat(c.y);
 			v.setLng(c.x);
-			logger.debug("vertex=" + v);
+			//logger.debug("vertex=" + v);
 			vertices.add(v);
 		}
 		return vertices;
