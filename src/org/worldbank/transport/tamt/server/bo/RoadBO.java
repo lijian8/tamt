@@ -68,6 +68,11 @@ public class RoadBO {
 			throw new Exception("Road must have a name");
 		}
 		
+		if( roadDetails.getTagId().equalsIgnoreCase(""))
+		{
+			throw new Exception("Road must have a tag");
+		}
+		
 		// we want to store the Vertex array list as a JTS linestring
 		ArrayList<Vertex> vertices = roadDetails.getVertices();
 		if( vertices == null )

@@ -30,7 +30,7 @@
 			</g:tab>
 			<g:tab>
 				<g:header>Traffic Flow Report</g:header>
-				<g:HTML>detailed traffic flow report</g:HTML>
+				<querym:TrafficFlowReportView ui:field="trafficFlowReportView"/>
 			</g:tab>							
 		</g:TabLayoutPanel>
 	</g:HorizontalPanel>

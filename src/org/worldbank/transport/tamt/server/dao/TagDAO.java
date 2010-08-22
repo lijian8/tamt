@@ -58,7 +58,6 @@ public class TagDAO extends DAO {
 			      tagDetails.setName(name);
 			      tagDetails.setDescription(description);
 			      
-			      //TODO: include StudyRegion inside TagDetails?
 			      tagDetails.setRegion(region);
 			      
 			      tagDetailsList.add(tagDetails);
@@ -71,7 +70,6 @@ public class TagDAO extends DAO {
 		} 
 		
 		return tagDetailsList;
-		//return stubList();
 		
 	}
 	
@@ -80,10 +78,6 @@ public class TagDAO extends DAO {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			// INSERT INTO films VALUES ('UA502', 'Bananas', 105, DEFAULT, 'Comedy', '82 minutes');
-			// name, description, regionName
-			// TODO: extend the model to include regionName string or region StudyRegion as property of TagDetails
-			// for now we just use 'default'
 			String sql = "INSERT INTO \"tagdetails\" (id, name, description, region) VALUES (" +
 					"'"+tagDetails.getId()+"', " +
 					"'"+tagDetails.getName()+"'," +
@@ -92,7 +86,7 @@ public class TagDAO extends DAO {
 			logger.debug("sql=" + sql);
 			logger.debug("native sql=" + connection.nativeSQL(sql));
 			s.executeUpdate(sql); 
-			connection.close(); // returns connection to the pool
+			connection.close();
 		} 
 	    catch (SQLException e) {
 			// TODO Auto-generated catch block

@@ -202,6 +202,7 @@ public class TagInformation extends Composite {
 			}
 		});	
 		
+		/*
 		eventBus.addHandler(ReceivedTagsEvent.TYPE,
 			new ReceivedTagsEventHandler() {
 				@Override
@@ -211,6 +212,8 @@ public class TagInformation extends Composite {
 					roadListing.setTagDetails(tagDetailsList);
 				}
 		});
+		*/
+		
 		eventBus.addHandler(CreatePolyLineEvent.TYPE,
 			new CreatePolyLineEventHandler() {
 		    	public void onCreatePolyLine(CreatePolyLineEvent event) {
