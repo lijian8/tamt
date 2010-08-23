@@ -437,7 +437,7 @@ public class TrafficCountDetailView extends Composite {
 		LDVLabel = new Label("Pickups, vans, SUVs (LDV)");
 		LDCLabel = new Label("Light-duty commercial (LDC)");
 		HDCLabel = new Label("Heavy-duty commercial (HDC)");
-		MDBLabel = new Label("Medium-duty minibuses (MDB");
+		MDBLabel = new Label("Medium-duty minibuses (MDB)");
 		HDBLabel = new Label("Heavy-duty buses (HDB)");	
 		
 		date = new TextBox();
