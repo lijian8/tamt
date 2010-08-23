@@ -31,10 +31,10 @@
 		}
 	</ui:style>
 	<g:HTMLPanel styleName="{style.debug}">
-		<g:HTML styleName="{style.application}" ui:field="regionNav" />
-		<g:HTML styleName="{style.application}" ui:field="tagNav" />
-		<g:HTML styleName="{style.application}" ui:field="importNav" />
-		<g:HTML styleName="{style.application}" ui:field="queryNav" />
-		<g:HTML styleName="{style.application}" ui:field="exportNav" />
+		<g:HTML styleName="{style.application}" ui:field="regionNav">Home</g:HTML>
+		<g:HTML styleName="{style.application}" ui:field="tagNav">Tag</g:HTML>
+		<g:HTML styleName="{style.application}" ui:field="importNav">Import</g:HTML>
+		<g:HTML styleName="{style.application}" ui:field="queryNav">Analysis</g:HTML>
+		<g:HTML styleName="{style.application}" ui:field="exportNav">Export</g:HTML>
 	</g:HTMLPanel>
 </ui:UiBinder>
