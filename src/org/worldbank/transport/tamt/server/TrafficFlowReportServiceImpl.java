@@ -39,10 +39,11 @@ public class TrafficFlowReportServiceImpl extends RemoteServiceServlet implement
 			throws Exception {
 		return api.getTrafficFlowReport(tagDetails, dayType);
 	}
-	
+
 	@Override
-	public void createTrafficFlowReport(StudyRegion region) throws Exception
-	{
-		api.createTrafficFlowReport(region);
+	public void createTrafficFlowReport(ArrayList<TagDetails> tagDetailsList)
+			throws Exception {
+		api.createTrafficFlowReport(tagDetailsList);
 	}
+
 }

@@ -23,6 +23,8 @@ import org.worldbank.transport.tamt.shared.TrafficCountReport;
 import org.worldbank.transport.tamt.shared.TrafficFlowReport;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
@@ -33,6 +35,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -40,8 +43,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -60,6 +65,7 @@ public class TrafficFlowReportView extends Composite {
 		String record();
 		String hour();
 		String cell();
+		String checkbox();
 	}
 
 	@UiField Style style;
@@ -67,24 +73,16 @@ public class TrafficFlowReportView extends Composite {
 	private TrafficFlowReportServiceAsync trafficFlowReportService;
 	
 	@UiField(provided=true) HorizontalPanel outerHPanel;
-	@UiField HorizontalPanel rightPaneHPanel;
 	@UiField VerticalPanel leftPane;
 	@UiField VerticalPanel rightPane;
-	//@UiField HTML midPane;
 	@UiField ScrollPanel tagsScroll;
 	@UiField ScrollPanel reportScroll;
 	@UiField FlexTable tagsTable;
 	@UiField FlexTable reportTable;
 	@UiField HTML selectedTag;
 	
-	@UiField HTML weekdayLink;
-	boolean weekdayLinkActive;
-	
-	@UiField HTML saturdayLink;
-	boolean saturdayLinkActive;
-	
-	@UiField HTML sundayHolidayLink;
-	boolean sundayHolidayLinkActive;
+	@UiField ListBox dayTypes;
+	@UiField CheckBox toggleAllCheckboxes;
 	
 	private StudyRegion currentStudyRegion;
 	
@@ -94,14 +92,22 @@ public class TrafficFlowReportView extends Composite {
 	private DialogBox dialog;
 	
 	private HashMap<String, String> niceDayTypeNames = new HashMap<String, String>();
+	private ArrayList<CheckBox> checkboxes;
+	private ArrayList<TagDetails> tagDetailsList;
+	protected HashMap<String, TagDetails> tagDetailsHash;
+
+	private final String TAG_SELECTED_NONE = "No tag selected";
+	private final String TAG_SELECTED = "Selected tag: ";
 	
 	public TrafficFlowReportView(HandlerManager eventBus) {
 		
 		this.eventBus = eventBus;
 		
+		checkboxes = new ArrayList<CheckBox>();
+		
 		dialog = new DialogBox();
 		
-		niceDayTypeNames.put(TrafficCountRecord.DAYTYPE_WEEKDAY, "weekday");
+		niceDayTypeNames.put(TrafficCountRecord.DAYTYPE_WEEKDAY, "Weekday");
 		niceDayTypeNames.put(TrafficCountRecord.DAYTYPE_SATURDAY, "Saturday");
 		niceDayTypeNames.put(TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY, "Sunday/Holiday");
 		
@@ -112,133 +118,119 @@ public class TrafficFlowReportView extends Composite {
 		
 		initWidget(uiBinder.createAndBindUi(this));
 		
+		dayTypes.addItem(niceDayTypeNames.get(TrafficCountRecord.DAYTYPE_WEEKDAY), TrafficCountRecord.DAYTYPE_WEEKDAY);
+		dayTypes.addItem(niceDayTypeNames.get(TrafficCountRecord.DAYTYPE_SATURDAY), TrafficCountRecord.DAYTYPE_SATURDAY);
+		dayTypes.addItem(niceDayTypeNames.get(TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY), TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY);
+		dayTypes.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				ListBox lb = (ListBox) event.getSource();
+				GWT.log("selectedIndex("+lb.getSelectedIndex()+"), selected value("+lb.getValue(lb.getSelectedIndex())+")");
+				String selectedDayType = lb.getValue(lb.getSelectedIndex());
+				if( currentTagDetails != null)
+				{
+					getTrafficCountReport(currentTagDetails, selectedDayType);
+				}
+			}
+		});
+		
+		selectedTag.setHTML(TAG_SELECTED_NONE);
+		
+		leftPane.setWidth("50%");
+		rightPane.setWidth("50%");
+		
 		outerHPanel.setCellHorizontalAlignment(leftPane, HasHorizontalAlignment.ALIGN_LEFT);
 		outerHPanel.setCellHorizontalAlignment(rightPane, HasHorizontalAlignment.ALIGN_LEFT);
-		
-		disableWeekdayLink();
-		hideDayTypeLinks();
 		
 		bind();
 		
 	}
-	
-	@UiHandler("weekdayLink")
-	void onClickWeekdayLink(ClickEvent e)
-	{
-		if(weekdayLinkActive)
-		{
-			getTrafficCountReport(currentTagDetails, TrafficCountRecord.DAYTYPE_WEEKDAY);
-		}
-	}
 
-	@UiHandler("saturdayLink")
-	void onClickSaturdayLink(ClickEvent e)
-	{
-		if(saturdayLinkActive)
-		{
-			getTrafficCountReport(currentTagDetails, TrafficCountRecord.DAYTYPE_SATURDAY);
-		}		
-	}
-	
-	@UiHandler("sundayHolidayLink")
-	void onClickSundayHolidayLink(ClickEvent e)
-	{
-		if(sundayHolidayLinkActive)
-		{
-			getTrafficCountReport(currentTagDetails, TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY);
-		}
-	}
-	
-	private void disableWeekdayLink()
-	{
-		weekdayLinkActive = false;
-		weekdayLink.removeStyleName(style.clickable());
-		
-		saturdayLinkActive = true;
-		saturdayLink.addStyleName(style.clickable());
-		
-		sundayHolidayLinkActive = true;
-		sundayHolidayLink.addStyleName(style.clickable());
-		
-	}
-
-	private void disableSaturdayLink()
-	{
-		weekdayLinkActive = true;
-		weekdayLink.addStyleName(style.clickable());
-		
-		saturdayLinkActive = false;
-		saturdayLink.removeStyleName(style.clickable());
-		
-		sundayHolidayLinkActive = true;
-		sundayHolidayLink.addStyleName(style.clickable());
-	}
-	
-	private void disableSundayHolidayLink()
-	{
-		weekdayLinkActive = true;
-		weekdayLink.addStyleName(style.clickable());
-		
-		saturdayLinkActive = true;
-		saturdayLink.addStyleName(style.clickable());
-		
-		sundayHolidayLinkActive = false;
-		sundayHolidayLink.removeStyleName(style.clickable());
-	}
-	
-	
-	@UiHandler("generateReports")
+	@UiHandler("generateReport")
 	void onClickGenerateReports(ClickEvent e) {
 
-		if( Window.confirm("Generate reports for all tags?\nThis may take a few minutes") )
+		if( Window.confirm("Create reports for all checked tags?") )
 		{
-
-			selectedTag.setHTML("");
-			clearTable();
-			currentTagDetails = null;
-			hideDayTypeLinks();
-			
-			// open a modal dialog;
-			dialog.setText("Generating reports");
-			dialog.setWidget(new HTML("Generating traffic flow reports for all tags. <br/>This may take a few minutes"));
-			dialog.setAutoHideEnabled(false);
-			dialog.setGlassEnabled(true);
-			dialog.center();
-			dialog.show();
-			
-			trafficFlowReportService.createTrafficFlowReport(currentStudyRegion, new AsyncCallback<Void>() {
-
-				@Override
-				public void onFailure(Throwable caught) {
-					// close dialog
-					dialog.hide();
-					Window.alert(caught.getMessage());
-				}
-
-				@Override
-				public void onSuccess(Void result) {
-					// close dialog
-					dialog.hide();
-					Window.alert("Traffic flow reports for all tags have been generated");
-				}
-			});			
+			generateReports();
+		} else {
+			uncheckMasterCheckBox();
+			for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
+				CheckBox cb = (CheckBox) iterator.next();
+				cb.setValue(false);
+			}
 		}
+		
 
 		
 	}
-	
-	private void hideDayTypeLinks() {
-		weekdayLink.setVisible(false);
-		saturdayLink.setVisible(false);
-		sundayHolidayLink.setVisible(false);
+
+	private void generateReports()
+	{
+		clearTable();
+		currentTagDetails = null;
+		selectedTag.setHTML(TAG_SELECTED_NONE);
+		dayTypes.setSelectedIndex(0);
+		toggleAllCheckboxes.setValue(false);
+		
+		// open a modal dialog;
+		dialog.setText("Generating reports");
+		dialog.setWidget(new HTML("Generating traffic flow reports for all selected tags. <br/>This may take a few minutes"));
+		dialog.setAutoHideEnabled(false);
+		dialog.setGlassEnabled(true);
+		dialog.center();
+		dialog.show();
+		
+		// populate the list of tag details selected for report generation
+		ArrayList<TagDetails> tagDetailsSelectedForReportGeneration = new ArrayList<TagDetails>();
+		
+		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
+			CheckBox cb = (CheckBox) iterator.next();
+			if( cb.getValue() )
+			{
+				TagDetails tagDetails = tagDetailsHash.get(cb.getFormValue());
+				tagDetailsSelectedForReportGeneration.add(tagDetails);
+			}
+		}
+		
+		
+		trafficFlowReportService.createTrafficFlowReport(tagDetailsSelectedForReportGeneration, new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// close dialog
+				dialog.hide();
+				clearAllCheckBoxes();
+				Window.alert(caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				// close dialog
+				dialog.hide();
+				clearAllCheckBoxes();
+				Window.alert("Traffic flow reports have been generated");
+			}
+		});
 	}
 
-	private void showDayTypeLinks() {
-		weekdayLink.setVisible(true);
-		saturdayLink.setVisible(true);
-		sundayHolidayLink.setVisible(true);
+	protected void clearAllCheckBoxes() {
+		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
+			CheckBox cb = (CheckBox) iterator.next();
+			cb.setValue(false);
+		}
 	}
 
+	@UiHandler("toggleAllCheckboxes")
+	void onClickToggleAllCheckboxes(ClickEvent e) {
+		CheckBox master = (CheckBox) e.getSource();
+		GWT.log("toggleCheckboxes:" + master.getValue());
+		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
+			CheckBox cb = (CheckBox) iterator.next();
+			cb.setValue(master.getValue());
+			GWT.log("cb: form value("+cb.getFormValue()+"), checked value("+cb.getValue()+")");
+		}	
+	}
 	
 	private void bind() {
 		
@@ -256,9 +248,17 @@ public class TrafficFlowReportView extends Composite {
 			public void onFetchedTags(FetchedTagsEvent event) {
 				
 				// clear out the old selected tag and report table
-				selectedTag.setHTML("");
+				// selectedTag.setHTML("");
 				reportTable.clear();
 				reportTable.removeAllRows();
+				
+				// build a hash of tags for ease of use in report generation
+				tagDetailsHash = new HashMap<String, TagDetails>();
+				for (Iterator iterator = event.getTags().iterator(); iterator
+						.hasNext();) {
+					TagDetails tagDetails = (TagDetails) iterator.next();
+					tagDetailsHash.put(tagDetails.getId(), tagDetails);
+				}
 				
 				renderTags(event.getTags());
 			}
@@ -269,18 +269,22 @@ public class TrafficFlowReportView extends Composite {
 			@Override
 			public void onTAMTResize(TAMTResizeEvent event) {
 				GWT.log("SIZE: TrafficFlowReportView width: " + event.width);
-				int h = event.height - 195; // account for other query module UI
-				int w = event.width - 476;
+				int h = event.height - 225; // account for other query module UI
+				int reportH = h - 20;
+				int w = event.width - 283; // x - 696 = 564; .: x = 564 + 696 = 1260; 1260 - x = 413
 				GWT.log("SIZE: TrafficFlowReportView adjusted width: " + w);
 				if( h > -1)
 				{
 					String height = Integer.toString(h) + "px";
 					GWT.log("SIZE: TrafficFlowReportView adjusted height: " + height);
 					tagsScroll.setHeight(height);
-					reportScroll.setHeight(height);
+					
+					String reportHeight = Integer.toString(reportH) + "px";
+					reportScroll.setHeight(reportHeight);
 					
 					// hack because panes are not left-aligning
 					String width = Integer.toString(w) + "px";
+					GWT.log("SIZE: TrafficFlowReportView adjusted width: " + width);
 					rightPane.setWidth(width);
 				}
 				
@@ -290,12 +294,33 @@ public class TrafficFlowReportView extends Composite {
 
 	protected void renderTags(ArrayList<TagDetails> tags) {
 		
+		// keep track of the tags for report generation
+		tagDetailsList = tags;
+		
 		// clear out the old table
 		tagsTable.removeAllRows();
 		tagsTable.clear();
 		
+        // clear out the checkboxes
+        checkboxes.clear();
+        uncheckMasterCheckBox();
+        
 		for (int i = 0; i < tags.size(); i++) {
 			final TagDetails tagDetails = tags.get(i);
+			
+			CheckBox cb = new CheckBox();
+			cb.setFormValue(tagDetails.getId()); //store the id in the checkbox value
+			checkboxes.add(cb); // keep track for selecting all|none to delete
+			cb.setStyleName(style.checkbox());
+			
+			// if a checkbox is checked, deselect the master checkbox
+			cb.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					uncheckMasterCheckBox();
+				}
+			});
+			
 			Label name = new Label(tagDetails.getName());
 			name.addStyleName(style.clickable());
 			name.addClickHandler(new ClickHandler() {
@@ -307,9 +332,16 @@ public class TrafficFlowReportView extends Composite {
 					getTrafficCountReport(tagDetails, TrafficCountRecord.DAYTYPE_WEEKDAY);
 				}
 			});
-			tagsTable.setWidget(i, 0, name);
+			tagsTable.setWidget(i, 0, cb);
+			tagsTable.getCellFormatter().setWidth(i, 0, "20px");
+			tagsTable.setWidget(i, 1, name);
 		}
 		
+	}
+	
+	private void uncheckMasterCheckBox()
+	{
+		toggleAllCheckboxes.setValue(false);
 	}
 	
 	private void clearTable()
@@ -326,22 +358,10 @@ public class TrafficFlowReportView extends Composite {
 		reportTable.clear();
 		
 		currentTagDetails = tagDetails;
-		showDayTypeLinks();
 		
-		selectedTag.setHTML("Selected tag: <b>"+tagDetails.getName()+"</b>");
+		selectedTag.setHTML( TAG_SELECTED + " <b>"+tagDetails.getName()+"</b>");
 		
-		//tagDetails.setRegion(currentStudyRegion);
 		GWT.log("tagDetails prior to report fetch=" + tagDetails);
-		
-		/*
-		String niceDayType = niceDayTypeNames.get(dayType);
-		dialog.setText("Please wait...");
-		dialog.setWidget(new HTML("Getting "+niceDayType+" traffic flow report for \""+tagDetails.getName()+"\" tag"));
-		dialog.setAutoHideEnabled(false);
-		dialog.setGlassEnabled(true);
-		dialog.center();
-		dialog.show();
-		*/
 		
 		trafficFlowReportService.getTrafficFlowReport(tagDetails, dayType, new AsyncCallback<TrafficFlowReport>() {
 
@@ -358,17 +378,9 @@ public class TrafficFlowReportView extends Composite {
 				//dialog.hide();
 				if( result.getCreated() == null)
 				{
-					Window.alert("There was no report for this tag. Please generate all reports.");
+					Window.alert("There was no report for this tag. Please create a report and try again.");
+					selectedTag.setHTML( TAG_SELECTED_NONE );
 				} else {
-					String dayType = result.getDayType();
-					if( dayType.equalsIgnoreCase(TrafficCountRecord.DAYTYPE_WEEKDAY))
-					{
-						disableWeekdayLink();
-					} else if (dayType.equalsIgnoreCase(TrafficCountRecord.DAYTYPE_SATURDAY)) {
-						disableSaturdayLink();
-					} else {
-						disableSundayHolidayLink();
-					}
 					renderReport(result);
 				}
 			}

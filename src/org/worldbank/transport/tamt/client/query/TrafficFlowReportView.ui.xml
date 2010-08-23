@@ -4,19 +4,13 @@
 	<ui:style type="org.worldbank.transport.tamt.client.query.TrafficFlowReportView.Style">
 		.outer {
 			background-color: white;
-			width: 100%;
 		}
 		.leftPane {
 			background-color: white;
-			width: 360px;
-		}	
-		.midPane {
-			background-color: white;
-			width: 20px;
-		}		
+			margin-right: 10px;
+		}			
 		.rightPane {
 			background-color: white;
-			width: 100%;
 		}		
 		.hpanel {
 			width: 100%;
@@ -38,14 +32,21 @@
 			height: 358px;
 			background-color: white;
 			border: 1px solid #cccccc;
+			margin-top: 6px;
 		}	
+		.tagScroll {
+			height: 358px;
+			width: 200px;
+			background-color: white;
+			border: 1px solid #cccccc;
+			margin-top: 6px;
+		}		
 		.countHeader {
 			width: 400px;
 			vertical-align: bottom;
 		}
 		.table {
-			margin: 10px;
-			padding: 2px;
+
 		}
 		.tableheader {
 			height: 20px;	
@@ -69,33 +70,56 @@
 			border: 0px solid black
 		}
 		.button {
-			margin-right: 10px;	
-			font-size: 8pt;
+			margin-left: 10px;
 		}
+		.checkbox {
+			width: 10px;
+		}	 
+		.checkAll {
+			margin-top: 2px;	
+		}
+		.menu {
+			height: 20px;
+			background-color: white;
+		}
+		.selectedTag {
+			margin-left: 10px;	
+		}		
 	</ui:style>
 	<g:HorizontalPanel ui:field="outerHPanel" styleName="{style.outer}">
 		<!-- left pane for Tags -->
 		<g:VerticalPanel ui:field="leftPane" styleName="{style.leftPane}">
-			<g:HorizontalPanel ui:field="leftPaneHPanel" styleName="{style.countHeader}">
+
+			<g:HorizontalPanel ui:field="leftPaneHPanel">
 				<g:HTML styleName="{style.title}">Tags</g:HTML>
-				<g:HTML ui:field="generateReports" styleName="{style.clickable}">Generate traffic flow reports for all tags</g:HTML>
 			</g:HorizontalPanel>
-			<g:HTML ui:field="selectedTag" styleName="{style.tableheader}">&nbsp;</g:HTML>
-			<g:ScrollPanel ui:field="tagsScroll" styleName="{style.scroll}">
+				
+			<g:HTML><hr/></g:HTML>
+			
+			<g:HorizontalPanel styleName="{style.menu}">
+				<g:CheckBox ui:field="toggleAllCheckboxes" styleName="{style.checkAll}"/>
+				<g:Button ui:field="generateReport" styleName="{style.button}">Create report</g:Button>
+			</g:HorizontalPanel>
+			
+			<g:ScrollPanel ui:field="tagsScroll" styleName="{style.tagScroll}">
 				<g:FlexTable ui:field="tagsTable" styleName="{style.table}"/>
 			</g:ScrollPanel>
+			
 		</g:VerticalPanel>
-		<!-- 
-		<g:HTML ui:field="midPane" styleName="{style.midPane}">&nbsp;</g:HTML>
-		 -->
+
 		<!-- right pane for count report by tag -->
 		<g:VerticalPanel ui:field="rightPane" styleName="{style.rightPane}">
-			<g:HorizontalPanel ui:field="rightPaneHPanel" styleName="{style.countHeader}">
-				<g:HTML styleName="{style.title}">Traffic Flow Report</g:HTML>
-				<g:HTML ui:field="weekdayLink">Weekday</g:HTML>
-				<g:HTML ui:field="saturdayLink">Saturday</g:HTML>
-				<g:HTML ui:field="sundayHolidayLink">Sunday/Holiday</g:HTML>
+		
+			<g:HTML styleName="{style.title}">Traffic Flow Report</g:HTML>
+		
+			<g:HTML><hr/></g:HTML>
+			
+			<g:HorizontalPanel styleName="{style.menu}">
+				<g:ListBox ui:field="dayTypes"/>
+				<g:HTML ui:field="selectedTag" styleName="{style.selectedTag}"/>
 			</g:HorizontalPanel>
+			
+			
 			<g:HorizontalPanel styleName="{style.tableheader}">
 				<g:Label styleName="{style.hour}">Hour</g:Label>
 				<g:Label styleName="{style.cellHeader}">W2</g:Label>

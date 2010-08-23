@@ -25,9 +25,9 @@ public class TrafficFlowReportAPI {
 		bo = TrafficFlowReportBO.get();
 	}
 	
-	public void createTrafficFlowReport(StudyRegion region) throws Exception
+	public void createTrafficFlowReport(ArrayList<TagDetails> tagDetailsList) throws Exception
 	{
-		bo.createTrafficFlowReport(region);
+		bo.createTrafficFlowReport(tagDetailsList);
 	}
 	
 	public TrafficFlowReport getTrafficFlowReport(TagDetails tagDetails, String dayType) throws Exception

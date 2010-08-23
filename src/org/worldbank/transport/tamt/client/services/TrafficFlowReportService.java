@@ -15,5 +15,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface TrafficFlowReportService extends RemoteService {
 
 	TrafficFlowReport getTrafficFlowReport(TagDetails tagDetails, String dayType) throws Exception;
-	void createTrafficFlowReport(StudyRegion region) throws Exception;
+	void createTrafficFlowReport(ArrayList<TagDetails> tagDetailsList)
+			throws Exception;
 }
