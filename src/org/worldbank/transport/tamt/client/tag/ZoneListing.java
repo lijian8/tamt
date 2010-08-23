@@ -98,12 +98,10 @@ public class ZoneListing extends Composite {
 
 	@UiField ZoneStyle style;
 
-	@UiField Label select;
-	@UiField Label all;
-	@UiField Label none;
+	@UiField CheckBox toggleAllCheckboxes;
 	@UiField Button save;
 	@UiField Button delete;
-	@UiField Label refresh;
+	@UiField Button refresh;
 	
 	@UiField TextBox name;
 	@UiField TextBox description;
@@ -150,25 +148,21 @@ public class ZoneListing extends Composite {
 		bind();
 	}
 
-	@UiHandler("all")
-	void onClickAll(ClickEvent e) {
+	@UiHandler("toggleAllCheckboxes")
+	void onClickToggleAllCheckboxes(ClickEvent e) {
+		CheckBox master = (CheckBox) e.getSource();
+		GWT.log("toggleCheckboxes:" + master.getValue());
 		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
 			CheckBox cb = (CheckBox) iterator.next();
-			cb.setValue(true);
-		}
-	}
-
-	@UiHandler("none")
-	void onClickNone(ClickEvent e) {
-		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
-			CheckBox cb = (CheckBox) iterator.next();
-			cb.setValue(false);
-		}
+			cb.setValue(master.getValue());
+			GWT.log("cb: form value("+cb.getFormValue()+"), checked value("+cb.getValue()+")");
+		}	
 	}
 	
 	@UiHandler("refresh")
 	void onClickRefresh(ClickEvent e) {
 		refreshZoneDetails = true;
+		zoneList.removeAllRows();
 		fetchZoneDetails();
 	}	
 	
@@ -353,6 +347,7 @@ public class ZoneListing extends Composite {
 			public void onSuccess(Void result) {
 				GWT.log("Zone details deleted");
 				refreshZoneDetails = true;
+				uncheckMasterCheckBox();
 				fetchZoneDetails();
 			}
 		});
@@ -446,6 +441,11 @@ public class ZoneListing extends Composite {
 		save.setText("Save");
 	}
 	
+	private void uncheckMasterCheckBox()
+	{
+		toggleAllCheckboxes.setValue(false);
+	}
+	
 	private void fetchZoneDetails() {
 		
 		//if( refreshZoneDetails )
@@ -469,6 +469,10 @@ public class ZoneListing extends Composite {
 		          GWT.log("zoneDetailsList=" + zoneDetailsList);
 		          zoneList.removeAllRows();
 		          
+		          // clear out the checkboxes
+		          checkboxes.clear();
+		          uncheckMasterCheckBox();
+		          
 		          // create a hash of <roadId>|vertex array to throw over to TagMap for rendering
 		          vertexHash = new HashMap<String, ArrayList<Vertex>>();
 		          
@@ -483,12 +487,15 @@ public class ZoneListing extends Composite {
 					cb.setFormValue(zoneDetails.getId()); //store the id in the checkbox value
 					checkboxes.add(cb); // keep track for selecting all|none to delete
 					cb.setStyleName(style.checkbox());
+
+					// if a checkbox is checked, deselect the master checkbox
 					cb.addClickHandler(new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
-							GWT.log("handle click for checkbox of zoneDetail("+count+")");
+							uncheckMasterCheckBox();
 						}
 					});
+					
 					Label name = new Label(zoneDetails.getName());
 					name.setStyleName(style.zoneList());
 					name.addStyleName(style.clickable());

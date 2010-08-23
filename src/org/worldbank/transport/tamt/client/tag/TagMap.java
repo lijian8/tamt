@@ -727,6 +727,7 @@ public class TagMap extends Composite {
 		{
 			eventBus.fireEvent(new GetRoadsEvent());
 		} else {
+			
 			polylines = new ArrayList<TagPolyline>();
 			
 			GWT.log("Inspect roadListingVertexHash...");

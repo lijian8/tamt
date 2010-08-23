@@ -35,7 +35,6 @@
 			font-size: 12px;;	
 		}
 		.tagRecords {
-			font-size: 12px;
 			font-weight: bold;	
 		}		
 		.label {
@@ -70,6 +69,12 @@
 		.invisible {
 			visibility: hidden;
 		}
+		.checkAll {
+			margin-top: 2px;	
+		}
+		.button {
+			margin-left: 10px;	
+		}
 	</ui:style>
 		<g:VerticalPanel ui:field="panel" width="100%">
 			<g:FormPanel ui:field="uploadForm" method="post">
@@ -99,12 +104,10 @@
 			</g:FormPanel>
 			<g:HTML><hr/></g:HTML>
 			<g:HorizontalPanel styleName="{style.menu}">
-				 <g:Label ui:field="select" text="Select: " styleName="{style.nav}"/>
-				 <g:Label ui:field="all" text="All" styleName="{style.nav} {style.clickable}"/>
-				 <g:Label ui:field="none" text="None" styleName="{style.nav} {style.clickable}"/>
-				 <g:Label ui:field="refresh" text="Refresh" styleName="{style.nav} {style.clickable}"/>
-			 	 <g:Button ui:field="delete" text="Delete checked" styleName="{style.delete}"/>
-			 	 <g:Button ui:field="assignToRoads" text="Assign GPS records" styleName="{style.tagRecords}"/>
+				 <g:CheckBox ui:field="toggleAllCheckboxes" styleName="{style.checkAll}"/>
+				 <g:Button ui:field="refresh" styleName="{style.button}">Refresh</g:Button>
+			 	 <g:Button ui:field="delete" styleName="{style.button}">Delete checked</g:Button>
+			 	 <g:Button ui:field="assignToRoads" text="Assign GPS records" styleName="{style.button}"/>
 				 <g:Button ui:field="process" text="Process checked" styleName="{style.invisible}"/>
 			</g:HorizontalPanel>
 			<g:HTML><hr/></g:HTML>
