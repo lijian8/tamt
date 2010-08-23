@@ -45,16 +45,14 @@ public class TrafficFlowReportBO {
 	}
 	
 	
-	public void createTrafficFlowReport(StudyRegion region) throws Exception
+	public void createTrafficFlowReport(ArrayList<TagDetails> tagDetailsList) throws Exception
 	{
-		// get all the tags for a region
-		ArrayList<TagDetails> tagDetailsList = tagDao.getTagDetails(region);
-		logger.debug("tagDetailList=" + tagDetailsList);
-		
 		// for each tag, generate the traffic flow report
 		for (Iterator iterator = tagDetailsList.iterator(); iterator.hasNext();) {
+			
 			TagDetails tagDetails = (TagDetails) iterator.next();
-			logger.debug("get reports for tag("+tagDetails.getName()+")");
+			
+			logger.debug("create traffic flow reports for tag("+tagDetails.getId()+")");
 
 			// one for each day type
 			String dayType = TrafficCountRecord.DAYTYPE_WEEKDAY;
@@ -109,7 +107,54 @@ public class TrafficFlowReportBO {
 		DefaultFlow defaultFlow = regionDao.getDefaultFlow(query);
 		if( defaultFlow == null)
 		{
-			throw new Exception("Cannot generate report. There is no default flow \nfor the '"+tagDetails.getName()+"' tag");
+			/*
+			 * We used to an error here:
+			 * throw new Exception("Cannot generate report. There is no default flow \nfor the '"+tagDetails.getName()+"' tag");
+			 * 
+			 * But, according the jarogers, we should have a default flow of 0 for
+			 * all values if there is no default flow entity for this tag.
+			 * 
+			 */
+			defaultFlow = new DefaultFlow();
+			defaultFlow.setTagDetails(tagDetails);
+			
+			defaultFlow.setW2Weekday("0");
+			defaultFlow.setW2Saturday("0");
+			defaultFlow.setW2SundayHoliday("0");
+			
+			defaultFlow.setW3Weekday("0");
+			defaultFlow.setW3Saturday("0");
+			defaultFlow.setW3SundayHoliday("0");
+			
+			defaultFlow.setPcWeekday("0");
+			defaultFlow.setPcSaturday("0");
+			defaultFlow.setPcSundayHoliday("0");
+			
+			defaultFlow.setTxWeekday("0");
+			defaultFlow.setTxSaturday("0");
+			defaultFlow.setTxSundayHoliday("0");
+			
+			defaultFlow.setLdcWeekday("0");
+			defaultFlow.setLdcSaturday("0");
+			defaultFlow.setLdcSundayHoliday("0");
+			
+			defaultFlow.setLdvWeekday("0");
+			defaultFlow.setLdvSaturday("0");
+			defaultFlow.setLdvSundayHoliday("0");
+			
+			defaultFlow.setHdcWeekday("0");
+			defaultFlow.setHdcSaturday("0");
+			defaultFlow.setHdcSundayHoliday("0");
+			
+			defaultFlow.setMdbWeekday("0");
+			defaultFlow.setMdbSaturday("0");
+			defaultFlow.setMdbSundayHoliday("0");
+			
+			defaultFlow.setHdbWeekday("0");
+			defaultFlow.setHdbSaturday("0");
+			defaultFlow.setHdbSundayHoliday("0");
+			
+			
 		}
 		
 		ArrayList<ArrayList> rawData = dao.getTrafficFlowReportData(tagDetails, dayType);
@@ -123,8 +168,6 @@ public class TrafficFlowReportBO {
 			hour++;
 			hasValuesList.add(hasValues);
 		}
-		
-
 		
 		ArrayList<String> defaultFlowValues = new ArrayList<String>();
 		
