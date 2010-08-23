@@ -65,9 +65,7 @@
 		}
 		.hour {
 			width: 50px;
-			margin-left: 15px;
 			padding: 2px;
-			border: 0px solid black
 		}
 		.button {
 			margin-left: 10px;
