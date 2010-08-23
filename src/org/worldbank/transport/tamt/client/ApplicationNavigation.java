@@ -58,14 +58,6 @@ public class ApplicationNavigation extends Composite {
 		
 		bind();
 		
-		// set names on modules
-		// TODO: Add il8n
-		regionNav.setText("Home");
-		tagNav.setText("Tag");
-		importNav.setText("Import / Assign");
-		queryNav.setText("Query");
-		exportNav.setText("Export");
-		
 		// select Home
 		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.REGION, true));
 	}
