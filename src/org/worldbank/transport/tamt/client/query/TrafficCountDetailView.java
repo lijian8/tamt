@@ -430,15 +430,15 @@ public class TrafficCountDetailView extends Composite {
 		startTimeLabel = new Label("Start time");
 		endTimeLabel = new Label("End time");
 		tagLabel = new Label("Tag");
-		W2Label = new Label("Two-wheeler");
-		W3Label = new Label("Three-wheeler");
-		PCLabel = new Label("Passenger car");
-		TXLabel = new Label("Taxi");
-		LDVLabel = new Label("Pickups, vans, SUVs");
-		LDCLabel = new Label("Light-duty commercial");
-		HDCLabel = new Label("Heavy-duty commercial");
-		MDBLabel = new Label("Medium-duty minibuses");
-		HDBLabel = new Label("Heavy-duty buses");	
+		W2Label = new Label("Two-wheeler (W2)");
+		W3Label = new Label("Three-wheeler (W3)");
+		PCLabel = new Label("Passenger car (PC)");
+		TXLabel = new Label("Taxi (TX) ");
+		LDVLabel = new Label("Pickups, vans, SUVs (LDV)");
+		LDCLabel = new Label("Light-duty commercial (LDC)");
+		HDCLabel = new Label("Heavy-duty commercial (HDC)");
+		MDBLabel = new Label("Medium-duty minibuses (MDB");
+		HDBLabel = new Label("Heavy-duty buses (HDB)");	
 		
 		date = new TextBox();
 		
