@@ -81,12 +81,10 @@ public class RoadListing extends Composite {
 
 	@UiField RoadStyle style;
 
-	@UiField Label select;
-	@UiField Label all;
-	@UiField Label none;
 	@UiField Button save;
 	@UiField Button delete;
-	@UiField Label refresh;
+	@UiField Button refresh;
+	@UiField CheckBox toggleAllCheckboxes;
 	
 	@UiField TextBox name;
 	@UiField TextBox description;
@@ -135,25 +133,22 @@ public class RoadListing extends Composite {
 		bind();
 	}
 
-	@UiHandler("all")
-	void onClickAll(ClickEvent e) {
+	@UiHandler("toggleAllCheckboxes")
+	void onClickToggleAllCheckboxes(ClickEvent e) {
+		CheckBox master = (CheckBox) e.getSource();
+		GWT.log("toggleCheckboxes:" + master.getValue());
 		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
 			CheckBox cb = (CheckBox) iterator.next();
-			cb.setValue(true);
-		}
-	}
-
-	@UiHandler("none")
-	void onClickNone(ClickEvent e) {
-		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
-			CheckBox cb = (CheckBox) iterator.next();
-			cb.setValue(false);
-		}
+			cb.setValue(master.getValue());
+			GWT.log("cb: form value("+cb.getFormValue()+"), checked value("+cb.getValue()+")");
+		}	
 	}
 	
 	@UiHandler("refresh")
 	void onClickRefresh(ClickEvent e) {
 		refreshRoadDetails = true;
+		roadList.removeAllRows();
+		uncheckMasterCheckBox();
 		fetchRoadDetails();
 	}	
 	
@@ -187,9 +182,20 @@ public class RoadListing extends Composite {
 		if( Window.confirm("Delete all checked roads?") )
 		{
 			deleteRoadDetails();
+		} else {
+			uncheckMasterCheckBox();
+			for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
+				CheckBox cb = (CheckBox) iterator.next();
+				cb.setValue(false);
+			}
 		}
 	}	
 
+	private void uncheckMasterCheckBox()
+	{
+		toggleAllCheckboxes.setValue(false);
+	}
+	
 	private void bind()
 	{
 		
@@ -385,8 +391,8 @@ public class RoadListing extends Composite {
 
 			@Override
 			public void onSuccess(Void result) {
-				GWT.log("Tag details deleted");
 				refreshRoadDetails = true;
+				uncheckMasterCheckBox();
 				fetchRoadDetails();
 			}
 		});
@@ -509,6 +515,10 @@ public class RoadListing extends Composite {
         // create a hash of <roadId>|vertex array to throw over to TagMap for rendering
         vertexHash = new HashMap<String, ArrayList<Vertex>>();
         
+        // clear out the checkboxes
+        checkboxes.clear();
+        uncheckMasterCheckBox();
+        
         for (int i = 0; i < roadDetailsList.size(); i++) {
       	final int count = i;
 			final RoadDetails roadDetails = roadDetailsList.get(i);
@@ -522,10 +532,11 @@ public class RoadListing extends Composite {
 			cb.setFormValue(roadDetails.getId()); //store the id in the checkbox value
 			checkboxes.add(cb); // keep track for selecting all|none to delete
 			cb.setStyleName(style.checkbox());
+			// if a checkbox is checked, deselect the master checkbox
 			cb.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					GWT.log("handle click for checkbox of tagDetail("+count+")");
+					uncheckMasterCheckBox();
 				}
 			});
 			Label name = new Label(roadDetails.getName());

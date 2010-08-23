@@ -71,10 +71,8 @@ public class GPSTracesView extends Composite {
 
 	@UiField GPSTraceStyle style;
 
-	@UiField Label select;
-	@UiField Label all;
-	@UiField Label none;
-	@UiField Label refresh;
+	@UiField CheckBox toggleAllCheckboxes;
+	@UiField Button refresh;
 	@UiField Button delete;
 	@UiField Button process;
 	@UiField Button assignToRoads;
@@ -197,22 +195,21 @@ public class GPSTracesView extends Composite {
 		});		
 		return f;
 	}
-
-	@UiHandler("all")
-	void onClickAll(ClickEvent e) {
+	@UiHandler("toggleAllCheckboxes")
+	void onClickToggleAllCheckboxes(ClickEvent e) {
+		CheckBox master = (CheckBox) e.getSource();
+		GWT.log("toggleCheckboxes:" + master.getValue());
 		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
 			CheckBox cb = (CheckBox) iterator.next();
-			cb.setValue(true);
-		}
-	}
-
-	@UiHandler("none")
-	void onClickNone(ClickEvent e) {
-		uncheckAll();
+			cb.setValue(master.getValue());
+			GWT.log("cb: form value("+cb.getFormValue()+"), checked value("+cb.getValue()+")");
+		}	
 	}
 	
 	@UiHandler("refresh")
 	void onClickRefresh(ClickEvent e) {
+		gpsTraceList.removeAllRows();
+		uncheckMasterCheckBox();
 		fetchGPSTraces();
 	}
 	
@@ -237,6 +234,12 @@ public class GPSTracesView extends Composite {
 		{
 			eventBus.fireEvent( new OpenWaitModelDialogEvent("Deleting GPS traces", "This may take a few minutes.") );
 			deleteGPSTraces();
+		} else {
+			uncheckMasterCheckBox();
+			for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
+				CheckBox cb = (CheckBox) iterator.next();
+				cb.setValue(false);
+			}
 		}
 	}	
 	
@@ -245,6 +248,11 @@ public class GPSTracesView extends Composite {
 	{
 		eventBus.fireEvent( new OpenWaitModelDialogEvent("Uploading GPS traces", "This may take a few minutes.") );
 		uploadForm.submit();
+	}
+	
+	private void uncheckMasterCheckBox()
+	{
+		toggleAllCheckboxes.setValue(false);
 	}
 	
 	public void bind()
@@ -309,7 +317,6 @@ public class GPSTracesView extends Composite {
 				gpsTraceList.removeAllRows();
 				gpsTraceList.clear();
 				
-				checkboxes = new ArrayList<CheckBox>();
 				
 				gpsTraceList.setWidget(0, 1, new HTML("Name"));
 				gpsTraceList.setWidget(0, 2, new HTML("Filename"));
@@ -320,6 +327,10 @@ public class GPSTracesView extends Composite {
 				//gpsTraceList.setWidget(0, 5, new HTML("Processed date"));
 				gpsTraceList.getRowFormatter().setStyleName(0, style.columnHeader());
 				
+		        // clear out the checkboxes
+		        checkboxes.clear();
+		        uncheckMasterCheckBox();
+		          
 				for (int i = 0; i < gpsTraces.size(); i++) {
 		        	final int count = i;
 					final GPSTrace gpsTrace = gpsTraces.get(i);
@@ -329,12 +340,15 @@ public class GPSTracesView extends Composite {
 					cb.setFormValue(gpsTrace.getId()); //store the id in the checkbox value
 					checkboxes.add(cb); // keep track for selecting all|none to delete
 					cb.setStyleName(style.checkbox());
+
+					// if a checkbox is checked, deselect the master checkbox
 					cb.addClickHandler(new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
-							GWT.log("handle click for checkbox of gpsTrace("+count+")");
+							uncheckMasterCheckBox();
 						}
 					});
+					
 					Label name = new Label(gpsTrace.getName());
 					name.setStyleName(style.list());
 					
@@ -657,6 +671,7 @@ public class GPSTracesView extends Composite {
 
 			@Override
 			public void onSuccess(Void result) {
+				uncheckMasterCheckBox();
 				fetchGPSTraces();
 				eventBus.fireEvent( new CloseWaitModelDialogEvent() );
 			}

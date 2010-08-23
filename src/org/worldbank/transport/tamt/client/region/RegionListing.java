@@ -70,12 +70,11 @@ public class RegionListing extends Composite {
 	@UiField RegionStyle style;
 	@UiField(provided=true) ListBox zoneTypes;
 	
-	@UiField Label select;
-	@UiField Label all;
-	@UiField Label none;
+
+	@UiField CheckBox toggleAllCheckboxes;
 	@UiField Button save;
 	@UiField Button delete;
-	@UiField Label refresh;
+	@UiField Button refresh;
 	
 	@UiField TextBox name;
 	@UiField TextBox description;
@@ -123,27 +122,23 @@ public class RegionListing extends Composite {
 		
 		bind();
 	}
-
-	@UiHandler("all")
-	void onClickAll(ClickEvent e) {
+	
+	@UiHandler("toggleAllCheckboxes")
+	void onClickToggleAllCheckboxes(ClickEvent e) {
+		CheckBox master = (CheckBox) e.getSource();
+		GWT.log("toggleCheckboxes:" + master.getValue());
 		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
 			CheckBox cb = (CheckBox) iterator.next();
-			cb.setValue(true);
-		}
-	}
-
-	@UiHandler("none")
-	void onClickNone(ClickEvent e) {
-		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
-			CheckBox cb = (CheckBox) iterator.next();
-			cb.setValue(false);
-		}
+			cb.setValue(master.getValue());
+			GWT.log("cb: form value("+cb.getFormValue()+"), checked value("+cb.getValue()+")");
+		}	
 	}
 	
 	@UiHandler("refresh")
 	void onClickRefresh(ClickEvent e) {
 		refreshStudyRegions = true;
-		GWT.log("RegionListing refresh study regions");
+		regionList.removeAllRows();
+		uncheckMasterCheckBox();
 		fetchStudyRegions();
 	}	
 	
@@ -171,9 +166,20 @@ public class RegionListing extends Composite {
 				", GPS traces, any tagged points.") )
 		{
 			deleteRegionDetails();
+		} else {
+			uncheckMasterCheckBox();
+			for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
+				CheckBox cb = (CheckBox) iterator.next();
+				cb.setValue(false);
+			}
 		}
 	}	
 
+	private void uncheckMasterCheckBox()
+	{
+		toggleAllCheckboxes.setValue(false);
+	}
+	
 	private void bind()
 	{
 		
@@ -410,6 +416,7 @@ public class RegionListing extends Composite {
 			public void onSuccess(Void result) {
 				GWT.log("Region details deleted");
 				refreshStudyRegions = true;
+				uncheckMasterCheckBox();
 				fetchStudyRegions();
 			}
 		});
@@ -591,6 +598,10 @@ public class RegionListing extends Composite {
 			          
 			          boolean hasCurrentStudyRegion = false;
 			          
+			          // clear out the checkboxes
+			          checkboxes.clear();
+			          uncheckMasterCheckBox();
+			          
 			          for (int i = 0; i < studyRegionList.size(); i++) {
 			        	final int count = i;
 						final StudyRegion studyRegion = studyRegionList.get(i);
@@ -619,12 +630,15 @@ public class RegionListing extends Composite {
 						cb.setFormValue(studyRegion.getId()); //store the id in the checkbox value
 						checkboxes.add(cb); // keep track for selecting all|none to delete
 						cb.setStyleName(style.checkbox());
+						
+						// if a checkbox is checked, deselect the master checkbox
 						cb.addClickHandler(new ClickHandler() {
 							@Override
 							public void onClick(ClickEvent event) {
-								GWT.log("handle click for checkbox of zoneDetail("+count+")");
+								uncheckMasterCheckBox();
 							}
 						});
+						
 						Label name = new Label(studyRegion.getName());
 						name.setStyleName(style.zoneList());
 						name.addStyleName(style.clickable());

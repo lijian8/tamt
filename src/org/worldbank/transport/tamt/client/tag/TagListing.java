@@ -52,16 +52,13 @@ public class TagListing extends Composite {
 
 	@UiField TagStyle style;
 	
-	@UiField Label select;
-	@UiField Label all;
-	@UiField Label none;
 	@UiField Button delete;
 	
 	@UiField Button save;
 	@UiField FlexTable tagList;
 	@UiField TextBox name;
 	@UiField TextBox description;
-	
+	@UiField CheckBox toggleAllCheckboxes;
 	@UiField ScrollPanel scrollPanel;
 	
 	private HandlerManager eventBus;
@@ -123,20 +120,15 @@ public class TagListing extends Composite {
 		});					
 	}
 
-	@UiHandler("all")
-	void onClickAll(ClickEvent e) {
+	@UiHandler("toggleAllCheckboxes")
+	void onClickToggleAllCheckboxes(ClickEvent e) {
+		CheckBox master = (CheckBox) e.getSource();
+		GWT.log("toggleCheckboxes:" + master.getValue());
 		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
 			CheckBox cb = (CheckBox) iterator.next();
-			cb.setValue(true);
-		}
-	}
-
-	@UiHandler("none")
-	void onClickNone(ClickEvent e) {
-		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
-			CheckBox cb = (CheckBox) iterator.next();
-			cb.setValue(false);
-		}
+			cb.setValue(master.getValue());
+			GWT.log("cb: form value("+cb.getFormValue()+"), checked value("+cb.getValue()+")");
+		}	
 	}
 	
 	@UiHandler("save")
@@ -145,9 +137,18 @@ public class TagListing extends Composite {
 		saveTagDetails();
 	}
 	
+	@UiHandler("refresh")
+	void onClickRefresh(ClickEvent e) {
+		refreshTagDetails = true;
+		clearTagDetailView();
+		tagList.removeAllRows();
+		fetchTagDetails();
+	}	
+	
 	@UiHandler("cancel")
 	void onClickCancel(ClickEvent e) {
 		clearTagDetailView();
+		uncheckMasterCheckBox();
 	}
 	
 	@UiHandler("delete")
@@ -155,8 +156,19 @@ public class TagListing extends Composite {
 		if( Window.confirm("Delete all checked tags?") )
 		{
 			deleteTagDetails();
+		} else {
+			uncheckMasterCheckBox();
+			for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
+				CheckBox cb = (CheckBox) iterator.next();
+				cb.setValue(false);
+			}
 		}
 	}	
+	
+	private void uncheckMasterCheckBox()
+	{
+		toggleAllCheckboxes.setValue(false);
+	}
 	
 	private void saveTagDetails() {
 		
@@ -229,6 +241,7 @@ public class TagListing extends Composite {
 			public void onSuccess(Void result) {
 				GWT.log("Tag details deleted");
 				refreshTagDetails = true;
+				uncheckMasterCheckBox();
 				fetchTagDetails();
 			}
 		});
@@ -258,6 +271,10 @@ public class TagListing extends Composite {
 	          GWT.log("tagDetailsList=" + tagDetailsList);
 	          tagList.removeAllRows();
 	          
+	          // clear out the checkboxes
+	          checkboxes.clear();
+	          uncheckMasterCheckBox();
+	          
 	          for (int i = 0; i < tagDetailsList.size(); i++) {
 	        	final int count = i;
 				final TagDetails tagDetails = tagDetailsList.get(i);
@@ -267,12 +284,15 @@ public class TagListing extends Composite {
 				cb.setFormValue(tagDetails.getId()); //store the id in the checkbox value
 				checkboxes.add(cb); // keep track for selecting all|none to delete
 				cb.setStyleName(style.checkbox());
+				
+				// if a checkbox is checked, deselect the master checkbox
 				cb.addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
-						GWT.log("handle click for checkbox of tagDetail("+count+")");
+						uncheckMasterCheckBox();
 					}
 				});
+				
 				Label name = new Label(tagDetails.getName());
 				name.setStyleName(style.tagList());
 				name.addStyleName(style.clickable());
