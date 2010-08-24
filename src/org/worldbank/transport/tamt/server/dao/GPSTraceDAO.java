@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.TimeZone;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -36,8 +37,8 @@ public class GPSTraceDAO extends DAO {
 	protected final String DELIMITER = "\t";
 	private final double ASSIGN_POINTS_TOLERANCE_DISTANCE = 20.0;
 	private final double ASSIGN_POINTS_TOLERANCE_BEARING = 45.0;
+	private RegionDAO regionDao;
 	
-
 	private static GPSTraceDAO singleton = null;
 	public static GPSTraceDAO get() {
 		if (singleton == null) {
@@ -47,7 +48,7 @@ public class GPSTraceDAO extends DAO {
 	}
 
 	public GPSTraceDAO() {
-
+		regionDao = RegionDAO.get();
 	}
 
 	public ArrayList<GPSTrace> getGPSTraces(StudyRegion region)
@@ -422,6 +423,37 @@ public class GPSTraceDAO extends DAO {
 		 */
 		Pattern pattern = Pattern.compile(",\\s*");
 
+		/*
+		 * We want to account for the UTC offset in the timestamp for each
+		 * GPS point. To do this, we lookup the UTC offset the user supplied
+		 * for the study region
+		 */
+		StudyRegion query = gpsTrace.getRegion();
+		StudyRegion studyRegion = regionDao.getStudyRegion(query); // has ID, returns full region info
+		int utfOffset = Integer.parseInt(studyRegion.getUtcOffset());
+		String utcOffsetString = "GMT" + studyRegion.getUtcOffset();
+		logger.debug("studyRegion UTC offset=" + utfOffset);
+		logger.debug("studyRegion UTC offset as string=" + utcOffsetString);
+		
+		/* CHANGING THE TIMEZONE TO CALC THE UTC IS NON-TRIVIAL
+		 * THIS WILL NEED SOME MORE WORK...
+		// test of timezone setting
+		Date testDate = new Date();
+		TimeZone origTZ = TimeZone.getDefault();
+		
+		TimeZone.setDefault(TimeZone.getDefault());
+		logger.debug("default tz=" + TimeZone.getDefault());
+		logger.debug("testDate=" + testDate);
+		
+		TimeZone.setDefault(TimeZone.getTimeZone(utcOffsetString));
+		logger.debug("changed default tz=" + TimeZone.getDefault());
+		logger.debug("testDate=" + testDate);
+		
+		TimeZone.setDefault(origTZ);
+		logger.debug("changed back to default tz=" + TimeZone.getDefault());
+		logger.debug("testDate=" + testDate);
+		*/
+		
 		while (entries.hasMoreElements()) {
 			ZipEntry entry = (ZipEntry) entries.nextElement();
 			InputStream is = zipFile.getInputStream(entry);
@@ -456,6 +488,10 @@ public class GPSTraceDAO extends DAO {
 
 							// timestamp from hhmmss, ddmmyy
 							Date timestamp = parseDate(data[1], data[9]);
+							/*
+							 * TODO: Account for the UTC offset of the region
+							 * in which this GPS point is being imported.
+							 */
 							p.setTimestamp(timestamp);
 
 							// latitude (ddmm.ss), latitude hemisphere (N or S)
@@ -473,6 +509,9 @@ public class GPSTraceDAO extends DAO {
 
 							// speed (in knots)
 							double speed = Double.parseDouble(data[7]);
+							// convert to meters per second
+							// 1 knot = 0.514444444 meters per second
+							speed = (speed * 0.5144);
 							p.setSpeed(speed);
 
 							/*
@@ -610,7 +649,6 @@ public class GPSTraceDAO extends DAO {
 		 * Some imported points may be outside the study region boundary.
 		 * Delete them.
 		 */
-		StudyRegion studyRegion = gpsTrace.getRegion();
 		if( studyRegion != null )
 		{
 			logger.debug("Delete points outside of study region boundary");
@@ -670,7 +708,7 @@ public class GPSTraceDAO extends DAO {
 
 		// clean up the temporary files
 		tmpFile.delete(); // we had a handle on this one, so just delete it
-		File copyFile = new File(copyFileName); // we didn't habe a deletable
+		File copyFile = new File(copyFileName); // we didn't have a deletable
 												// handle, so recreate it here
 		copyFile.delete();
 

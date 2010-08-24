@@ -59,6 +59,74 @@ public class RegionDAO extends DAO {
 		}
 	}
 
+	public StudyRegion getStudyRegion(StudyRegion studyRegion) throws Exception {
+		StudyRegion fetched = null;
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "select id, name, description, AsText(geometry) geom, " +
+			"mapzoomlevel, AsText(mapcenter) center, iscurrentregion, " +
+			"default_zone_type, utcoffset " +
+			"FROM studyregion WHERE id = '"+studyRegion.getId()+"' ORDER BY name";
+			logger.debug("getStudyRegions sql=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			while( r.next() ) { 
+				
+				/* 
+			      * Retrieve the geometry as an object then cast it to the geometry type. 
+			      * Print things out. 
+			      */ 
+				  String id = r.getString(1);
+			      String name = r.getString(2);
+			      String description = r.getString(3);
+			      String lineString = r.getString(4);
+			      int mapZoomLevel = r.getInt(5);
+			      String mapCenterWKT = r.getString(6);
+			      boolean currentRegion = r.getBoolean(7);
+			      String defaultZoneType = r.getString(8);
+			      String utcOffset = r.getString(9);
+			      
+			      // convert a linestring to a JTS geometry
+			      WKTReader reader = new WKTReader();
+			      Geometry geometry = reader.read(lineString);
+			      Point centroidJTS = geometry.getCentroid();
+			      
+			      fetched = new StudyRegion();
+			      fetched.setId(id);
+			      fetched.setName(name);
+			      fetched.setDescription(description);
+			      fetched.setCurrentRegion(currentRegion);
+			      fetched.setMapZoomLevel(mapZoomLevel);
+			      fetched.setDefaultZoneType(defaultZoneType);
+			      fetched.setUtcOffset(utcOffset);
+			      
+			      // now convert the geometry to an ArrayList<Vertex> and
+			      // set in the roadDetails
+			      ArrayList<Vertex> vertices = Utils.geometryToVertexArrayList(geometry);
+			      fetched.setVertices(vertices);
+			      
+			      // convert the centroid point into a Vertex
+			      Vertex centroid = new Vertex();
+			      centroid.setLat(centroidJTS.getY());
+			      centroid.setLng(centroidJTS.getX());
+			      fetched.setCentroid(centroid);
+			      
+			      // and get the map meta data too
+			      Geometry mapCenterGeom = reader.read(mapCenterWKT);
+			      Point mapCenterJTS = mapCenterGeom.getCentroid();
+			      Vertex mapCenterVertex = new Vertex();
+			      mapCenterVertex.setLat(mapCenterJTS.getY());
+			      mapCenterVertex.setLng(mapCenterJTS.getX());
+			      fetched.setMapCenter(mapCenterVertex);
+			}
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw e;
+			
+		}
+		return fetched; 
+	}
+	
 	public ArrayList<StudyRegion> getStudyRegions() throws Exception {
 		
 		ArrayList<StudyRegion> studyRegionList = new ArrayList<StudyRegion>();
@@ -587,6 +655,5 @@ public class RegionDAO extends DAO {
 			throw e;
 		}		
 	}
-
 	
 }
