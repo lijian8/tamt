@@ -9,10 +9,10 @@ public class TAMTPoint {
 	private double latitude; // decimal degrees WGS84
 	private double longitude;  // decimal degrees WGS84
 	private double bearing; // 0 - 360 degrees
-	private double speed; // unit is knots. 1 knot = 1.15 mph = 1.852 kph
+	private double speed; // unit is now meters per second
 	private double altitude; // altitude
 	private String altitudeUnits; // units for altitude
-	private Date timestamp; // full time stamp
+	private String timestamp; // yyyy/MM/dd HH:mm:ss for easy UTC conversion
 	
 	public TAMTPoint()
 	{
@@ -75,14 +75,6 @@ public class TAMTPoint {
 		this.altitude = altitude;
 	}
 
-	public Date getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
-	}
-
 	public void setAltitudeUnits(String altitudeUnits) {
 		this.altitudeUnits = altitudeUnits;
 	}
@@ -91,18 +83,37 @@ public class TAMTPoint {
 		return altitudeUnits;
 	}
 
+	public String getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
+
 	@Override
 	public String toString() {
-		return "TAMTPoint [" +
-				"id=" + id
-				+ ", gpsTraceId=" + gpsTraceId 
-				+ ", altitude=" + altitude 
-				+ ", altitudeUnits=" + altitudeUnits 
-				+ ", bearing=" + bearing
-				+ ", latitude=" + latitude
-				+ ", longitude=" + longitude 
-				+ ", speed=" + speed
-				+ ", timestamp=" + timestamp + "]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("TAMTPoint [altitude=");
+		builder.append(altitude);
+		builder.append(", altitudeUnits=");
+		builder.append(altitudeUnits);
+		builder.append(", bearing=");
+		builder.append(bearing);
+		builder.append(", gpsTraceId=");
+		builder.append(gpsTraceId);
+		builder.append(", id=");
+		builder.append(id);
+		builder.append(", latitude=");
+		builder.append(latitude);
+		builder.append(", longitude=");
+		builder.append(longitude);
+		builder.append(", speed=");
+		builder.append(speed);
+		builder.append(", timestamp=");
+		builder.append(timestamp);
+		builder.append("]");
+		return builder.toString();
 	}
 
 }

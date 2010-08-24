@@ -217,7 +217,8 @@ public class RegionDAO extends DAO {
 					" mapzoomlevel = "+studyRegion.getMapZoomLevel()+"," +
 					" mapcenter = GeometryFromText('"+mapCenter.toText()+"', 4326)," +
 					" iscurrentregion = "+studyRegion.isCurrentRegion()+"," +
-					" default_zone_type = '"+studyRegion.getDefaultZoneType()+"' " +
+					" default_zone_type = '"+studyRegion.getDefaultZoneType()+"', " +
+					" utcoffset = '"+studyRegion.getUtcOffset()+"' " +
 					"WHERE id = '"+studyRegion.getId()+"'";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
@@ -262,7 +263,9 @@ public class RegionDAO extends DAO {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "INSERT INTO \"studyregion\" (pid, id, name, description, geometry, mapzoomlevel, mapcenter, iscurrentregion, default_zone_type) " +
+			String sql = "INSERT INTO \"studyregion\" (pid, id, name, " +
+					"description, geometry, mapzoomlevel, mapcenter, " +
+					"iscurrentregion, default_zone_type, utcoffset) " +
 					"VALUES (" + 
 					"(SELECT nextval('studyregion_pid_seq'))," +
 					"'"+studyRegion.getId()+"', " +
@@ -272,7 +275,8 @@ public class RegionDAO extends DAO {
 					"'"+studyRegion.getMapZoomLevel()+"'," +
 					"GeometryFromText('"+mapCenter.toText()+"', 4326)," +
 					" "+studyRegion.isCurrentRegion()+"," +
-					" '"+studyRegion.getDefaultZoneType()+"' " +
+					" '"+studyRegion.getDefaultZoneType()+"', " +
+					" '"+studyRegion.getUtcOffset()+"' " +
 					")";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
