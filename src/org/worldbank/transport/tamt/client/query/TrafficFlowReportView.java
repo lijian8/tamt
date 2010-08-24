@@ -284,10 +284,7 @@ public class TrafficFlowReportView extends Composite {
 			@Override
 			public void onFetchedTags(FetchedTagsEvent event) {
 				
-				// clear out the old selected tag and report table
-				// selectedTag.setHTML("");
-				reportTable.clear();
-				reportTable.removeAllRows();
+				resetScreen();
 				
 				// build a hash of tags for ease of use in report generation
 				tagDetailsHash = new HashMap<String, TagDetails>();
