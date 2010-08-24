@@ -78,6 +78,7 @@ public class RegionListing extends Composite {
 	
 	@UiField TextBox name;
 	@UiField TextBox description;
+	@UiField TextBox utcOffset;
 	@UiField Label polyline;
 	@UiField Label vertices;
 	
@@ -258,7 +259,7 @@ public class RegionListing extends Composite {
 			public void onTAMTResize(TAMTResizeEvent event) {
 				GWT.log("SIZE: RegionListing scroll panel height within: " + event.height);
 				
-				int h = event.height - 318; // account for other study region UI
+				int h = event.height - 348; // account for other study region UI
 				
 				if( h > -1 )
 				{
@@ -349,16 +350,6 @@ public class RegionListing extends Composite {
 			}
 		});	
 		
-		/*
-		eventBus.addHandler(SentUpdatedPolygonEvent.TYPE,
-			new SentUpdatedPolygonEventHandler() {
-				@Override
-				public void onSentUpdatedPolygon(SentUpdatedPolygonEvent event) {
-					//TODO: update currentPolygon = event.tagPolygon;
-				}
-		});
-		*/
-		
 		eventBus.addHandler(EditRegionDetailsBySegmentEvent.TYPE,
 			new EditRegionDetailsBySegmentEventHandler() {
 				@Override
@@ -447,6 +438,7 @@ public class RegionListing extends Composite {
 		studyRegion.setId(currentStudyRegionId);
 		studyRegion.setCurrentRegion(currentStudyRegionCheckBox.getValue());
 		studyRegion.setDefaultZoneType(zoneTypes.getValue(zoneTypes.getSelectedIndex()));
+		studyRegion.setUtcOffset(utcOffset.getValue());
 		
 		GWT.log("DUPE Saving study region with id:" + currentStudyRegionId);
 		
@@ -531,20 +523,10 @@ public class RegionListing extends Composite {
 		return vertices;
 	}
 
-	/*
-	public void setTagDetails(ArrayList<TagDetails> tagDetails) {
-		this.tagDetailsList = tagDetails;
-		GWT.log("Update the suggest box with the tag details names");
-		for (Iterator iterator = tagDetails.iterator(); iterator.hasNext();) {
-			TagDetails td = (TagDetails) iterator.next();
-			tagSuggestions.add(td.getName());
-		}
-	}
-	*/
-
 	protected void clearRegionEditView() {
 		name.setText("");
 		description.setText("");
+		utcOffset.setText("");
 		currentStudyRegionId = null;
 		currentPolygon = null;
 		GWT.log("DUPE clearRegionEditView currentPolygon="+currentPolygon);
@@ -568,7 +550,7 @@ public class RegionListing extends Composite {
 				@Override
 			      public void onFailure(Throwable caught) {
 			        Window.alert("Error fetching study regions");
-			        GWT.log(caught.getMessage());
+			        GWT.log("Error fetching study regions: " + caught.getMessage());
 			      }
 
 				@Override
@@ -707,6 +689,7 @@ public class RegionListing extends Composite {
 				break;
 			}
 		}
+		utcOffset.setText(studyRegion.getUtcOffset());
 		
 		save.setText("Update");
 		

@@ -9,6 +9,8 @@ public class StudyRegion implements Serializable {
 	private String id;
 	private String name;
 	private String description;
+	private String utcOffset;
+	
 	private String defaultZoneType;
 	
 	private ArrayList<Vertex> vertices;
@@ -96,6 +98,14 @@ public class StudyRegion implements Serializable {
 		return defaultZoneType;
 	}
 
+	public void setUtcOffset(String utcOffset) {
+		this.utcOffset = utcOffset;
+	}
+
+	public String getUtcOffset() {
+		return utcOffset;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -115,6 +125,8 @@ public class StudyRegion implements Serializable {
 		builder.append(mapZoomLevel);
 		builder.append(", name=");
 		builder.append(name);
+		builder.append(", utcOffset=");
+		builder.append(utcOffset);
 		builder.append(", vertices=");
 		builder.append(vertices);
 		builder.append("]");

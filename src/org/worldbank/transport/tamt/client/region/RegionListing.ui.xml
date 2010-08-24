@@ -56,7 +56,10 @@
 		}
 		.button {
 			margin-left: 10px;	
-		}		
+		}	
+		.utc {
+			width: 80px;
+		}
 	</ui:style>
 	<g:VerticalPanel>
 		<g:HorizontalPanel styleName="{style.detailRow}">
@@ -68,6 +71,10 @@
 			<g:TextBox ui:field="description"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel styleName="{style.detailRow}">
+			<g:HTML styleName="{style.label}">UTC offset:</g:HTML>
+			<g:TextBox ui:field="utcOffset" styleName="{style.utc}"/> 
+		</g:HorizontalPanel>		
+		<g:HorizontalPanel styleName="{style.detailRow}">
 			<g:HTML styleName="{style.label}">Default zone type:</g:HTML>
 			<g:ListBox ui:field="zoneTypes"/>
 		</g:HorizontalPanel>		
@@ -75,7 +82,7 @@
 			<g:HTML styleName="{style.label}">Current region?</g:HTML>
 			<g:CheckBox ui:field="currentStudyRegionCheckBox" /> 
 		</g:HorizontalPanel>
-		
+				
 		<g:HorizontalPanel styleName="{style.invisible}">
 			<g:HTML styleName="{style.label}">debug 1:</g:HTML>
 			<g:Label ui:field="polyline"/>
@@ -98,7 +105,7 @@
 		</g:HorizontalPanel>
 		
 		<g:HTML><hr/></g:HTML>
-		<g:ScrollPanel ui:field="scrollPanel" height="288px">
+		<g:ScrollPanel ui:field="scrollPanel" height="238px">
 			<g:FlexTable ui:field="regionList" cellSpacing="0" cellPadding="0" width="100%" styleName="{style.zoneList}"/>
 		</g:ScrollPanel>
 	</g:VerticalPanel>
