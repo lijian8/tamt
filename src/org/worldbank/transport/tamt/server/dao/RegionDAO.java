@@ -221,6 +221,42 @@ public class RegionDAO extends DAO {
 	    return studyRegion;
 
 	}
+	
+	public TagDetails getStudyRegion(TagDetails tagDetails) throws Exception
+	{
+		
+		StudyRegion studyRegion = null;
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "SELECT t.id, t.name, s.id, s.name " +
+					"FROM tagdetails t, studyregion s " +
+					"WHERE t.region = s.id " +
+					"AND t.id = '"+tagDetails.getId()+"'";
+			logger.debug("sql=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			while( r.next() ) { 
+				
+				// we will use the tag name
+				tagDetails.setName(r.getString(2));
+				
+				// and we really want the study name
+				studyRegion = new StudyRegion();
+				studyRegion.setId(r.getString(3));
+				studyRegion.setName(r.getString(4));
+				
+				tagDetails.setRegion(studyRegion);
+				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+			throw e;
+			
+		}
+		return tagDetails; 
+		
+	}
 
 	public void deleteStudyRegions(ArrayList<String> studyRegionIds) throws SQLException {
 		for (Iterator iterator = studyRegionIds.iterator(); iterator.hasNext();) {

@@ -80,6 +80,7 @@ public class TrafficFlowReportView extends Composite {
 	@UiField FlexTable tagsTable;
 	@UiField FlexTable reportTable;
 	@UiField HTML selectedTag;
+	@UiField Label downloadReport;
 	
 	@UiField ListBox dayTypes;
 	@UiField CheckBox toggleAllCheckboxes;
@@ -98,6 +99,8 @@ public class TrafficFlowReportView extends Composite {
 
 	private final String TAG_SELECTED_NONE = "No tag selected";
 	private final String TAG_SELECTED = "Selected tag: ";
+	private final String DOWNLOAD_REPORT = "Download";
+	
 	
 	public TrafficFlowReportView(HandlerManager eventBus) {
 		
@@ -121,21 +124,25 @@ public class TrafficFlowReportView extends Composite {
 		dayTypes.addItem(niceDayTypeNames.get(TrafficCountRecord.DAYTYPE_WEEKDAY), TrafficCountRecord.DAYTYPE_WEEKDAY);
 		dayTypes.addItem(niceDayTypeNames.get(TrafficCountRecord.DAYTYPE_SATURDAY), TrafficCountRecord.DAYTYPE_SATURDAY);
 		dayTypes.addItem(niceDayTypeNames.get(TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY), TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY);
+		
 		dayTypes.addChangeHandler(new ChangeHandler() {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
-				ListBox lb = (ListBox) event.getSource();
-				GWT.log("selectedIndex("+lb.getSelectedIndex()+"), selected value("+lb.getValue(lb.getSelectedIndex())+")");
-				String selectedDayType = lb.getValue(lb.getSelectedIndex());
 				if( currentTagDetails != null)
 				{
-					getTrafficCountReport(currentTagDetails, selectedDayType);
+					ListBox lb = (ListBox) event.getSource();
+					GWT.log("selectedIndex("+lb.getSelectedIndex()+"), selected value("+lb.getValue(lb.getSelectedIndex())+")");
+					String selectedDayType = lb.getValue(lb.getSelectedIndex());
+					if( currentTagDetails != null)
+					{
+						getTrafficCountReport(currentTagDetails, selectedDayType);
+					}
 				}
 			}
 		});
 		
-		selectedTag.setHTML(TAG_SELECTED_NONE);
+		resetScreen();
 		
 		leftPane.setWidth("50%");
 		rightPane.setWidth("50%");
@@ -145,6 +152,20 @@ public class TrafficFlowReportView extends Composite {
 		
 		bind();
 		
+	}
+	
+	@UiHandler("downloadReport")
+	void onClickDownloadReport(ClickEvent e){
+		
+		if( currentTagDetails != null)
+		{
+			// create the url string for the download
+			String url = "/download/trafficflowreport?tgid=" + currentTagDetails.getId();
+			Window.open(url, "_blank", null);
+		} else {
+			Window.alert("Please select a tag to download a report");
+			resetScreen();
+		}
 	}
 
 	@UiHandler("generateReport")
@@ -169,9 +190,6 @@ public class TrafficFlowReportView extends Composite {
 	{
 		clearTable();
 		currentTagDetails = null;
-		selectedTag.setHTML(TAG_SELECTED_NONE);
-		dayTypes.setSelectedIndex(0);
-		toggleAllCheckboxes.setValue(false);
 		
 		// open a modal dialog;
 		dialog.setText("Generating reports");
@@ -200,7 +218,7 @@ public class TrafficFlowReportView extends Composite {
 			public void onFailure(Throwable caught) {
 				// close dialog
 				dialog.hide();
-				clearAllCheckBoxes();
+				resetScreen();
 				Window.alert(caught.getMessage());
 			}
 
@@ -208,13 +226,30 @@ public class TrafficFlowReportView extends Composite {
 			public void onSuccess(Void result) {
 				// close dialog
 				dialog.hide();
-				clearAllCheckBoxes();
+				resetScreen();
 				Window.alert("Traffic flow reports have been generated");
 			}
 		});
 	}
 
+	private void resetScreen()
+	{
+		clearAllCheckBoxes();
+		resetRightPane();
+	}
+	
+	private void resetRightPane()
+	{
+		dayTypes.setSelectedIndex(0);
+		selectedTag.setHTML(TAG_SELECTED_NONE);
+		currentTagDetails = null;
+		downloadReport.setVisible(false);
+		reportTable.removeAllRows();
+		reportTable.clear();
+	}
+	
 	protected void clearAllCheckBoxes() {
+		uncheckMasterCheckBox();
 		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
 			CheckBox cb = (CheckBox) iterator.next();
 			cb.setValue(false);
@@ -229,7 +264,8 @@ public class TrafficFlowReportView extends Composite {
 			CheckBox cb = (CheckBox) iterator.next();
 			cb.setValue(master.getValue());
 			GWT.log("cb: form value("+cb.getFormValue()+"), checked value("+cb.getValue()+")");
-		}	
+		}
+		resetRightPane();
 	}
 	
 	private void bind() {
@@ -239,6 +275,7 @@ public class TrafficFlowReportView extends Composite {
 			@Override
 			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
 				currentStudyRegion = event.studyRegion;
+				resetScreen();
 			}
 		});		
 		
@@ -317,7 +354,9 @@ public class TrafficFlowReportView extends Composite {
 			cb.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
+					resetRightPane();
 					uncheckMasterCheckBox();
+					reportSelectedTagDetails();
 				}
 			});
 			
@@ -326,8 +365,7 @@ public class TrafficFlowReportView extends Composite {
 			name.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(ClickEvent event) {
-					// by default, the first click on tag will
-					// always fetch the WEEKDAY report
+					resetRightPane();
 					currentTagDetails = tagDetails;
 					getTrafficCountReport(tagDetails, TrafficCountRecord.DAYTYPE_WEEKDAY);
 				}
@@ -339,6 +377,13 @@ public class TrafficFlowReportView extends Composite {
 		
 	}
 	
+	protected void reportSelectedTagDetails() {
+		for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
+			CheckBox cb = (CheckBox) iterator.next();
+			GWT.log("cb: form value("+cb.getFormValue()+"), checked value("+cb.getValue()+")");
+		}
+	}
+
 	private void uncheckMasterCheckBox()
 	{
 		toggleAllCheckboxes.setValue(false);
@@ -352,14 +397,14 @@ public class TrafficFlowReportView extends Composite {
 
 	protected void getTrafficCountReport(TagDetails tagDetails, String dayType) {
 		
-		// hack: give a visual clue that this table is being refreshed
-		// normally, you don't want a rash, but here we do, so empty the table
 		reportTable.removeAllRows();
 		reportTable.clear();
+		clearAllCheckBoxes();
 		
 		currentTagDetails = tagDetails;
 		
 		selectedTag.setHTML( TAG_SELECTED + " <b>"+tagDetails.getName()+"</b>");
+		downloadReport.setVisible(true);
 		
 		GWT.log("tagDetails prior to report fetch=" + tagDetails);
 		
@@ -379,7 +424,7 @@ public class TrafficFlowReportView extends Composite {
 				if( result.getCreated() == null)
 				{
 					Window.alert("There was no report for this tag. Please create a report and try again.");
-					selectedTag.setHTML( TAG_SELECTED_NONE );
+					resetScreen();
 				} else {
 					renderReport(result);
 				}
