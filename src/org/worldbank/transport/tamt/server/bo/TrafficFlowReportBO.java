@@ -2,7 +2,9 @@ package org.worldbank.transport.tamt.server.bo;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -48,6 +50,8 @@ public class TrafficFlowReportBO {
 	public void createTrafficFlowReport(ArrayList<TagDetails> tagDetailsList) throws Exception
 	{
 		// for each tag, generate the traffic flow report
+		logger.debug("createTrafficFlowReport: "+tagDetailsList);
+
 		for (Iterator iterator = tagDetailsList.iterator(); iterator.hasNext();) {
 			
 			TagDetails tagDetails = (TagDetails) iterator.next();
@@ -508,6 +512,126 @@ public class TrafficFlowReportBO {
 			}
 		}
 		return hasValue;
+	}
+
+	public String downloadTrafficFlowReport(String tagId) throws Exception {
+
+		TagDetails tagDetails = new TagDetails();
+		tagDetails.setId(tagId);
+		
+		tagDetails = regionDao.getStudyRegion(tagDetails);
+		String tagName = tagDetails.getName();
+		String studyRegionName = tagDetails.getRegion().getName();
+		
+		TrafficFlowReport weekday;
+		TrafficFlowReport saturday;
+		TrafficFlowReport sundayHoliday;
+		
+		String output = "";
+		
+		try {
+			weekday = dao.getTrafficFlowReport(tagDetails, TrafficCountRecord.DAYTYPE_WEEKDAY);
+			saturday = dao.getTrafficFlowReport(tagDetails, TrafficCountRecord.DAYTYPE_SATURDAY);
+			sundayHoliday = dao.getTrafficFlowReport(tagDetails, TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY);
+			
+			// get the date the report was created
+			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd/HH:mm:ss");
+			Date created = weekday.getCreated();
+			logger.debug("Date created:" + created);
+			String ts = format.format(created);
+			logger.debug("Formatted:" + ts);
+			String csvFileName = "traffic-flow-report-" + ts;
+			
+			StringBuffer sb = new StringBuffer();
+			sb.append("REPORTDATE,REGION,TAG,DAYTYPE,HOUR,W2,W3,PC,TX,LDV,LDC,HDC,MDB,HDB\n");
+			ArrayList<ArrayList> weekdayValues = weekday.getDayTypeValues();
+			for (Iterator iterator = weekdayValues.iterator(); iterator
+					.hasNext();) {
+				ArrayList row = (ArrayList) iterator.next();
+				
+				// add date report was created
+				sb.append(ts + ",");
+				
+				// add region name (need to lookup)
+				sb.append(studyRegionName + ",");
+				
+				// add tag name (need to lookup)
+				sb.append(tagName + ",");
+				
+				// add day type
+				sb.append(TrafficCountRecord.DAYTYPE_WEEKDAY + ",");
+				
+				for (Iterator iter = row.iterator(); iter.hasNext();) {
+					String item = (String) iter.next();
+					sb.append(item);
+					sb.append(",");
+				}
+				sb.append("\n");
+				
+				
+			}
+			
+			// saturday
+			ArrayList<ArrayList> saturdayValues = saturday.getDayTypeValues();
+			for (Iterator iterator = saturdayValues.iterator(); iterator
+					.hasNext();) {
+				ArrayList row = (ArrayList) iterator.next();
+				
+				// add date report was created
+				sb.append(ts + ",");
+				
+				// add region name (need to lookup)
+				sb.append(studyRegionName + ",");
+				
+				// add tag name (need to lookup)
+				sb.append(tagName + ",");
+				
+				// add day type
+				sb.append(TrafficCountRecord.DAYTYPE_SATURDAY + ",");
+				
+				for (Iterator iter = row.iterator(); iter.hasNext();) {
+					String item = (String) iter.next();
+					sb.append(item);
+					sb.append(",");
+				}
+				sb.append("\n");
+			}
+			
+			// sunday
+			ArrayList<ArrayList> sundayHolidayValues = sundayHoliday.getDayTypeValues();
+			for (Iterator iterator = sundayHolidayValues.iterator(); iterator
+					.hasNext();) {
+				ArrayList row = (ArrayList) iterator.next();
+				
+				// add date report was created
+				sb.append(ts + ",");
+				
+				// add region name (need to lookup)
+				sb.append(studyRegionName + ",");
+				
+				// add tag name (need to lookup)
+				sb.append(tagName + ",");
+				
+				// add day type
+				sb.append(TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY + ",");
+				
+				for (Iterator iter = row.iterator(); iter.hasNext();) {
+					String item = (String) iter.next();
+					sb.append(item);
+					sb.append(",");
+				}
+				sb.append("\n");
+			}
+			
+			output = sb.toString();
+			
+		} catch (Exception e) {
+			// TODO throw an error the download page can handle
+			logger.error(e.getMessage());
+		}
+		
+		return output;
+		
 	}
 
 }

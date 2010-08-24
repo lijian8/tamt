@@ -82,7 +82,11 @@
 		}
 		.selectedTag {
 			margin-left: 10px;	
-		}		
+		}	
+		.downloadReports {
+			margin-left: 10px;
+		}			
+			
 	</ui:style>
 	<g:HorizontalPanel ui:field="outerHPanel" styleName="{style.outer}">
 		<!-- left pane for Tags -->
@@ -115,6 +119,7 @@
 			<g:HorizontalPanel styleName="{style.menu}">
 				<g:ListBox ui:field="dayTypes"/>
 				<g:HTML ui:field="selectedTag" styleName="{style.selectedTag}"/>
+				<g:Label ui:field="downloadReport" styleName="{style.downloadReports} {style.clickable}">Download reports for this tag</g:Label>
 			</g:HorizontalPanel>
 			
 			

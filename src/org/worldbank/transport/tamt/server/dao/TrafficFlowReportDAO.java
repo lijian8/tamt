@@ -162,6 +162,7 @@ public class TrafficFlowReportDAO extends DAO {
 			ArrayList rowData = (ArrayList) iterator.next();
 			// Line format should be:
 			// pid,regionid,tagid,created,hour_bin,w2,w3,pc,tx,ldv,ldc,hdc,mdb,hdb\n
+			
 			int pid = getNextTrafficFlowReportSequenceValue();
 			sb.append(pid);
 			sb.append(DELIMITER);
@@ -173,7 +174,17 @@ public class TrafficFlowReportDAO extends DAO {
 			sb.append(DELIMITER);
 			sb.append(created);
 			sb.append(DELIMITER);
-			sb.append(rowData.get(0));
+
+			/*
+			 * We need to query by hour_bin, but if it is just text, the sort
+			 * does not work. So, convert it to a date here and store it as
+			 * such, but always return it as just the date_part('hour') as a string
+			 */
+			Date hourDate = new Date(); // from above; just a throwaway
+			String hourAsString = (String) rowData.get(0);
+			hourDate.setHours( Integer.parseInt(hourAsString));
+			sb.append(hourDate);
+			
 			sb.append(DELIMITER);
 			sb.append(rowData.get(1));
 			sb.append(DELIMITER);
@@ -259,7 +270,7 @@ public class TrafficFlowReportDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "SELECT  " +
 					"created, " +
-					"hour_bin, " +
+					"date_part('hour', hour_bin) as hour_bin, " +
 					"w2, " + 
 					"w3, " + 
 					"pc, " + 
@@ -271,7 +282,8 @@ public class TrafficFlowReportDAO extends DAO {
 					"hdb " + 
 					"FROM trafficflowreport " +
 					"WHERE tagid = '"+tagId+"' " +
-					"AND daytype = '"+dayType+"'";
+					"AND daytype = '"+dayType+"' " +
+					"ORDER BY hour_bin";
 			logger.debug("getTrafficFlowReport sql=" + sql);
 			ResultSet r = s.executeQuery(sql); 
 			
@@ -284,7 +296,7 @@ public class TrafficFlowReportDAO extends DAO {
 			while( r.next() ) { 
 				
 				ArrayList<String> values = new ArrayList<String>();
-				report.setCreated(r.getDate(1)); // set multiple times, oh well.
+				report.setCreated(r.getTimestamp(1)); // set multiple times, oh well.
 				
 				values.add(r.getString(2)); // hour_bin
 				

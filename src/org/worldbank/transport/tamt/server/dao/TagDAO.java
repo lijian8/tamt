@@ -144,20 +144,5 @@ public class TagDAO extends DAO {
 			throw e;
 		}		
 	}
-	
-	private ArrayList<TagDetails> stubList()
-	{
-		ArrayList<TagDetails> tagDetails = new ArrayList<TagDetails>();
-		int sample = 10;
-		for (int i = 0; i < sample; i++) {
-			UUID id = UUID.randomUUID();
-			TagDetails t = new TagDetails();
-			t.setName("Name-" + id.toString());
-			t.setDescription("Desc-"+id.toString());
-			tagDetails.add(t);
-		}
-		return tagDetails;
-	}
-
 	 
 }

@@ -57,6 +57,16 @@ version="2.4">
   </servlet-mapping>
   
   <servlet>
+    <servlet-name>downloadTrafficFlowReport</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.DownloadTrafficFlowReport</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>downloadTrafficFlowReport</servlet-name>
+    <url-pattern>/download/trafficflowreport</url-pattern>
+  </servlet-mapping>  
+  
+  <servlet>
     <servlet-name>assignServiceServlet</servlet-name>
     <servlet-class>org.worldbank.transport.tamt.server.AssignServiceImpl</servlet-class>
   </servlet>

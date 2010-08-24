@@ -35,4 +35,9 @@ public class TrafficFlowReportAPI {
 		return bo.getTrafficFlowReport(tagDetails, dayType);
 	}
 	
+	public String downloadTrafficFlowReport(String tagId) throws Exception
+	{
+		return bo.downloadTrafficFlowReport(tagId);
+	}
+	
 }

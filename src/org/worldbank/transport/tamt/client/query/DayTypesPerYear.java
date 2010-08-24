@@ -188,6 +188,8 @@ public class DayTypesPerYear extends Composite {
 			@Override
 			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
 				currentStudyRegion = event.studyRegion;
+				resetForm();
+				setOption1Active();
 			}
 		});
 		
