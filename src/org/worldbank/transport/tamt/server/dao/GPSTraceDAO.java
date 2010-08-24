@@ -15,8 +15,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -423,37 +425,6 @@ public class GPSTraceDAO extends DAO {
 		 */
 		Pattern pattern = Pattern.compile(",\\s*");
 
-		/*
-		 * We want to account for the UTC offset in the timestamp for each
-		 * GPS point. To do this, we lookup the UTC offset the user supplied
-		 * for the study region
-		 */
-		StudyRegion query = gpsTrace.getRegion();
-		StudyRegion studyRegion = regionDao.getStudyRegion(query); // has ID, returns full region info
-		int utfOffset = Integer.parseInt(studyRegion.getUtcOffset());
-		String utcOffsetString = "GMT" + studyRegion.getUtcOffset();
-		logger.debug("studyRegion UTC offset=" + utfOffset);
-		logger.debug("studyRegion UTC offset as string=" + utcOffsetString);
-		
-		/* CHANGING THE TIMEZONE TO CALC THE UTC IS NON-TRIVIAL
-		 * THIS WILL NEED SOME MORE WORK...
-		// test of timezone setting
-		Date testDate = new Date();
-		TimeZone origTZ = TimeZone.getDefault();
-		
-		TimeZone.setDefault(TimeZone.getDefault());
-		logger.debug("default tz=" + TimeZone.getDefault());
-		logger.debug("testDate=" + testDate);
-		
-		TimeZone.setDefault(TimeZone.getTimeZone(utcOffsetString));
-		logger.debug("changed default tz=" + TimeZone.getDefault());
-		logger.debug("testDate=" + testDate);
-		
-		TimeZone.setDefault(origTZ);
-		logger.debug("changed back to default tz=" + TimeZone.getDefault());
-		logger.debug("testDate=" + testDate);
-		*/
-		
 		while (entries.hasMoreElements()) {
 			ZipEntry entry = (ZipEntry) entries.nextElement();
 			InputStream is = zipFile.getInputStream(entry);
@@ -487,11 +458,7 @@ public class GPSTraceDAO extends DAO {
 							String[] data = pattern.split(line);
 
 							// timestamp from hhmmss, ddmmyy
-							Date timestamp = parseDate(data[1], data[9]);
-							/*
-							 * TODO: Account for the UTC offset of the region
-							 * in which this GPS point is being imported.
-							 */
+							String timestamp = parseDate(data[1], data[9]);
 							p.setTimestamp(timestamp);
 
 							// latitude (ddmm.ss), latitude hemisphere (N or S)
@@ -571,6 +538,8 @@ public class GPSTraceDAO extends DAO {
 								sb.append("\\N"); // null for road_id;
 								sb.append(DELIMITER);
 								sb.append("\\N"); // null for zone_id;
+								sb.append(DELIMITER);
+								sb.append("\\N"); // null for daytype;
 
 								// sb.append(geometry);// will print WKT
 								// sb.append("GeometryFromText('"+geometry.toText()+"', 4326)");
@@ -645,6 +614,10 @@ public class GPSTraceDAO extends DAO {
 		// and update the sequence value since we did a manual COPY
 		setNextGPSPointSequenceValue();
 		
+		// fill out the study region a bit more, including providing the offset
+		StudyRegion query = gpsTrace.getRegion();
+		StudyRegion studyRegion = regionDao.getStudyRegion(query);
+		
 		/*
 		 * Some imported points may be outside the study region boundary.
 		 * Delete them.
@@ -679,7 +652,62 @@ public class GPSTraceDAO extends DAO {
 			}
 		}
 		
+		/*
+		 * We want to account for the UTC offset in the 'created' timestamp for each
+		 * GPS point. To do this, we lookup the UTC offset the user supplied
+		 * for the study region, and use PostGIS intervals to calculate the correct date
+		 */
+		String regionOffset = studyRegion.getUtcOffset();
+		String intervalOperator = "+";
+		if( regionOffset == null || regionOffset.isEmpty() )
+		{
+			// default to 0, as in 'no offset'
+			// If the user has not supplied one, their GPS trip data may be WAY off
+			regionOffset = "0"; 
+		}
+		int utcOffset = Integer.parseInt(regionOffset);
+		if( utcOffset < 0)
+		{
+			// change the operator and remove the sign from the offset
+			intervalOperator = "-";
+			utcOffset = utcOffset * -1;
+		}
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "UPDATE gpspoints SET " +
+					" created = created "+intervalOperator+" " +
+							"interval '"+utcOffset+" hours' " +
+							"WHERE gpstraceid = '"+traceId+"'";
+			logger.debug("Fix UTC sql=" + sql);
+			s.executeUpdate(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+			throw new Exception(
+					"There was an error updating the GPS point timestamp to the UTC offset for the study region: "
+							+ e.getMessage());
+		}		
 
+		// Now calculate the dayType column for use in the speed binning process
+		// TODO: find a way to make this faster
+		// see: http://code.google.com/p/tamt/wiki/GPSPointDayTypeCalculation
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "UPDATE gpspoints SET " +
+					" daytype = (select * from TAMT_calculateGPSPointDayOfWeek( extract(dow from created)::text)) " +
+					"WHERE gpstraceid = '"+traceId+"'";
+			logger.debug("Calculate dayType sql=" + sql);
+			s.executeUpdate(sql);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+			throw new Exception(
+					"There was an error updating the GPS point dayType value: "
+							+ e.getMessage());
+		}		
+		
 		// now, update the postgis point geometry based on the lat / lng that we
 		// COPYd in
 		try {
@@ -696,7 +724,7 @@ public class GPSTraceDAO extends DAO {
 					"There was an error updating the point geometry: "
 							+ e.getMessage());
 		}
-
+		
 		// Processed date now refers to when the GPS records
 		// were assigned to roads
 
@@ -710,6 +738,8 @@ public class GPSTraceDAO extends DAO {
 		tmpFile.delete(); // we had a handle on this one, so just delete it
 		File copyFile = new File(copyFileName); // we didn't have a deletable
 												// handle, so recreate it here
+		
+		//TODO: comment to inspect files; uncomment for production
 		copyFile.delete();
 
 	}
@@ -774,8 +804,8 @@ public class GPSTraceDAO extends DAO {
 		return coord;
 	}
 
-	@SuppressWarnings("deprecation")
-	private Date parseDate(String hhmmss, String ddmmyy) {
+	private String parseDate(String hhmmss, String ddmmyy) {
+		
 		// first two chars of hhmmss are hours
 		int hours = Integer.parseInt(hhmmss.substring(0, 2));
 
@@ -792,16 +822,13 @@ public class GPSTraceDAO extends DAO {
 		int month = Integer.parseInt(ddmmyy.substring(2, 4));
 
 		// next two chars of ddmmyy are year
-		int year = 100 + Integer.parseInt(ddmmyy.substring(4, 6)); // add 100 to
-																	// 1900 to
-																	// get into
-																	// 21st
-																	// century
-
-		// create date
-		Date d = new Date(year, month, date, hours, minutes, seconds);
-
-		return d;
+		int year = 100 + Integer.parseInt(ddmmyy.substring(4, 6));
+		
+		// just format as straight UTC
+		// this will go in the database
+		year = year + 1900;
+		String dateStringFormatted = year + "/" +month+ "/" +date+ " " +hours+ ":" +minutes+ ":" + seconds ;
+		return dateStringFormatted;
 	}
 
 	public void deleteGPSTraces(ArrayList<String> gpsTraceIds)

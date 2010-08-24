@@ -128,7 +128,7 @@ public class ZipToTAMTPoint {
 		
 		// timestamp from hhmmss, ddmmyy
 		Date timestamp = parseDate(data[1], data[9]);
-		p.setTimestamp(timestamp);
+		//p.setTimestamp(timestamp);
 		
 		// latitude (ddmm.ss), latitude hemisphere (N or S)
 		double latitude = parseCoord(data[3], data[4]);
