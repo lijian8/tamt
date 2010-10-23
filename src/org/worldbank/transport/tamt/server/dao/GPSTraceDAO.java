@@ -540,6 +540,12 @@ public class GPSTraceDAO extends DAO {
 								sb.append("\\N"); // null for zone_id;
 								sb.append(DELIMITER);
 								sb.append("\\N"); // null for daytype;
+								sb.append(DELIMITER);
+								sb.append("\\N"); // null for hour;
+								sb.append(DELIMITER);
+								sb.append("\\N"); // null for kph;
+								sb.append(DELIMITER);
+								sb.append("\\N"); // null for speedbinnumber;
 
 								// sb.append(geometry);// will print WKT
 								// sb.append("GeometryFromText('"+geometry.toText()+"', 4326)");
@@ -613,6 +619,23 @@ public class GPSTraceDAO extends DAO {
 
 		// and update the sequence value since we did a manual COPY
 		setNextGPSPointSequenceValue();
+		
+		// new: convert knots in the speed column to kph, and set
+		// the speedbin number based on floor(kph/5)
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "SELECT * FROM TAMT_convertAndBinSpeeds('"+traceId+"');";
+			logger.debug(sql);
+			ResultSet r = s.executeQuery(sql); // returns a 1, which can be ignored
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+			throw new Exception(
+					"There was an error converting knots to kph and categorizing speed bins: "
+							+ e.getMessage());
+		}
+		
 		
 		// fill out the study region a bit more, including providing the offset
 		StudyRegion query = gpsTrace.getRegion();
@@ -689,14 +712,15 @@ public class GPSTraceDAO extends DAO {
 							+ e.getMessage());
 		}		
 
-		// Now calculate the dayType column for use in the speed binning process
+		// Now calculate the dayType and hourOfDay columns for use in the speed binning process
 		// TODO: find a way to make this faster
 		// see: http://code.google.com/p/tamt/wiki/GPSPointDayTypeCalculation
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
 			String sql = "UPDATE gpspoints SET " +
-					" daytype = (select * from TAMT_calculateGPSPointDayOfWeek( extract(dow from created)::text)) " +
+					" daytype = (select * from TAMT_calculateGPSPointDayOfWeek( extract(dow from created)::text)), " +
+					" hour = extract(hour from created)::text " +
 					"WHERE gpstraceid = '"+traceId+"'";
 			logger.debug("Calculate dayType sql=" + sql);
 			s.executeUpdate(sql);
@@ -707,6 +731,8 @@ public class GPSTraceDAO extends DAO {
 					"There was an error updating the GPS point dayType value: "
 							+ e.getMessage());
 		}		
+		
+		
 		
 		// now, update the postgis point geometry based on the lat / lng that we
 		// COPYd in
