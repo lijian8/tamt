@@ -161,7 +161,7 @@ public class TrafficFlowReportDAO extends DAO {
 		for (Iterator iterator = rawData.iterator(); iterator.hasNext();) {
 			ArrayList rowData = (ArrayList) iterator.next();
 			// Line format should be:
-			// pid,regionid,tagid,created,hour_bin,w2,w3,pc,tx,ldv,ldc,hdc,mdb,hdb\n
+			// pid,regionid,tagid,created,hour_bin,w2,w3,pc,tx,ldv,ldc,hdc,mdb,hdb,totalflow\n
 			
 			int pid = getNextTrafficFlowReportSequenceValue();
 			sb.append(pid);
@@ -203,6 +203,18 @@ public class TrafficFlowReportDAO extends DAO {
 			sb.append(rowData.get(8));
 			sb.append(DELIMITER);
 			sb.append(rowData.get(9));
+			sb.append(DELIMITER);
+			
+			/*
+			// add up all the counts for vehicle type and insert as total flow
+			double totalFlow = 0.0;
+			Double flow = new Double(0.0);
+			for (int i = 0; i <= 9; i++) {
+				flow = Double.parseDouble( (String)rowData.get(i) );
+				totalFlow = totalFlow + flow;
+			}
+			*/
+			sb.append("\\N"); // placeholder for total flow
 			sb.append("\n");
 		}
 		copy.write(sb.toString());
@@ -211,12 +223,15 @@ public class TrafficFlowReportDAO extends DAO {
 		// now COPY the data into the table en masse
 		try {
 			
+			// COPY the data from the text file into the table
 			try {
+				
 				Connection connection = getConnection();
 				Statement s = connection.createStatement();
 				String sql = "COPY trafficflowreport FROM '" + tmpName + "' WITH DELIMITER ','";
 				logger.debug(sql);
 				s.executeUpdate(sql);
+				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				logger.error(e.getMessage());
@@ -224,7 +239,24 @@ public class TrafficFlowReportDAO extends DAO {
 						"There was an error copying the traffic flow report to the database: "
 								+ e.getMessage());
 			}
-
+			
+			// update the totalflow for every record
+			try {
+				
+				Connection connection = getConnection();
+				Statement s = connection.createStatement();
+				String sql = "UPDATE trafficflowreport SET totalflow = (w2 + w3 + pc + tx + ldv + ldc + hdc + mdb + hdb)";
+				logger.debug(sql);
+				s.executeUpdate(sql);
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				logger.error(e.getMessage());
+				throw new Exception(
+						"There was an error updating the totalflow for the traffic flow report: "
+								+ e.getMessage());
+			}
+			
 		} 
 	    catch (SQLException e) {
 			// TODO Auto-generated catch block
