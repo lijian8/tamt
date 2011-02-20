@@ -1,13 +1,12 @@
-﻿CREATE OR REPLACE FUNCTION 
-	TAMT_reduceDayTypeFromSpeedDistributionTrafficFlow(
-		activeoption text, 
-		option1weekday integer, 
-		option2weekday integer,
-		option2saturday integer,
-		option2sundayholiday integer)
+-- Function: tamt_reducedaytypefromspeeddistributiontrafficflow(text, integer, integer, integer, integer)
+
+-- DROP FUNCTION tamt_reducedaytypefromspeeddistributiontrafficflow(text, integer, integer, integer, integer);
+
+CREATE OR REPLACE FUNCTION tamt_reducedaytypefromspeeddistributiontrafficflow(activeoption text, option1weekday integer, option2weekday integer, option2saturday integer, option2sundayholiday integer)
   RETURNS void AS
 $BODY$
 DECLARE
+	r RECORD;
 	tag RECORD;
 	vtype RECORD;
 	lastspeedbin integer;
@@ -16,17 +15,18 @@ DECLARE
 	summets double precision;
 BEGIN
 
--- 	RAISE NOTICE 'START TAMT_reduceDayTypeFromSpeedDistributionTrafficFlow';
--- 	RAISE NOTICE 'activeoption=%', activeoption;
--- 	RAISE NOTICE 'option1weekday=%', option1weekday;
--- 	RAISE NOTICE 'option2weekday=%', option2weekday;
--- 	RAISE NOTICE 'option2saturday=%', option2saturday;
--- 	RAISE NOTICE 'option2sundayholiday=%', option2sundayholiday;
+ 	-- RAISE NOTICE 'START TAMT_reduceDayTypeFromSpeedDistributionTrafficFlow';
+ 	-- RAISE NOTICE 'activeoption=%', activeoption;
+ 	-- RAISE NOTICE 'option1weekday=%', option1weekday;
+ 	-- RAISE NOTICE 'option2weekday=%', option2weekday;
+ 	-- RAISE NOTICE 'option2saturday=%', option2saturday;
+ 	-- RAISE NOTICE 'option2sundayholiday=%', option2sundayholiday;
 
 	sumsecs := 0;
 	summets := 0;
 
 	-- drop
+	-- RAISE NOTICE 'Dropping tables...';
 	DROP TABLE IF EXISTS tmp_speeddistribution_yearly_step1;
 	DROP TABLE IF EXISTS speeddistributiontrafficflowtagvehiclespeed;
 	
@@ -42,7 +42,7 @@ BEGIN
 		UPDATE speeddistributiontrafficflow
 			SET
 			percentvehiclesecondsperyear = percentvehiclesecondsperday * option1weekday,
-			percentvehiclemetersperyear = percentvehiclemetersperday * option1weekday,
+			percentvehiclemetersperyear = percentvehiclemetersperday * option1weekday
 			WHERE daytype = 'WEEKDAY';
 			-- This means that at the end of this query, any rows with 
 			-- SATURDAY or SUNDAYHOLIDAY daytypes do NOT have percentvehiclesecondsperbinperyear
@@ -54,25 +54,25 @@ BEGIN
 		UPDATE speeddistributiontrafficflow
 			SET
 			percentvehiclesecondsperyear = percentvehiclesecondsperday * option2weekday,
-			percentvehiclemetersperyear = percentvehiclemetersperday * option2weekday,
+			percentvehiclemetersperyear = percentvehiclemetersperday * option2weekday
 			WHERE daytype = 'WEEKDAY';
 		-- SATURDAY 
 		UPDATE speeddistributiontrafficflow
 			SET
 			percentvehiclesecondsperyear = percentvehiclesecondsperday * option2saturday,
-			percentvehiclemetersperyear = percentvehiclemetersperday * option2saturday,
+			percentvehiclemetersperyear = percentvehiclemetersperday * option2saturday
 			WHERE daytype = 'SATURDAY';
 		-- SUNDAY_HOLIDAY 
 		UPDATE speeddistributiontrafficflow
 			SET
 			percentvehiclesecondsperyear = percentvehiclesecondsperday * option2sundayholiday,
-			percentvehiclemetersperyear = percentvehiclemetersperday * option2sundayholiday,
+			percentvehiclemetersperyear = percentvehiclemetersperday * option2sundayholiday
 			WHERE daytype = 'SUNDAY_HOLIDAY';
 		
 	END IF;
 
-	-- create a (temporary) table
-	CREATE TABLE tmp_speeddistribution_yearly_step1 AS 
+	-- create a (temporary) table with object IDs so we can use them for the update later
+	CREATE TABLE tmp_speeddistribution_yearly_step1 WITH (OIDS=TRUE) AS 
 		SELECT 
 			tagid, vehicletype,speedbin,
 			percentvehiclesecondsperyear,
@@ -90,10 +90,10 @@ BEGIN
 		
 		FOR tag IN SELECT DISTINCT tagid FROM tmp_speeddistribution_yearly_step1
 		LOOP
-			--RAISE NOTICE 'tag=%', tag;
+			-- RAISE NOTICE 'tag=%', tag;
 			FOR vtype IN SELECT vehicletype FROM vehicletypes
 			LOOP
-				--RAISE NOTICE 'vtype=%', vtype;
+				-- RAISE NOTICE 'vtype=%', vtype;
 				FOR i IN 0..lastspeedbin LOOP
 					-- RAISE NOTICE 'speedbin=%', i;
 					
@@ -105,6 +105,8 @@ BEGIN
 						AND t.vehicletype = vtype.vehicletype
 						AND speedbin = i
 						LIMIT 1;
+					-- RAISE NOTICE 'summ=%', summ;
+					-- RAISE NOTICE 'm/s=%', summ.meters / summ.seconds;
 					
 					UPDATE tmp_speeddistribution_yearly_step1
 						SET
@@ -113,24 +115,8 @@ BEGIN
 						WHERE tagid = tag.tagid
 						AND vehicletype = vtype.vehicletype
 						AND speedbin = i;
-			
-					-- calculate average speed
-					BEGIN
-						UPDATE tmp_speeddistribution_yearly_step1
-							SET averagemeterspersecond = 
-							percentvehiclemetersperyear / percentvehiclesecondsperyear
-							WHERE tagid = tag.tagid
-							AND vehicletype = vtype.vehicletype
-							AND speedbin = i;
-					EXCEPTION
-						WHEN division_by_zero THEN
-						UPDATE tmp_speeddistribution_yearly_step1
-							SET averagemeterspersecond = 0
-							WHERE tagid = tag.tagid
-							AND vehicletype = vtype.vehicletype
-							AND speedbin = i;
-					END;
-						
+					
+					-- calculate average speed outside of loop	
 					
 				END LOOP; 
 			END LOOP;
@@ -139,20 +125,33 @@ BEGIN
 	END IF;
 
 	-- move the tmp table into a more permanent space
+	-- By using the DISTINCT clause we get rid of duplicate rows 
+	-- (which happens in the OPTION002 case)
 	CREATE TABLE speeddistributiontrafficflowtagvehiclespeed AS 
 		SELECT 
 		DISTINCT ON(tagid, vehicletype, speedbin) *
 		FROM tmp_speeddistribution_yearly_step1;
-
+		
+	-- recalculate the average speed in the new table
+	-- (doing it here instead of the temp table improves performance
+	-- since we don't have to update rows that are eliminated during
+	-- the table creation above)
+	FOR r IN SELECT * FROM speeddistributiontrafficflowtagvehiclespeed
+	LOOP
+		IF r.percentvehiclesecondsperyear = 0
+		THEN
+			UPDATE speeddistributiontrafficflowtagvehiclespeed
+			SET averagemeterspersecond = 0
+			WHERE oid = r.oid;
+		ELSE
+			UPDATE speeddistributiontrafficflowtagvehiclespeed
+			SET averagemeterspersecond = percentvehiclemetersperyear / percentvehiclesecondsperyear
+			WHERE oid = r.oid;
+		END IF;
+	END LOOP;
         
 END;
 $BODY$
-  LANGUAGE 'plpgsql';
-ALTER FUNCTION 
-	TAMT_reduceDayTypeFromSpeedDistributionTrafficFlow(
-		activeoption text, 
-		option1weekday integer, 
-		option2weekday integer,
-		option2saturday integer,
-		option2sundayholiday integer)
-OWNER TO gis;
+  LANGUAGE 'plpgsql' VOLATILE
+  COST 100;
+ALTER FUNCTION tamt_reducedaytypefromspeeddistributiontrafficflow(text, integer, integer, integer, integer) OWNER TO gis;
