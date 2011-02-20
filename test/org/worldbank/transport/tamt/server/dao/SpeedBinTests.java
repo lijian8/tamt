@@ -348,6 +348,19 @@ public class SpeedBinTests {
 		// what can i assert?
 	}
 
+	@Test
+	public void combineSpeedDistributionTrafficFlowIMPROVED()
+	{
+		logger.debug("test combineSpeedDistributionTrafficFlowIMPROVED");
+		
+		try {
+			speedBinDAO.combineSpeedDistributionTrafficFlowIMPROVED();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// what can i assert?
+	}	
 	
 	@Test
 	public void setSumValuesForVehicleType()
@@ -371,25 +384,29 @@ public class SpeedBinTests {
 		try {
 			
 			// already done: a full traffic flow report table, no gaps
-			
+			logger.debug("POPULATE SPEED DISTRIBUTION");
 			// from gps points, determine speed distribution
 			speedBinDAO.populateSpeedDistribution();
 			
 			// mark which speed distributions are observed
+			logger.debug("POPULATE SPEED DIST OBSERVED");
 			speedBinDAO.populateSpeedDistObserved();
 			
 			// fill in the gaps for speed distribution
+			logger.debug("INTERPOLATE SPEED DISTRIBUTION");
 			speedBinDAO.interpolateSpeedDistribution();
 			
 			// now we have a speed distribution table with no gaps
 			
 			// and now, combine speed distribution with traffic flow report
+			logger.debug("COMBINE SPEED DISTRIBUTION AND TRAFFIC FLOW");
 			speedBinDAO.combineSpeedDistributionTrafficFlow();
 			
-			// next step: remove day type from combo table
+			// reduce the table to remove day type
 			speedBinDAO.removeDayTypeFromSpeedDistributionTrafficFlow();
 			
-			
+			// TODO: reduce the table to remove tag
+			speedBinDAO.removeTagFromSpeedDistributionTrafficFlowTagVehicleSpeed();
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -522,8 +539,15 @@ public class SpeedBinTests {
 	@Test
 	public void removeDayTypeFromSpeedDistributionTrafficFlow()
 	{
-		// psuedo-code here:
-		// http://code.google.com/p/tamt/wiki/RemovingDayTypeFromSpeedDistributionTrafficFlow
+		logger.debug("test removeDayTypeFromSpeedDistributionTrafficFlow");
+		
+		try {
+			speedBinDAO.removeDayTypeFromSpeedDistributionTrafficFlow();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// what can i assert?
 		
 	}
 }

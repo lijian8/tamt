@@ -1198,16 +1198,35 @@ public class SpeedBinDAO extends DAO {
 	}
 
 	/**
-	 * This creates Table E in the pseudo-code:
+	 * This creates Table E (and F!) in the pseudo-code:
 	 * http://code.google.com/p/tamt/wiki/RemovingTagFromSpeedDistributionTrafficFlow
 	 * 
 	 * We will call this table: speeddistributiontrafficflowvehiclespeed
 	 * (Note that it is like the previous table, 
 	 * speeddistributiontrafficflowtagvehiclespeed, but without the tag
+	 * @throws Exception 
 	 * 
 	 */
-	public void removeTagFromSpeedDistributionTrafficFlowTagVehicleSpeed() {
-		// TODO Auto-generated method stub
+	public void removeTagFromSpeedDistributionTrafficFlowTagVehicleSpeed() throws Exception {
+
+		try {
+			
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			// pass off to stored procedure
+			String sql = "SELECT * FROM " +
+						" TAMT_reduceTagFromSpeedDistributionTrafficFlowTagVehicleSpeed()";
+			ResultSet r = s.executeQuery(sql); // ignored
+			
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw new Exception("There was an error executing the SQL: "
+					+ e.getMessage());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new Exception("Unknown exception: " + e.getMessage());
+		}
 		
 	}
 
