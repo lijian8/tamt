@@ -145,6 +145,16 @@ version="2.4">
     <servlet-name>trafficFlowReportServiceServlet</servlet-name>
     <url-pattern>/tamt/trafficFlowReportService</url-pattern>
   </servlet-mapping>  
+  
+  <servlet>
+    <servlet-name>speedDistributionReportServiceServlet</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.SpeedDistributionReportServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>speedDistributionReportServiceServlet</servlet-name>
+    <url-pattern>/tamt/speedDistributionReportService</url-pattern>
+  </servlet-mapping> 
           
   <servlet>
     <servlet-name>uploadGPSServlet</servlet-name>

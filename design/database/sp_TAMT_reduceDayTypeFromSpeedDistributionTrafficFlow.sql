@@ -15,18 +15,18 @@ DECLARE
 	summets double precision;
 BEGIN
 
- 	-- RAISE NOTICE 'START TAMT_reduceDayTypeFromSpeedDistributionTrafficFlow';
- 	-- RAISE NOTICE 'activeoption=%', activeoption;
- 	-- RAISE NOTICE 'option1weekday=%', option1weekday;
- 	-- RAISE NOTICE 'option2weekday=%', option2weekday;
- 	-- RAISE NOTICE 'option2saturday=%', option2saturday;
- 	-- RAISE NOTICE 'option2sundayholiday=%', option2sundayholiday;
+ 	RAISE NOTICE 'START TAMT_reduceDayTypeFromSpeedDistributionTrafficFlow';
+ 	RAISE NOTICE 'activeoption=%', activeoption;
+ 	RAISE NOTICE 'option1weekday=%', option1weekday;
+ 	RAISE NOTICE 'option2weekday=%', option2weekday;
+ 	RAISE NOTICE 'option2saturday=%', option2saturday;
+ 	RAISE NOTICE 'option2sundayholiday=%', option2sundayholiday;
 
 	sumsecs := 0;
 	summets := 0;
 
 	-- drop
-	-- RAISE NOTICE 'Dropping tables...';
+	RAISE NOTICE 'Dropping tables...';
 	DROP TABLE IF EXISTS tmp_speeddistribution_yearly_step1;
 	DROP TABLE IF EXISTS speeddistributiontrafficflowtagvehiclespeed;
 	
@@ -38,7 +38,7 @@ BEGIN
 			
 	IF activeoption = '1'
 	THEN
-		-- RAISE NOTICE 'Proceed with option 1 calculations';
+		RAISE NOTICE 'Proceed with option 1 calculations';
 		UPDATE speeddistributiontrafficflow
 			SET
 			percentvehiclesecondsperyear = percentvehiclesecondsperday * option1weekday,
@@ -48,7 +48,7 @@ BEGIN
 			-- SATURDAY or SUNDAYHOLIDAY daytypes do NOT have percentvehiclesecondsperbinperyear
 			-- or percentvehiclemetersperbinperyear
 	ELSE
-		-- RAISE NOTICE 'Proceed with option 2 calculations';
+		RAISE NOTICE 'Proceed with option 2 calculations';
 
 		-- WEEKDAY 
 		UPDATE speeddistributiontrafficflow
@@ -90,12 +90,12 @@ BEGIN
 		
 		FOR tag IN SELECT DISTINCT tagid FROM tmp_speeddistribution_yearly_step1
 		LOOP
-			-- RAISE NOTICE 'tag=%', tag;
+			RAISE NOTICE 'tag=%', tag;
 			FOR vtype IN SELECT vehicletype FROM vehicletypes
 			LOOP
-				-- RAISE NOTICE 'vtype=%', vtype;
+				RAISE NOTICE 'vtype=%', vtype;
 				FOR i IN 0..lastspeedbin LOOP
-					-- RAISE NOTICE 'speedbin=%', i;
+					RAISE NOTICE 'speedbin=%', i;
 					
 					SELECT INTO summ
 						SUM(t.percentvehiclesecondsperyear) AS seconds,
@@ -105,7 +105,7 @@ BEGIN
 						AND t.vehicletype = vtype.vehicletype
 						AND speedbin = i
 						LIMIT 1;
-					-- RAISE NOTICE 'summ=%', summ;
+					RAISE NOTICE 'summ=%', summ;
 					-- RAISE NOTICE 'm/s=%', summ.meters / summ.seconds;
 					
 					UPDATE tmp_speeddistribution_yearly_step1
@@ -115,8 +115,8 @@ BEGIN
 						WHERE tagid = tag.tagid
 						AND vehicletype = vtype.vehicletype
 						AND speedbin = i;
-					
-					-- calculate average speed outside of loop	
+					-- calculate average speed outside of loop
+						
 					
 				END LOOP; 
 			END LOOP;
@@ -127,7 +127,7 @@ BEGIN
 	-- move the tmp table into a more permanent space
 	-- By using the DISTINCT clause we get rid of duplicate rows 
 	-- (which happens in the OPTION002 case)
-	CREATE TABLE speeddistributiontrafficflowtagvehiclespeed AS 
+	CREATE TABLE speeddistributiontrafficflowtagvehiclespeed WITH(OIDS=TRUE) AS 
 		SELECT 
 		DISTINCT ON(tagid, vehicletype, speedbin) *
 		FROM tmp_speeddistribution_yearly_step1;
@@ -149,6 +149,9 @@ BEGIN
 			WHERE oid = r.oid;
 		END IF;
 	END LOOP;
+		
+
+
         
 END;
 $BODY$

@@ -1,10 +1,43 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:querym="urn:import:org.worldbank.transport.tamt.client.query">
 	<ui:style>
-		
+		.innertabs {
+			margin-top: 10px;
+			margin-left: 4px;
+			margin-right: 4px;
+			margin-bottom: 10px;
+		}
 	</ui:style>
-	<g:HTMLPanel>
-		SpeedBins
-	</g:HTMLPanel>
+	<g:HorizontalPanel ui:field="hpanel">
+		<g:TabLayoutPanel styleName="{style.innertabs}" ui:field="tabLayoutPanel" barUnit="PX" barHeight="20">
+			<g:tab>
+				<g:header>Speed Distribution</g:header>
+				<querym:SpeedBinDistribution ui:field="speedBinDistribution"/>
+			</g:tab>
+			<!--
+			<g:tab>
+				<g:header>Observed Distributions</g:header>
+				<g:HTMLPanel ui:field="speedBinDistObserved">Observed Distributions</g:HTMLPanel>
+			</g:tab>	
+			<g:tab>
+				<g:header>Interpolation</g:header>
+				<g:HTMLPanel ui:field="speedBinInterpolation">Interpolation</g:HTMLPanel>
+			</g:tab>						
+			-->
+			<g:tab>
+				<g:header>Speed Distribution x Traffic Flow</g:header>
+				<querym:SpeedBinDistributionTrafficFlow ui:field="combineSpeedBinDistributionTrafficFlow"/>
+			</g:tab>
+			<g:tab>
+				<g:header>Aggregate by Day Type</g:header>
+				<g:HTMLPanel ui:field="reduceDayType">Aggregate by Day Type</g:HTMLPanel>
+			</g:tab>
+			<g:tab>
+				<g:header>Aggregate by Tag</g:header>
+				<g:HTMLPanel ui:field="reduceTag">Aggregate by Tag</g:HTMLPanel>
+			</g:tab>										
+		</g:TabLayoutPanel>
+	</g:HorizontalPanel>
 </ui:UiBinder> 

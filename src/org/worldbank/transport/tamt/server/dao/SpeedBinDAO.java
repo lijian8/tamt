@@ -45,6 +45,9 @@ public class SpeedBinDAO extends DAO {
 
 	public void populateSpeedDistribution() throws Exception {
 
+		// truncate the speed distribution tables
+		truncateSpeedDistributionTables();
+		
 		// get default study region
 		ArrayList<StudyRegion> regions = regionDao.getStudyRegions();
 		StudyRegion currentStudyRegion = null;
@@ -101,6 +104,126 @@ public class SpeedBinDAO extends DAO {
 		}
 		
 	}
+	
+	public void truncateSpeedDistributionTables() throws Exception
+	{
+		try {
+			
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			/*
+			 * If you want to delete a table, put any text besides NULL
+			 * Table order:
+			 * - speeddistribution
+			 * - speeddistobserved
+			 * - speeddistributiontrafficflow
+			 * - speeddistributiontrafficflowtagvehiclespeed
+			 * - speeddistributiontrafficflowvehiclespeed
+			 */
+			String sql = "SELECT * FROM TAMT_truncateSpeedDistributionTables('y','y','y','y','y')";
+			
+			ResultSet r = s.executeQuery(sql);
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw new Exception("There was an error executing the SQL: "
+					+ e.getMessage());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new Exception("Unknown exception: " + e.getMessage());
+		}
+	}
+	
+	public void truncateSpeedDistributionTablesPreSpeedDistTrafficFlow() throws Exception
+	{
+		try {
+			
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			/*
+			 * If you want to delete a table, put any text besides NULL
+			 * Table order:
+			 * - speeddistribution
+			 * - speeddistobserved
+			 * - speeddistributiontrafficflow
+			 * - speeddistributiontrafficflowtagvehiclespeed
+			 * - speeddistributiontrafficflowvehiclespeed
+			 */			
+			String sql = "SELECT * FROM TAMT_truncateSpeedDistributionTables(null,null,'y','y','y')";
+			
+			ResultSet r = s.executeQuery(sql);
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw new Exception("There was an error executing the SQL: "
+					+ e.getMessage());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new Exception("Unknown exception: " + e.getMessage());
+		}
+	}	
+	
+	public void truncateSpeedDistributionTablesPreSpeedDistTrafficFlowTagVehicleSpeed() throws Exception
+	{
+		try {
+			
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			/*
+			 * If you want to delete a table, put any text besides NULL
+			 * Table order:
+			 * - speeddistribution
+			 * - speeddistobserved
+			 * - speeddistributiontrafficflow
+			 * - speeddistributiontrafficflowtagvehiclespeed
+			 * - speeddistributiontrafficflowvehiclespeed
+			 */			
+			String sql = "SELECT * FROM TAMT_truncateSpeedDistributionTables(null,null,null,'y','y')";
+			
+			ResultSet r = s.executeQuery(sql);
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw new Exception("There was an error executing the SQL: "
+					+ e.getMessage());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new Exception("Unknown exception: " + e.getMessage());
+		}
+	}	
+	
+	public void truncateSpeedDistributionTablesPreSpeedDistTrafficFlowVehicleSpeed() throws Exception
+	{
+		try {
+			
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			/*
+			 * If you want to delete a table, put any text besides NULL
+			 * Table order:
+			 * - speeddistribution
+			 * - speeddistobserved
+			 * - speeddistributiontrafficflow
+			 * - speeddistributiontrafficflowtagvehiclespeed
+			 * - speeddistributiontrafficflowvehiclespeed
+			 */			
+			String sql = "SELECT * FROM TAMT_truncateSpeedDistributionTables(null,null,null,null,'y')";
+			
+			ResultSet r = s.executeQuery(sql);
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw new Exception("There was an error executing the SQL: "
+					+ e.getMessage());
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new Exception("Unknown exception: " + e.getMessage());
+		}
+	}	
 
 	public void insertSpeedDistributionRecord(String tagId, String dayType,
 			int hourBin, int speedBin) throws Exception {
@@ -719,6 +842,10 @@ public class SpeedBinDAO extends DAO {
 
 	public void combineSpeedDistributionTrafficFlow() throws Exception
 	{
+		
+		// truncate subsequent speed distribution tables
+		truncateSpeedDistributionTablesPreSpeedDistTrafficFlow();
+		
 		// get default study region
 		ArrayList<StudyRegion> regions = regionDao.getStudyRegions();
 		StudyRegion currentStudyRegion = null;
@@ -1122,6 +1249,10 @@ public class SpeedBinDAO extends DAO {
 	 */
 	public void removeDayTypeFromSpeedDistributionTrafficFlow() throws Exception
 	{
+		
+		// truncate subsequent speed distribution tables
+		truncateSpeedDistributionTablesPreSpeedDistTrafficFlowTagVehicleSpeed();
+		
 		// get default study region
 		ArrayList<StudyRegion> regions = regionDao.getStudyRegions();
 		StudyRegion currentStudyRegion = null;
@@ -1209,6 +1340,9 @@ public class SpeedBinDAO extends DAO {
 	 */
 	public void removeTagFromSpeedDistributionTrafficFlowTagVehicleSpeed() throws Exception {
 
+		// truncate subsequent speed distribution tables
+		truncateSpeedDistributionTablesPreSpeedDistTrafficFlowVehicleSpeed();
+		
 		try {
 			
 			Connection connection = getConnection();

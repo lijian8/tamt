@@ -79,6 +79,7 @@ public class RegionListing extends Composite {
 	@UiField TextBox name;
 	@UiField TextBox description;
 	@UiField TextBox utcOffset;
+	@UiField TextBox zoneBlockLength;
 	@UiField Label polyline;
 	@UiField Label vertices;
 	
@@ -439,6 +440,7 @@ public class RegionListing extends Composite {
 		studyRegion.setCurrentRegion(currentStudyRegionCheckBox.getValue());
 		studyRegion.setDefaultZoneType(zoneTypes.getValue(zoneTypes.getSelectedIndex()));
 		studyRegion.setUtcOffset(utcOffset.getValue());
+		studyRegion.setZoneBlockLength(zoneBlockLength.getText());
 		
 		GWT.log("DUPE Saving study region with id:" + currentStudyRegionId);
 		
@@ -527,6 +529,7 @@ public class RegionListing extends Composite {
 		name.setText("");
 		description.setText("");
 		utcOffset.setText("");
+		zoneBlockLength.setText("");
 		currentStudyRegionId = null;
 		currentPolygon = null;
 		GWT.log("DUPE clearRegionEditView currentPolygon="+currentPolygon);
@@ -690,6 +693,7 @@ public class RegionListing extends Composite {
 			}
 		}
 		utcOffset.setText(studyRegion.getUtcOffset());
+		zoneBlockLength.setText(studyRegion.getZoneBlockLength());
 		
 		save.setText("Update");
 		
