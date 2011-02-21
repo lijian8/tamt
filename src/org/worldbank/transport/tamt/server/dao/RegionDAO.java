@@ -66,7 +66,7 @@ public class RegionDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "select id, name, description, AsText(geometry) geom, " +
 			"mapzoomlevel, AsText(mapcenter) center, iscurrentregion, " +
-			"default_zone_type, utcoffset " +
+			"default_zone_type, utcoffset, default_block_length " +
 			"FROM studyregion WHERE id = '"+studyRegion.getId()+"' ORDER BY name";
 			logger.debug("getStudyRegions sql=" + sql);
 			ResultSet r = s.executeQuery(sql); 
@@ -85,6 +85,7 @@ public class RegionDAO extends DAO {
 			      boolean currentRegion = r.getBoolean(7);
 			      String defaultZoneType = r.getString(8);
 			      String utcOffset = r.getString(9);
+			      String zoneBlockLength = r.getString(10);
 			      
 			      // convert a linestring to a JTS geometry
 			      WKTReader reader = new WKTReader();
@@ -99,6 +100,7 @@ public class RegionDAO extends DAO {
 			      fetched.setMapZoomLevel(mapZoomLevel);
 			      fetched.setDefaultZoneType(defaultZoneType);
 			      fetched.setUtcOffset(utcOffset);
+			      fetched.setZoneBlockLength(zoneBlockLength);
 			      
 			      // now convert the geometry to an ArrayList<Vertex> and
 			      // set in the roadDetails
@@ -135,7 +137,7 @@ public class RegionDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "select id, name, description, AsText(geometry) geom, " +
 					"mapzoomlevel, AsText(mapcenter) center, iscurrentregion, " +
-					"default_zone_type, utcoffset " +
+					"default_zone_type, utcoffset, default_block_length " +
 					"FROM studyregion ORDER BY name";
 			logger.debug("getStudyRegions sql=" + sql);
 			ResultSet r = s.executeQuery(sql); 
@@ -153,6 +155,7 @@ public class RegionDAO extends DAO {
 			      boolean currentRegion = r.getBoolean(7);
 			      String defaultZoneType = r.getString(8);
 			      String utcOffset = r.getString(9);
+			      String zoneBlockLength = r.getString(10);
 			      
 			      // convert a linestring to a JTS geometry
 			      WKTReader reader = new WKTReader();
@@ -167,6 +170,7 @@ public class RegionDAO extends DAO {
 			      studyRegion.setMapZoomLevel(mapZoomLevel);
 			      studyRegion.setDefaultZoneType(defaultZoneType);
 			      studyRegion.setUtcOffset(utcOffset);
+			      studyRegion.setZoneBlockLength(zoneBlockLength);
 			      
 			      // now convert the geometry to an ArrayList<Vertex> and
 			      // set in the roadDetails
@@ -218,7 +222,8 @@ public class RegionDAO extends DAO {
 					" mapcenter = GeometryFromText('"+mapCenter.toText()+"', 4326)," +
 					" iscurrentregion = "+studyRegion.isCurrentRegion()+"," +
 					" default_zone_type = '"+studyRegion.getDefaultZoneType()+"', " +
-					" utcoffset = '"+studyRegion.getUtcOffset()+"' " +
+					" utcoffset = '"+studyRegion.getUtcOffset()+"', " +
+					" default_block_length = '"+studyRegion.getZoneBlockLength()+"' " +
 					"WHERE id = '"+studyRegion.getId()+"'";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
@@ -265,7 +270,7 @@ public class RegionDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "INSERT INTO \"studyregion\" (pid, id, name, " +
 					"description, geometry, mapzoomlevel, mapcenter, " +
-					"iscurrentregion, default_zone_type, utcoffset) " +
+					"iscurrentregion, default_zone_type, utcoffset, default_block_length) " +
 					"VALUES (" + 
 					"(SELECT nextval('studyregion_pid_seq'))," +
 					"'"+studyRegion.getId()+"', " +
@@ -276,7 +281,8 @@ public class RegionDAO extends DAO {
 					"GeometryFromText('"+mapCenter.toText()+"', 4326)," +
 					" "+studyRegion.isCurrentRegion()+"," +
 					" '"+studyRegion.getDefaultZoneType()+"', " +
-					" '"+studyRegion.getUtcOffset()+"' " +
+					" '"+studyRegion.getUtcOffset()+"', " +
+					" '"+studyRegion.getZoneBlockLength()+"' " +
 					")";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 

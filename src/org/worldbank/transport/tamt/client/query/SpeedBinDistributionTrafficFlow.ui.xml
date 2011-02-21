@@ -1,0 +1,190 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style type="org.worldbank.transport.tamt.client.query.SpeedBinDistributionTrafficFlow.Style">
+		.outer {
+			background-color: white;
+		}
+		.leftPane {
+			background-color: white;
+			margin-right: 10px;
+		}			
+		.rightPane {
+			background-color: white;
+		}		
+		.hpanel {
+			width: 100%;
+		}	
+		.title {
+			font-size: 12px;
+			font-weight: bold;	
+		}
+		.subtitle {
+			font-size: 10px;
+			font-weight: bold;
+		}	
+		.clickable {
+			cursor: pointer;
+			text-decoration: underline;
+			color: blue;	
+		}	
+		.scroll {
+			height: 358px;
+			background-color: white;
+			border: 1px solid #cccccc;
+			margin-top: 6px;
+		}	
+		.tagScroll {
+			height: 358px;
+			width: 200px;
+			background-color: white;
+			border: 1px solid #cccccc;
+			margin-top: 6px;
+		}		
+		.countHeader {
+			width: 400px;
+			vertical-align: bottom;
+		}
+		.table {
+			margin: 2px;
+			padding: 1px;
+		}
+		.tableheader {
+			border: 0px solid red;
+			height: 20px;	
+			margin: 1px;
+			padding: 2px;			
+		}		
+		.record {
+			width: 140px;
+		}
+		.cell {
+			width: 50px;
+			border: 0px solid black;
+		}
+		.cellHeader {
+			width: 150px;
+			padding: 2px;
+			border: 0px solid black;
+		}
+		.cellHeaderInteger {
+			width: 50px;
+			padding: 0px;
+			margin: 0px;
+			text-align: right;
+			border: 0px solid black;
+		}	
+		.cellHeaderIntegerTop {
+			width: 50px;
+			padding: 2px;
+			margin: 1px;
+			text-align: right;
+			border: 0px solid black;
+		}			
+		.cellHeaderDouble {
+			width: 75px;
+			padding: 0px;
+			margin: 0px;
+			text-align: right;
+			border: 0px solid black;
+		}	
+		.cellHeaderDoubleTop {
+			width: 75px;
+			padding: 2px;
+			margin: 1px;
+			text-align: right;
+			border: 0px solid black;
+		}			
+		.dayTypeHeader {
+			width: 100px;
+			padding: 2px;
+			margin: 1px;
+			border: 0px solid black;
+		}
+		.dayType {
+			width: 100px;
+			padding: 0px;
+			margin: 0px;
+			border: 0px solid black;
+		}
+		.hourHeader {
+			width: 50px;
+			padding: 2px;
+			margin: 1px;
+			border: 0px solid black;
+		}
+		.hour {
+			width: 50px;
+			padding: 0px;
+			margin: 0px;
+			border: 0px solid black;
+		}				
+		.button {
+			margin-left: 10px;
+		}
+		.checkbox {
+			width: 10px;
+		}	 
+		.checkAll {
+			margin-top: 2px;	
+		}
+		.menu {
+			height: 20px;
+			background-color: white;
+		}
+		.selectedTag {
+			margin-left: 10px;	
+		}	
+		.downloadReports {
+			margin-left: 10px;
+		}			
+			
+	</ui:style>
+	<g:HorizontalPanel ui:field="outerHPanel" styleName="{style.outer}">
+		<!-- left pane for Tags -->
+		<g:VerticalPanel ui:field="leftPane" styleName="{style.leftPane}">
+
+			<g:HorizontalPanel ui:field="leftPaneHPanel">
+				<g:HTML styleName="{style.title}">Tags</g:HTML>
+			</g:HorizontalPanel>
+				
+			<g:HTML><hr/></g:HTML>
+			
+			<g:HorizontalPanel styleName="{style.menu}">
+				<g:Button ui:field="generateReport" styleName="{style.button}">Create report</g:Button>
+			</g:HorizontalPanel>
+			
+			<g:ScrollPanel ui:field="tagsScroll" styleName="{style.tagScroll}">
+				<g:FlexTable ui:field="tagsTable" styleName="{style.table}"/>
+			</g:ScrollPanel>
+			
+		</g:VerticalPanel>
+
+		<!-- right pane for speed distrbution traffic flow report by tag -->
+		<g:VerticalPanel ui:field="rightPane" styleName="{style.rightPane}">
+		
+			<g:HTML styleName="{style.title}">Speed Distribution x Traffic Flow Report</g:HTML>
+		
+			<g:HTML><hr/></g:HTML>
+			
+			<g:HorizontalPanel styleName="{style.menu}">
+				<g:HTML ui:field="selectedTag" styleName="{style.selectedTag}"/>
+				<g:Label ui:field="downloadReport" styleName="{style.downloadReports} {style.clickable}">Download speed distribution x traffic flow for this tag</g:Label>
+			</g:HorizontalPanel>
+
+			<g:HorizontalPanel styleName="{style.tableheader}">
+				<g:Label styleName="{style.dayTypeHeader}">Day Type</g:Label>
+				<g:Label styleName="{style.dayTypeHeader}">Vehicle Type</g:Label>
+				<g:Label styleName="{style.dayTypeHeader}">Speed Bin</g:Label>
+				<g:Label styleName="{style.cellHeaderDoubleTop}">(s)/d</g:Label>
+				<g:Label styleName="{style.cellHeaderDoubleTop}">(m)/d</g:Label>
+				<g:Label styleName="{style.cellHeaderDoubleTop}">Average m/s</g:Label>
+				<g:Label styleName="{style.cellHeaderDoubleTop}">% (s)/d</g:Label>
+				<g:Label styleName="{style.cellHeaderDoubleTop}">% (m)/d</g:Label>
+			</g:HorizontalPanel>
+			<g:ScrollPanel ui:field="reportScroll" styleName="{style.scroll}">
+				<g:FlexTable ui:field="reportTable" styleName="{style.table}"/>
+			</g:ScrollPanel>		
+		</g:VerticalPanel>
+	</g:HorizontalPanel>
+</ui:UiBinder> 

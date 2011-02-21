@@ -12,6 +12,7 @@ public class StudyRegion implements Serializable {
 	private String utcOffset;
 	
 	private String defaultZoneType;
+	private String zoneBlockLength;
 	
 	private ArrayList<Vertex> vertices;
 	private Vertex centroid;
@@ -106,6 +107,14 @@ public class StudyRegion implements Serializable {
 		return utcOffset;
 	}
 
+	public String getZoneBlockLength() {
+		return zoneBlockLength;
+	}
+
+	public void setZoneBlockLength(String zoneBlockLength) {
+		this.zoneBlockLength = zoneBlockLength;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -129,7 +138,10 @@ public class StudyRegion implements Serializable {
 		builder.append(utcOffset);
 		builder.append(", vertices=");
 		builder.append(vertices);
+		builder.append(", zoneBlockLength=");
+		builder.append(zoneBlockLength);
 		builder.append("]");
 		return builder.toString();
 	}
+
 }

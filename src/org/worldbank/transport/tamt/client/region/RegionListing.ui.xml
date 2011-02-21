@@ -77,7 +77,11 @@
 		<g:HorizontalPanel styleName="{style.detailRow}">
 			<g:HTML styleName="{style.label}">Default zone type:</g:HTML>
 			<g:ListBox ui:field="zoneTypes"/>
-		</g:HorizontalPanel>		
+		</g:HorizontalPanel>	
+		<g:HorizontalPanel styleName="{style.detailRow}">
+			<g:HTML styleName="{style.label}">Zone block length:</g:HTML>
+			<g:TextBox ui:field="zoneBlockLength" styleName="{style.utc}"/> 
+		</g:HorizontalPanel>			
 		<g:HorizontalPanel styleName="{style.detailRow}">
 			<g:HTML styleName="{style.label}">Current region?</g:HTML>
 			<g:CheckBox ui:field="currentStudyRegionCheckBox" /> 
