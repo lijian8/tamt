@@ -1,4 +1,8 @@
-﻿CREATE OR REPLACE FUNCTION TAMT_updateSpeedDistributionPercentageValues(_tagId text, _dayType text, _hourBin integer)
+-- Function: tamt_updatespeeddistributionpercentagevalues(text, text, integer)
+
+-- DROP FUNCTION tamt_updatespeeddistributionpercentagevalues(text, text, integer);
+
+CREATE OR REPLACE FUNCTION tamt_updatespeeddistributionpercentagevalues(_tagid text, _daytype text, _hourbin integer)
   RETURNS void AS
 $BODY$
 DECLARE
@@ -34,7 +38,10 @@ BEGIN
         UPDATE speeddistribution
 		SET
         	percentsecondsinbin = secondsinbin / sumSeconds,
-        	percentmetersinbin = metersinbin / sumMeters
+        	-- Changed based on conversation with John on 2011-02-17 from
+        	-- percentmetersinbin = metersinbin / sumMeters
+        	-- to:
+        	percentmetersinbin = (secondsinbin / sumSeconds) * avgmeterspersecond
 	WHERE tagid = _tagId
 	AND daytype = _dayType 
 	AND hourbin = _hourBin;
@@ -42,5 +49,6 @@ BEGIN
 	END IF;
 END;
 $BODY$
-  LANGUAGE 'plpgsql';
-ALTER FUNCTION TAMT_getSumMetersInHourBin(_tagId text, _dayType text, _hourBin integer) OWNER TO gis;
+  LANGUAGE 'plpgsql' VOLATILE
+  COST 100;
+ALTER FUNCTION tamt_updatespeeddistributionpercentagevalues(text, text, integer) OWNER TO postgres;
