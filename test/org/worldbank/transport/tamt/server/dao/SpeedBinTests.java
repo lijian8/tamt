@@ -383,10 +383,11 @@ public class SpeedBinTests {
 		
 		try {
 			
-			// already done: a full traffic flow report table, no gaps
+			// prerequisite: a full traffic flow report table, no gaps
 			logger.debug("POPULATE SPEED DISTRIBUTION");
 			// from gps points, determine speed distribution
-			speedBinDAO.populateSpeedDistribution();
+			// TODO: This output is a candidate for SpeedBin UI report and CSV download
+			speedBinDAO.populateSpeedDistribution();							
 			
 			// mark which speed distributions are observed
 			logger.debug("POPULATE SPEED DIST OBSERVED");
@@ -394,18 +395,24 @@ public class SpeedBinTests {
 			
 			// fill in the gaps for speed distribution
 			logger.debug("INTERPOLATE SPEED DISTRIBUTION");
-			speedBinDAO.interpolateSpeedDistribution();
+			// TODO: This output is a candidate for SpeedBin UI report and CSV download
+			speedBinDAO.interpolateSpeedDistribution();				
 			
 			// now we have a speed distribution table with no gaps
 			
 			// and now, combine speed distribution with traffic flow report
 			logger.debug("COMBINE SPEED DISTRIBUTION AND TRAFFIC FLOW");
+			// TODO: This output is a candidate for SpeedBin UI report and CSV download
 			speedBinDAO.combineSpeedDistributionTrafficFlow();
 			
 			// reduce the table to remove day type
+			logger.debug("REDUCE TABLE: REMOVE DAYTYPE");
+			// TODO: This output is a candidate for SpeedBin UI report and CSV download
 			speedBinDAO.removeDayTypeFromSpeedDistributionTrafficFlow();
 			
-			// TODO: reduce the table to remove tag
+			// reduce the table to remove tag
+			logger.debug("REDUCE TABLE: REMOVE TAG");
+			// TODO: This output is a candidate for SpeedBin UI report and CSV download
 			speedBinDAO.removeTagFromSpeedDistributionTrafficFlowTagVehicleSpeed();
 			
 		} catch (Exception e) {
