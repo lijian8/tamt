@@ -260,7 +260,7 @@ public class RegionListing extends Composite {
 			public void onTAMTResize(TAMTResizeEvent event) {
 				GWT.log("SIZE: RegionListing scroll panel height within: " + event.height);
 				
-				int h = event.height - 348; // account for other study region UI
+				int h = event.height - 392; // account for other study region UI
 				
 				if( h > -1 )
 				{

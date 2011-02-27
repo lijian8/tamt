@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class SpeedDistributionTrafficFlowReport implements Serializable {
+public class SpeedDistributionAggregateByDayTypeReport implements Serializable {
 
 	String tagId;
 	Date created;
-	
+
 	ArrayList<ArrayList> reporValues;
 	
-	public SpeedDistributionTrafficFlowReport()
+	public SpeedDistributionAggregateByDayTypeReport()
 	{
 		
 	}
@@ -43,7 +43,7 @@ public class SpeedDistributionTrafficFlowReport implements Serializable {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SpeedDistributionTrafficFlowReport [created=");
+		builder.append("SpeedDistributionAggregateByDayTypeReport [created=");
 		builder.append(created);
 		builder.append(", reporValues=");
 		builder.append(reporValues);

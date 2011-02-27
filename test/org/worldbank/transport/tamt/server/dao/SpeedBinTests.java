@@ -23,6 +23,7 @@ import org.worldbank.transport.tamt.shared.SpeedDistributionRecord;
 public class SpeedBinTests {
 
 	static SpeedBinDAO speedBinDAO;
+	static GPSTraceDAO gpsTraceDAO;
 	static Logger logger = Logger.getLogger(SpeedBinTests.class);
 	
 	public static void createJNDIContext() throws Exception
@@ -44,6 +45,7 @@ public class SpeedBinTests {
 	{
 		createJNDIContext();
 		speedBinDAO = SpeedBinDAO.get();
+		gpsTraceDAO = GPSTraceDAO.get();
 	}
 	
 	@Test
@@ -237,6 +239,19 @@ public class SpeedBinTests {
 		}
 	
 	}
+	
+	@Test
+	public void calculateEngineSoakTimesAndTripLength()
+	{
+		logger.debug("test calculateEngineSoakTimesAndTripLength");
+		try {
+			//gpsTraceDAO.calculateEngineSoakTimesAndTripLength();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	}	
 
 	@Test
 	public void triggerSpeedDistributionInterpolation()

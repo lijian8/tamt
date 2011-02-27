@@ -155,7 +155,17 @@ version="2.4">
     <servlet-name>speedDistributionReportServiceServlet</servlet-name>
     <url-pattern>/tamt/speedDistributionReportService</url-pattern>
   </servlet-mapping> 
-          
+  
+  <servlet>
+    <servlet-name>tripStatisticsReportServiceServlet</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.TripStatisticsReportServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>tripStatisticsReportServiceServlet</servlet-name>
+    <url-pattern>/tamt/tripStatisticsReportService</url-pattern>
+  </servlet-mapping> 
+      
   <servlet>
     <servlet-name>uploadGPSServlet</servlet-name>
     <servlet-class>org.worldbank.transport.tamt.server.UploadGPSTraceHandler</servlet-class>

@@ -28,8 +28,8 @@ public class SpeedBins extends Composite {
 	@UiField HorizontalPanel hpanel;
 	@UiField SpeedBinDistribution speedBinDistribution;
 	@UiField SpeedBinDistributionTrafficFlow combineSpeedBinDistributionTrafficFlow;
-	@UiField HTMLPanel reduceDayType;
-	@UiField HTMLPanel reduceTag;
+	@UiField SpeedBinDistributionAggregateByDayType reduceDayType;
+	@UiField SpeedBinDistributionAggregateByTag reduceTag;
 	
 	public SpeedBins(HandlerManager eventBus) {
 		this.eventBus = eventBus;
@@ -43,6 +43,14 @@ public class SpeedBins extends Composite {
 
 	@UiFactory SpeedBinDistributionTrafficFlow initSpeedBinDistributionTrafficFlow() {
 		return new SpeedBinDistributionTrafficFlow(this.eventBus);
+	}
+	
+	@UiFactory SpeedBinDistributionAggregateByDayType initSpeedBinDistributionAggregateByDayType() {
+		return new SpeedBinDistributionAggregateByDayType(this.eventBus);
+	}	
+
+	@UiFactory SpeedBinDistributionAggregateByTag initSpeedBinDistributionAggregateByTag() {
+		return new SpeedBinDistributionAggregateByTag(this.eventBus);
 	}
 	
 	private void bind() {

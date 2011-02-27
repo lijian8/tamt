@@ -426,7 +426,15 @@ public class GPSTraceDAO extends DAO {
 		Pattern pattern = Pattern.compile(",\\s*");
 
 		while (entries.hasMoreElements()) {
+			
+			/*
+			 * In this case, a ZipEntry corresponds to a GPS log file from
+			 * a particular vehicle. We need to keep track of a unique
+			 * identifier for each GPS log file in the GPSTrace zip file
+			 * so we can properly calculate soak times and trip lengths
+			 */
 			ZipEntry entry = (ZipEntry) entries.nextElement();
+			String gpsLogId = entry.getName();
 			InputStream is = zipFile.getInputStream(entry);
 			if (is != null) {
 				String line;
@@ -437,7 +445,7 @@ public class GPSTraceDAO extends DAO {
 					if (line.indexOf("$GPRMC") != -1) {
 						// this assumes that GPGGA is the only other captured
 						// sentence
-						// and will not work if another sentence is recorded of
+						// and will not work if another sentence is recorded or
 						// if the
 						// sentence sequence is NOT in the correct order (RMC,
 						// GGA)
@@ -493,13 +501,6 @@ public class GPSTraceDAO extends DAO {
 							// altitude units
 							p.setAltitudeUnits(data2[10]);
 
-							// create JTS geometry from lat/lng * DONE LATER IN
-							// BULK PROCESSING
-							// Coordinate coord = new
-							// Coordinate(p.getLongitude(), p.getLatitude());
-							// Geometry geometry = new
-							// GeometryFactory().createPoint(coord);
-
 							// if we have not failed up to this point
 							// (as indicated by fetching the timestamp -- kind
 							// of a hack)
@@ -508,7 +509,7 @@ public class GPSTraceDAO extends DAO {
 								// append to a file in /tmp/
 								StringBuffer sb = new StringBuffer();
 
-								// id, gpsTraceId, lat, lng, bearing, speed,
+								// id, gpsLogId, gpsTraceId, lat, lng, bearing, speed,
 								// altitude, created, geometry (POINT)
 								sb.append(nextSequence);
 								sb.append(DELIMITER);
@@ -546,7 +547,9 @@ public class GPSTraceDAO extends DAO {
 								sb.append("\\N"); // null for kph;
 								sb.append(DELIMITER);
 								sb.append("\\N"); // null for speedbinnumber;
-
+								sb.append(DELIMITER);
+								sb.append(gpsLogId); // unique per logfile (aka per vehicle)
+								
 								// sb.append(geometry);// will print WKT
 								// sb.append("GeometryFromText('"+geometry.toText()+"', 4326)");
 								// // null geometry for now?
@@ -600,9 +603,6 @@ public class GPSTraceDAO extends DAO {
 
 		// now, use postgresql COPY to move data into DB
 		// with greater speed than individual INSERT statements per record
-		// TODO: I wonder if this is slower now because of the fk in gpsPoints?
-		// TODO: do I really need an FK if I am not ever doing a join? no FK
-		// would make deleting easier too, I think
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
@@ -759,6 +759,17 @@ public class GPSTraceDAO extends DAO {
 		gpsTrace.setProcessedCount(0);
 		gpsTrace.setMatchedCount(0);
 		updateGPSTrace(gpsTrace);
+		
+		
+		/*
+		 * Calculate engine soak times and trip length for every point
+		 * in every log in the GPS trace being uploaded
+		 * 
+		 * NOTE: WE CAN DO THIS LATER, FROM A USER TRIGGER IN THE UI
+		 * 
+		 * calculateEngineSoakTimesAndTripLength();
+		 */
+		
 
 		// clean up the temporary files
 		tmpFile.delete(); // we had a handle on this one, so just delete it
@@ -770,6 +781,8 @@ public class GPSTraceDAO extends DAO {
 
 	}
 
+	
+	
 	private void setNextGPSPointSequenceValue() throws Exception {
 		try {
 			Connection connection = getConnection();

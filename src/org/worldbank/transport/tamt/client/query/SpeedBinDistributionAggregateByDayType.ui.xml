@@ -1,7 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
-	<ui:style type="org.worldbank.transport.tamt.client.query.SpeedBinDistribution.Style">
+	<ui:style type="org.worldbank.transport.tamt.client.query.SpeedBinDistributionAggregateByDayType.Style">
 		.outer {
 			background-color: white;
 		}
@@ -108,7 +108,7 @@
 			border: 0px solid black;
 		}
 		.hourHeader {
-			width: 80px;
+			width: 50px;
 			padding: 2px;
 			margin: 1px;
 			border: 0px solid black;
@@ -160,27 +160,24 @@
 			
 		</g:VerticalPanel>
 
-		<!-- right pane for speed distrbution report by tag -->
+		<!-- right pane for speed distrbution traffic flow report by tag -->
 		<g:VerticalPanel ui:field="rightPane" styleName="{style.rightPane}">
 		
-			<g:HTML styleName="{style.title}">Speed Distribution Report</g:HTML>
+			<g:HTML styleName="{style.title}">Aggregate by Day Type Report</g:HTML>
 		
 			<g:HTML><hr/></g:HTML>
 			
 			<g:HorizontalPanel styleName="{style.menu}">
 				<g:HTML ui:field="selectedTag" styleName="{style.selectedTag}"/>
-				<g:Label ui:field="downloadReport" styleName="{style.downloadReports} {style.clickable}">Download speed distribution for this tag</g:Label>
+				<g:Label ui:field="downloadReport" styleName="{style.downloadReports} {style.clickable}">Download aggregate by day type report for this tag</g:Label>
 			</g:HorizontalPanel>
-			
+
 			<g:HorizontalPanel styleName="{style.tableheader}">
-				<g:Label styleName="{style.dayTypeHeader}">Day Type</g:Label>
-				<g:Label styleName="{style.hourHeader}">Speed Bin</g:Label>
-				<g:Label styleName="{style.hourHeader}">Hour Bin</g:Label>
-				<g:Label styleName="{style.cellHeaderIntegerTop}">(s)</g:Label>
-				<g:Label styleName="{style.cellHeaderDoubleTop}">(m)</g:Label>
+				<g:Label styleName="{style.dayTypeHeader}">Vehicle Type</g:Label>
+				<g:Label styleName="{style.dayTypeHeader}">Speed Bin</g:Label>
+				<g:Label styleName="{style.cellHeaderDoubleTop}">% (s)/y</g:Label>
+				<g:Label styleName="{style.cellHeaderDoubleTop}">% (m)/y</g:Label>
 				<g:Label styleName="{style.cellHeaderDoubleTop}">Average m/s</g:Label>
-				<g:Label styleName="{style.cellHeaderDoubleTop}">% (s)</g:Label>
-				<g:Label styleName="{style.cellHeaderDoubleTop}">% (m)</g:Label>
 			</g:HorizontalPanel>
 			<g:ScrollPanel ui:field="reportScroll" styleName="{style.scroll}">
 				<g:FlexTable ui:field="reportTable" styleName="{style.table}"/>

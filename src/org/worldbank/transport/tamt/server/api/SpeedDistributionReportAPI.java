@@ -11,6 +11,8 @@ import org.worldbank.transport.tamt.server.bo.ZoneBO;
 import org.worldbank.transport.tamt.shared.DayTypePerYearOption;
 import org.worldbank.transport.tamt.shared.DefaultFlow;
 import org.worldbank.transport.tamt.shared.RoadDetails;
+import org.worldbank.transport.tamt.shared.SpeedDistributionAggregateByDayTypeReport;
+import org.worldbank.transport.tamt.shared.SpeedDistributionAggregateByTagReport;
 import org.worldbank.transport.tamt.shared.SpeedDistributionTrafficFlowReport;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
@@ -35,6 +37,16 @@ public class SpeedDistributionReportAPI {
 	{
 		bo.createSpeedDistributionTrafficFlowReport();
 	}
+
+	public void createSpeedDistributionAggregateByDayTypeReport() throws Exception
+	{
+		bo.createSpeedDistributionAggregateByDayTypeReport();
+	}
+	
+	public void createSpeedDistributionAggregateByTagReport() throws Exception
+	{
+		bo.createSpeedDistributionAggregateByTagReport();
+	}
 	
 	public SpeedDistributionReport getSpeedDistributionReport(TagDetails tagDetails) throws Exception
 	{
@@ -50,5 +62,14 @@ public class SpeedDistributionReportAPI {
 			TagDetails tagDetails) throws Exception {
 		return bo.getSpeedDistributionTrafficFlowReport(tagDetails);
 	}
+	
+	public SpeedDistributionAggregateByDayTypeReport getSpeedDistributionAggregateByDayTypeReport(
+			TagDetails tagDetails) throws Exception {
+		return bo.getSpeedDistributionAggregateByDayTypeReport(tagDetails);
+	}	
+	
+	public SpeedDistributionAggregateByTagReport getSpeedDistributionAggregateByTagReport() throws Exception {
+		return bo.getSpeedDistributionAggregateByTagReport();
+	}	
 	
 }

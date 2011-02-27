@@ -67,8 +67,8 @@
 				<querym:SpeedBins/>
 			</g:tab>	
 			<g:tab>
-				<g:header>Engine Soak Times</g:header>
-				<querym:EngineSoakTimes/>
+				<g:header>Trip Statistics</g:header>
+				<querym:TripStatistics/>
 			</g:tab>							
 		</g:TabLayoutPanel>
 	</g:HorizontalPanel>

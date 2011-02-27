@@ -56,6 +56,7 @@ public class QueryModule extends Composite {
 		//container.setHeight("100%");
 		
 		bind();
+		
 	}
 	
 	@UiFactory VehicleFlow initVehicleFlow() {
@@ -66,8 +67,8 @@ public class QueryModule extends Composite {
 		return new SpeedBins(this.eventBus);
 	}	
 	
-	@UiFactory EngineSoakTimes initEngineSoakTimes() {
-		return new EngineSoakTimes(this.eventBus);
+	@UiFactory TripStatistics initEngineSoakTimes() {
+		return new TripStatistics(this.eventBus);
 	}	
 	
 	@UiHandler("studyRegionName")
