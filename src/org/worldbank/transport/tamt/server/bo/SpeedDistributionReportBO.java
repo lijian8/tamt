@@ -13,6 +13,8 @@ import org.worldbank.transport.tamt.server.dao.RegionDAO;
 import org.worldbank.transport.tamt.server.dao.TagDAO;
 import org.worldbank.transport.tamt.server.dao.SpeedDistributionReportDAO;
 import org.worldbank.transport.tamt.shared.DefaultFlow;
+import org.worldbank.transport.tamt.shared.SpeedDistributionAggregateByDayTypeReport;
+import org.worldbank.transport.tamt.shared.SpeedDistributionAggregateByTagReport;
 import org.worldbank.transport.tamt.shared.SpeedDistributionTrafficFlowReport;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
@@ -186,9 +188,25 @@ public class SpeedDistributionReportBO {
 		dao.createSpeedDistributionTrafficFlowReport();
 	}
 
+	public void createSpeedDistributionAggregateByDayTypeReport() throws Exception {
+		dao.createSpeedDistributionAggregateByDayTypeReport();
+	}
+
+	public void createSpeedDistributionAggregateByTagReport() throws Exception {
+		dao.createSpeedDistributionAggregateByTagReport();
+	}
+	
 	public SpeedDistributionTrafficFlowReport getSpeedDistributionTrafficFlowReport(
 			TagDetails tagDetails) throws Exception {
-		logger.debug("getSpeedDistributionTrafficFlowReport BO start");
 		return dao.getSpeedDistributionTrafficFlowReport(tagDetails);
 	}
+	
+	public SpeedDistributionAggregateByDayTypeReport getSpeedDistributionAggregateByDayTypeReport(
+			TagDetails tagDetails) throws Exception {
+		return dao.getSpeedDistributionAggregateByDayTypeReport(tagDetails);
+	}	
+	
+	public SpeedDistributionAggregateByTagReport getSpeedDistributionAggregateByTagReport() throws Exception {
+		return dao.getSpeedDistributionAggregateByTagReport();
+	}	
 }

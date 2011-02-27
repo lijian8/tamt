@@ -109,7 +109,7 @@
 		</g:HorizontalPanel>
 		
 		<g:HTML><hr/></g:HTML>
-		<g:ScrollPanel ui:field="scrollPanel" height="238px">
+		<g:ScrollPanel ui:field="scrollPanel" height="198px">
 			<g:FlexTable ui:field="regionList" cellSpacing="0" cellPadding="0" width="100%" styleName="{style.zoneList}"/>
 		</g:ScrollPanel>
 	</g:VerticalPanel>

@@ -246,7 +246,7 @@ public class GPSTracesView extends Composite {
 	@UiHandler("submit")
 	void onClickSubmit(ClickEvent e)
 	{
-		eventBus.fireEvent( new OpenWaitModelDialogEvent("Uploading GPS traces", "This may take a few minutes.") );
+		eventBus.fireEvent( new OpenWaitModelDialogEvent("Uploading and processing GPS traces", "This may take a few minutes.") );
 		uploadForm.submit();
 	}
 	

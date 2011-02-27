@@ -9,25 +9,26 @@
 			margin-right: 4px;
 			margin-bottom: 10px;
 		}
+		.button {
+			margin-left: 10px;
+		}		
 	</ui:style>
 	<g:HorizontalPanel ui:field="hpanel">
+		<g:VerticalPanel>
+		<g:HorizontalPanel ui:field="buttonBar">
+			<g:Button ui:field="generateTripStatisics" styleName="{style.button}">Create report</g:Button>
+		</g:HorizontalPanel>
 		<g:TabLayoutPanel styleName="{style.innertabs}" ui:field="tabLayoutPanel" barUnit="PX" barHeight="20">
 			<g:tab>
-				<g:header>Speed Distribution</g:header>
-				<querym:SpeedBinDistribution ui:field="speedBinDistribution"/>
+				<g:header>Trip Bin</g:header>
+				<querym:TripBin ui:field="tripBin"/>
 			</g:tab>
 			<g:tab>
-				<g:header>Speed Distribution x Traffic Flow</g:header>
-				<querym:SpeedBinDistributionTrafficFlow ui:field="combineSpeedBinDistributionTrafficFlow"/>
+				<g:header>Engine Soak Times</g:header>
+				<querym:SoakBin ui:field="soakBin"/>
 			</g:tab>
-			<g:tab>
-				<g:header>Aggregate by Day Type</g:header>
-				<querym:SpeedBinDistributionAggregateByDayType ui:field="reduceDayType"/>
-			</g:tab>
-			<g:tab>
-				<g:header>Aggregate by Tag</g:header>
-				<querym:SpeedBinDistributionAggregateByTag ui:field="reduceTag"/>
-			</g:tab>										
+									
 		</g:TabLayoutPanel>
+		</g:VerticalPanel>
 	</g:HorizontalPanel>
 </ui:UiBinder> 

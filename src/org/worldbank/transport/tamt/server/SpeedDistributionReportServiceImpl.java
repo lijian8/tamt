@@ -14,6 +14,8 @@ import org.worldbank.transport.tamt.server.api.TrafficCountRecordAPI;
 import org.worldbank.transport.tamt.server.api.SpeedDistributionReportAPI;
 import org.worldbank.transport.tamt.server.api.ZoneAPI;
 import org.worldbank.transport.tamt.shared.GPSTrace;
+import org.worldbank.transport.tamt.shared.SpeedDistributionAggregateByDayTypeReport;
+import org.worldbank.transport.tamt.shared.SpeedDistributionAggregateByTagReport;
 import org.worldbank.transport.tamt.shared.SpeedDistributionTrafficFlowReport;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
@@ -55,8 +57,31 @@ public class SpeedDistributionReportServiceImpl extends RemoteServiceServlet imp
 	}
 
 	@Override
+	public void createSpeedDistributionAggregateByDayTypeReport()
+			throws Exception {
+		api.createSpeedDistributionAggregateByDayTypeReport();
+	}
+
+	@Override
+	public void createSpeedDistributionAggregateByTagReport()
+			throws Exception {
+		api.createSpeedDistributionAggregateByTagReport();
+	}
+	
+	@Override
 	public SpeedDistributionTrafficFlowReport getSpeedDistributionTrafficFlowReport(
 			TagDetails tagDetails) throws Exception {
 		return api.getSpeedDistributionTrafficFlowReport(tagDetails);
 	}
+	
+	@Override
+	public SpeedDistributionAggregateByDayTypeReport getSpeedDistributionAggregateByDayTypeReport(
+			TagDetails tagDetails) throws Exception {
+		return api.getSpeedDistributionAggregateByDayTypeReport(tagDetails);
+	}	
+	
+	@Override
+	public SpeedDistributionAggregateByTagReport getSpeedDistributionAggregateByTagReport() throws Exception {
+		return api.getSpeedDistributionAggregateByTagReport();
+	}	
 }

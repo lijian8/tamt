@@ -4,14 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class SpeedDistributionTrafficFlowReport implements Serializable {
+public class TripStatisticsReport implements Serializable {
 
 	String tagId;
 	Date created;
 	
-	ArrayList<ArrayList> reporValues;
+	ArrayList<ArrayList> reportValues;
 	
-	public SpeedDistributionTrafficFlowReport()
+	public TripStatisticsReport()
 	{
 		
 	}
@@ -32,25 +32,25 @@ public class SpeedDistributionTrafficFlowReport implements Serializable {
 		this.created = created;
 	}
 
-	public ArrayList<ArrayList> getReporValues() {
-		return reporValues;
+	public ArrayList<ArrayList> getReportValues() {
+		return reportValues;
 	}
 
-	public void setReporValues(ArrayList<ArrayList> reporValues) {
-		this.reporValues = reporValues;
+	public void setReportValues(ArrayList<ArrayList> reporValues) {
+		this.reportValues = reporValues;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("SpeedDistributionTrafficFlowReport [created=");
+		builder.append("TripStatisticsReport [created=");
 		builder.append(created);
-		builder.append(", reporValues=");
-		builder.append(reporValues);
+		builder.append(", reportValues=");
+		builder.append(reportValues);
 		builder.append(", tagId=");
 		builder.append(tagId);
 		builder.append("]");
 		return builder.toString();
 	}
-
+	
 }
