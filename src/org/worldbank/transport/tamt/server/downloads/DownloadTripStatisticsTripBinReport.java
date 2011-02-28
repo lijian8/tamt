@@ -1,4 +1,4 @@
-package org.worldbank.transport.tamt.server;
+package org.worldbank.transport.tamt.server.downloads;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.worldbank.transport.tamt.server.api.TrafficFlowReportAPI;
+import org.worldbank.transport.tamt.server.api.TripStatisticsReportAPI;
 import org.worldbank.transport.tamt.server.bo.AssignStatusBO;
 import org.worldbank.transport.tamt.server.bo.GPSTraceBO;
 import org.worldbank.transport.tamt.server.bo.RegionBO;
@@ -29,47 +30,37 @@ import org.worldbank.transport.tamt.shared.TagDetails;
 import org.worldbank.transport.tamt.shared.TrafficCountRecord;
 import org.worldbank.transport.tamt.shared.TrafficFlowReport;
 
-public class DownloadTrafficFlowReport extends HttpServlet {
+public class DownloadTripStatisticsTripBinReport extends HttpServlet {
 
 	private static final long serialVersionUID = 3019963294878178516L;
-	static final Logger logger = Logger.getLogger(DownloadTrafficFlowReport.class);
+	static final Logger logger = Logger.getLogger(DownloadTripStatisticsTripBinReport.class);
 	
-	private TrafficFlowReportAPI api = new TrafficFlowReportAPI();
+	private TripStatisticsReportAPI api = new TripStatisticsReportAPI();
 	
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 	throws ServletException, IOException
 	{
 		resp.setContentType("text/csv");
 		
-		//TODO: incoming tgid is the tag id, fetch 
-		// all the traffic flow reports based on this tag id
-		String tagId = req.getParameter("tgid");
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		Date downloaded = new Date();
+		String ts = format.format(downloaded);
+		String csvFileName = "trip-statistics-tripbin" + ts + ".csv";
+		resp.setHeader("Content-disposition", "attachment;filename="+csvFileName);
 		
-		if( tagId != null)
-		{
+		try {
 			
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-			Date downloaded = new Date();
-			String ts = format.format(downloaded);
-			String csvFileName = "traffic-flow-report-" + ts + ".csv";
-			
-			try {
-				
-				String data = api.downloadTrafficFlowReport(tagId);
-				resp.getOutputStream().print(data);
-				
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			// output
-			resp.setHeader("Content-disposition", "attachment;filename="+csvFileName);
+			String data = api.downloadTripStatisticsTripBinReport();
+			resp.getOutputStream().print(data);
 			
 			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
+			
+			
+			
 		
 	}
 	

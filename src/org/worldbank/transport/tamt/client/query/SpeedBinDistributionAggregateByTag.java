@@ -146,13 +146,13 @@ public class SpeedBinDistributionAggregateByTag extends Composite {
 	@UiHandler("downloadReport")
 	void onClickDownloadReport(ClickEvent e){
 		
-		if( currentTagDetails != null)
+		if( currentStudyRegion != null)
 		{
 			// create the url string for the download
-			String url = "/download/speeddistributionaggregatebytagreport?regionid=" + currentStudyRegion.getId();
+			String url = "/download/speedbin/aggregatebytagreport?regionid=" + currentStudyRegion.getId();
 			Window.open(url, "_blank", null);
 		} else {
-			Window.alert("Please select a tag to download a report");
+			Window.alert("There was a problem trying to download the report");
 			resetScreen();
 		}
 	}

@@ -40,6 +40,14 @@ public class TripStatisticsReportAPI {
 	
 	public TripStatisticsReport getTripStatisticsReport() throws Exception {
 		return bo.getTripStatisticsReport();
+	}
+
+	public String downloadTripStatisticsTripBinReport() throws Exception {
+		return bo.downloadTripStatisticsTripBinReport();
+	}
+
+	public String downloadTripStatisticsSoakBinReport() throws Exception {
+		return bo.downloadTripStatisticsSoakBinReport();
 	}	
 	
 }

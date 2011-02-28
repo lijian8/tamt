@@ -63,6 +63,14 @@ public class TripStatisticsReportBO {
 		//TODO: add missing rows (so that we have all bin numbers from 0..9)
 		return report;
 	}
+
+	public String downloadTripStatisticsTripBinReport() throws Exception {
+		return dao.downloadTripStatisticsTripBinReport();
+	}
+
+	public String downloadTripStatisticsSoakBinReport() throws Exception {
+		return dao.downloadTripStatisticsSoakBinReport();
+	}
 	
 	
 }

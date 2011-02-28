@@ -147,7 +147,7 @@ public class TripBin extends Composite {
 		if( currentStudyRegion != null)
 		{
 			// create the url string for the download
-			String url = "/download/tripbin?regionid=" + currentStudyRegion.getId();
+			String url = "/download/tripstatistics/tripbin?regionid=" + currentStudyRegion.getId();
 			Window.open(url, "_blank", null);
 		} else {
 			Window.alert("Cannot download trip bin report at this time");

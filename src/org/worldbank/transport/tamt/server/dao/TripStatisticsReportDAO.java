@@ -133,5 +133,96 @@ public class TripStatisticsReportDAO extends DAO {
 		}		
 	}
 
+	public String downloadTripStatisticsTripBinReport() throws Exception {
+
+		String output = "";
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("REGION,TRIPBIN,TRIPCOUNT,AVG(m),AVG(m/s)\n");
+		
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			String sql = "select "+
+					"s.name, t.binnumber,t.bincount,t.avgtriplength,t.avgspeed "+
+					"from tripbin t, studyregion s "+
+					"where s.iscurrentregion = true "+
+					"ORDER BY t.binnumber";
+			
+			logger.debug("downloadTripStatisticsTripBinReport() sql=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			
+			//formatter = new DecimalFormat("#0.00");
+			
+			while( r.next() ) { 
+				
+				sb.append(r.getString(1) + ","); // region
+				sb.append(r.getString(2) + ","); // binnumber
+				sb.append(r.getString(3) + ","); // bincount
+				sb.append(formatter.format(r.getDouble(4)) + ","); // avgtriplength
+				sb.append(formatter.format(r.getDouble(5)) + "\n"); // avgspeed
+			}
+			
+			output = sb.toString();
+			
+			//formatter = new DecimalFormat("#0.00");
+			
+			connection.close(); // returns connection to the pool
+
+		} 
+	    catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+			
+		} 	
+	    return output;
+	    
+	}
+
+	public String downloadTripStatisticsSoakBinReport() throws Exception {
+
+		String output = "";
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("REGION,SOAKBIN,SOAKCOUNT\n");
+		
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			String sql = "select "+
+					"s.name, t.binnumber,t.bincount "+
+					"from soakbin t, studyregion s "+
+					"where s.iscurrentregion = true "+
+					"ORDER BY t.binnumber";
+			
+			logger.debug("downloadTripStatisticsSoakBinReport() sql=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			
+			//formatter = new DecimalFormat("#0.00");
+			
+			while( r.next() ) { 
+				
+				sb.append(r.getString(1) + ","); // region
+				sb.append(r.getString(2) + ","); // binnumber
+				sb.append(r.getString(3) + "\n"); // bincount
+			}
+			
+			output = sb.toString();
+			
+			//formatter = new DecimalFormat("#0.00");
+			
+			connection.close(); // returns connection to the pool
+
+		} 
+	    catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+			
+		} 	
+	    return output;
+	}
+
 	
 }

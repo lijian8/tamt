@@ -291,6 +291,288 @@ public class SpeedDistributionReportDAO extends DAO {
 			logger.error(e.getMessage());
 			throw new Exception("Unknown exception: " + e.getMessage());
 		}
+	}
+
+	public String downloadSpeedDistributionReportForRegion() throws Exception {
+		
+		String output = "";
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("REGION,TAG,DAYTYPE,HOURBIN,SPEEDBIN,SECONDSINBIN,METERSINBIN,AVGMETERSPERSECOND,PERCENTSECONDSINBIN,PERCENTMETERSINBIN\n");
+		
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			String sql = "select "+
+			"s.name as region, "+
+			"t.name as tag, "+
+			"sd.daytype,sd.hourbin,sd.speedbin,sd.secondsinbin,sd.metersinbin, "+
+			"sd.avgmeterspersecond,sd.percentsecondsinbin,sd.percentmetersinbin	"+
+			"from speeddistribution sd,tagdetails t,studyregion s "+
+			"where sd.tagid = t.id and t.region = s.id "+
+			"order by s.name, t.name, sd.daytype desc, sd.hourbin, sd.speedbin ";
+			
+			logger.debug("downloadSpeedDistributionReportForRegion sql=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			
+			formatter = new DecimalFormat("#0.0000");
+			
+			while( r.next() ) { 
+				
+				sb.append(r.getString(1) + ","); // region
+				sb.append(r.getString(2) + ","); // tag
+				sb.append(r.getString(3) + ","); // daytype
+				sb.append(r.getString(4) + ","); // hour
+				sb.append(r.getString(5) + ","); // speedbin
+				sb.append(formatter.format(r.getDouble(6)) + ","); // secondsinbin
+				sb.append(formatter.format(r.getDouble(7)) + ","); // metersinbin
+				sb.append(formatter.format(r.getDouble(8)) + ","); // avgmeterspersecond
+				sb.append(formatter.format(r.getDouble(9)) + ","); // percentsecondsinbin
+				sb.append(formatter.format(r.getDouble(10)) + "\n"); // percentmetersinbin
+			}
+			
+			output = sb.toString();
+			
+			formatter = new DecimalFormat("#0.00");
+			
+			connection.close(); // returns connection to the pool
+
+		} 
+	    catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+			
+		} 	
+	    return output;
 	}	
+
+	public String downloadSpeedDistributionReport(String tagId) throws Exception {
+
+		String output = "";
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("REGION,TAG,DAYTYPE,HOURBIN,SPEEDBIN,SECONDSINBIN,METERSINBIN,AVGMETERSPERSECOND,PERCENTSECONDSINBIN,PERCENTMETERSINBIN\n");
+		
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			String sql = "select "+
+			"s.name as region, "+
+			"t.name as tag, "+
+			"sd.daytype,sd.hourbin,sd.speedbin,sd.secondsinbin,sd.metersinbin, "+
+			"sd.avgmeterspersecond,sd.percentsecondsinbin,sd.percentmetersinbin	"+
+			"from speeddistribution sd,tagdetails t,studyregion s "+
+			"where sd.tagid = t.id and t.region = s.id " +
+			"AND sd.tagid = '"+tagId+"'"+
+			"order by s.name, t.name, sd.daytype desc, sd.hourbin, sd.speedbin ";
+			
+			logger.debug("downloadSpeedDistributionReport(tagId) sql=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			
+			formatter = new DecimalFormat("#0.0000");
+			
+			while( r.next() ) { 
+				
+				sb.append(r.getString(1) + ","); // region
+				sb.append(r.getString(2) + ","); // tag
+				sb.append(r.getString(3) + ","); // daytype
+				sb.append(r.getString(4) + ","); // hour
+				sb.append(r.getString(5) + ","); // speedbin
+				sb.append(formatter.format(r.getDouble(6)) + ","); // secondsinbin
+				sb.append(formatter.format(r.getDouble(7)) + ","); // metersinbin
+				sb.append(formatter.format(r.getDouble(8)) + ","); // avgmeterspersecond
+				sb.append(formatter.format(r.getDouble(9)) + ","); // percentsecondsinbin
+				sb.append(formatter.format(r.getDouble(10)) + "\n"); // percentmetersinbin
+			}
+			
+			output = sb.toString();
+			
+			formatter = new DecimalFormat("#0.00");
+			
+			connection.close(); // returns connection to the pool
+
+		} 
+	    catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+			
+		} 	
+	    return output;
+	}
+
+	public String downloadSpeedDistributionTrafficFlowReport(String tagId) throws Exception {
+
+		String output = "";
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("REGION,TAG,DAYTYPE,VEHICLETYPE,SPEEDBIN,(s)/d,(m)/d,AVERAGE m/s,%(s)/d,%(m)/d\n");
+		
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			String sql = "select "+
+			"s.name as region,"+
+			"t.name as tag,"+
+			"sd.daytype,sd.vehicletype,sd.speedbin,sd.vehiclesecondsperday,sd.vehiclemetersperday,"+
+			"sd.weightedaveragespeed,sd.percentvehiclesecondsperday,sd.percentvehiclemetersperday "+
+			"from speeddistributiontrafficflow sd,tagdetails t,studyregion s "+
+			"where sd.tagid = t.id and t.region = s.id ";
+			
+			if(tagId != null)
+			{
+				sql += "AND sd.tagid = '"+tagId+"'";
+			}
+			
+			sql += "order by s.name, t.name, sd.daytype desc, sd.vehicletype, sd.speedbin";
+			
+			logger.debug("downloadSpeedDistributionReport(tagId) sql=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			
+			formatter = new DecimalFormat("#0.0000");
+			
+			while( r.next() ) { 
+				
+				sb.append(r.getString(1) + ","); // region
+				sb.append(r.getString(2) + ","); // tag
+				sb.append(r.getString(3) + ","); // daytype
+				sb.append(r.getString(4) + ","); // vehicle
+				sb.append(r.getString(5) + ","); // speedbin
+				sb.append(formatter.format(r.getDouble(6)) + ","); // vehiclesecondsperday
+				sb.append(formatter.format(r.getDouble(7)) + ","); // vehiclemetersperday
+				sb.append(formatter.format(r.getDouble(8)) + ","); // weightedaveragespeed
+				sb.append(formatter.format(r.getDouble(9)) + ","); // percentvehiclesecondsperday
+				sb.append(formatter.format(r.getDouble(10)) + "\n"); // percentvehiclemetersperday
+			}
+			
+			output = sb.toString();
+			
+			formatter = new DecimalFormat("#0.00");
+			
+			connection.close(); // returns connection to the pool
+
+		} 
+	    catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+			
+		} 	
+	    return output;
+	    
+	}
+
+	public String downloadSpeedDistributionTrafficFlowReportForRegion() throws Exception {
+		return downloadSpeedDistributionReport(null);
+	}
+
+	public String downloadSpeedBinAggregateByDayTypeReport(String tagId) throws Exception {
+
+		String output = "";
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("REGION,TAG,VEHICLETYPE,SPEEDBIN,%(s)/y,%(m)/d,AVERAGE m/s\n");
+		
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			String sql = "select "+
+			"s.name as region,"+
+			"t.name as tag,"+
+			"sd.vehicletype,sd.speedbin,sd.percentvehiclesecondsperyear,sd.percentvehiclemetersperyear, sd.averagemeterspersecond "+
+			"from speeddistributiontrafficflowtagvehiclespeed sd, tagdetails t, studyregion s "+
+			"where sd.tagid = t.id and t.region = s.id ";
+			
+			if(tagId != null)
+			{
+				sql += "AND sd.tagid = '"+tagId+"'";
+			}
+			
+			sql += "order by s.name, t.name, sd.vehicletype, sd.speedbin";
+			
+			logger.debug("downloadSpeedBinAggregateByDayTypeReport(tagId) sql=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			
+			formatter = new DecimalFormat("#0.0000");
+			
+			while( r.next() ) { 
+				
+				sb.append(r.getString(1) + ","); // region
+				sb.append(r.getString(2) + ","); // tag
+				sb.append(r.getString(3) + ","); // vehicle
+				sb.append(r.getString(4) + ","); // speedbin
+				sb.append(formatter.format(r.getDouble(5)) + ","); // percentvehiclesecondsperyear
+				sb.append(formatter.format(r.getDouble(6)) + ","); // percentvehiclemetersperyear
+				sb.append(formatter.format(r.getDouble(7)) + "\n"); // averagemeterspersecond
+			}
+			
+			output = sb.toString();
+			
+			formatter = new DecimalFormat("#0.00");
+			
+			connection.close(); // returns connection to the pool
+
+		} 
+	    catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+			
+		} 	
+	    return output;
+	}
+
+	public String downloadSpeedBinAggregateByDayTypeReportForRegion() throws Exception {
+		return downloadSpeedBinAggregateByDayTypeReport(null);
+	}
+
+	public String downloadSpeedBinAggregateByTagReport() throws Exception {
+		
+		String output = "";
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("REGION,VEHICLETYPE,SPEEDBIN,TAG(km),TAG(hr),TAG(kph)\n");
+		
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			String sql = "select "+
+			"s.name,sd.vehicletype,sd.speedbin,sd.tagkilometers,sd.taghours,sd.tagkph "+
+			"from speeddistributiontrafficflowvehiclespeed sd,studyregion s "+
+			"where s.iscurrentregion=true "+
+			"ORDER BY vehicletype, speedbin; ";
+			
+			logger.debug("downloadSpeedBinAggregateByTagReport() sql=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			
+			//formatter = new DecimalFormat("#0.00");
+			
+			while( r.next() ) { 
+				
+				sb.append(r.getString(1) + ","); // region
+				sb.append(r.getString(2) + ","); // vehicle
+				sb.append(r.getString(3) + ","); // speedbin
+				sb.append(formatter.format(r.getDouble(4)) + ","); // tagkilometers
+				sb.append(formatter.format(r.getDouble(5)) + ","); // taghours
+				sb.append(formatter.format(r.getDouble(6)) + "\n"); // tagkph
+			}
+			
+			output = sb.toString();
+			
+			//formatter = new DecimalFormat("#0.00");
+			
+			connection.close(); // returns connection to the pool
+
+		} 
+	    catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+			
+		} 	
+	    return output;
+	}
+	
 	
 }
