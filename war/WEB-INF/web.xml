@@ -5,7 +5,7 @@
 version="2.4">
 	<display-name>TAMT Application</display-name>
     <description>
-      The TAMT Application Suite, Version 0.3
+      The TAMT Application Suite, Version 0.4
     </description>
     
 <!-- Servlets -->
@@ -55,17 +55,7 @@ version="2.4">
     <servlet-name>assignStatusHandler</servlet-name>
     <url-pattern>/tamt/assignStatusHandler</url-pattern>
   </servlet-mapping>
-  
-  <servlet>
-    <servlet-name>downloadTrafficFlowReport</servlet-name>
-    <servlet-class>org.worldbank.transport.tamt.server.DownloadTrafficFlowReport</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>downloadTrafficFlowReport</servlet-name>
-    <url-pattern>/download/trafficflowreport</url-pattern>
-  </servlet-mapping>  
-  
+    
   <servlet>
     <servlet-name>assignServiceServlet</servlet-name>
     <servlet-class>org.worldbank.transport.tamt.server.AssignServiceImpl</servlet-class>
@@ -176,6 +166,80 @@ version="2.4">
     <url-pattern>/tamt/uploadGPS</url-pattern>
   </servlet-mapping>
   
+  <!--  Download CSV -->
+  
+	  <!-- Vehicle Flow -->
+	  <servlet>
+	    <servlet-name>downloadTrafficFlowReport</servlet-name>
+	    <servlet-class>org.worldbank.transport.tamt.server.downloads.DownloadVehicleFlowTrafficFlowReport</servlet-class>
+	  </servlet>
+	  
+	  <servlet-mapping>
+	    <servlet-name>downloadTrafficFlowReport</servlet-name>
+	    <url-pattern>/download/vehicleflow/trafficflowreport</url-pattern>
+	  </servlet-mapping> 
+	  
+	  <!-- Speed Bins -->
+	  <servlet>
+	    <servlet-name>downloadSpeedBinDistribution</servlet-name>
+	    <servlet-class>org.worldbank.transport.tamt.server.downloads.DownloadSpeedBinSpeedDistributionReport</servlet-class>
+	  </servlet>
+	  
+	  <servlet-mapping>
+	    <servlet-name>downloadSpeedBinDistribution</servlet-name>
+	    <url-pattern>/download/speedbin/speeddistribution</url-pattern>
+	  </servlet-mapping> 
+	  
+	  <servlet>
+	    <servlet-name>downloadSpeedBinDistributionTrafficFlowReport</servlet-name>
+	    <servlet-class>org.worldbank.transport.tamt.server.downloads.DownloadSpeedBinSpeedDistributionTrafficFlowReport</servlet-class>
+	  </servlet>
+	  
+	  <servlet-mapping>
+	    <servlet-name>downloadSpeedBinDistributionTrafficFlowReport</servlet-name>
+	    <url-pattern>/download/speedbin/trafficflowreport</url-pattern>
+	  </servlet-mapping>
+	  
+	  <servlet>
+	    <servlet-name>downloadSpeedBinDistributionAggregateByDayTypeReport</servlet-name>
+	    <servlet-class>org.worldbank.transport.tamt.server.downloads.DownloadSpeedBinAggregateByDayTypeReport</servlet-class>
+	  </servlet>
+	  
+	  <servlet-mapping>
+	    <servlet-name>downloadSpeedBinDistributionAggregateByDayTypeReport</servlet-name>
+	    <url-pattern>/download/speedbin/aggregatebydaytypereport</url-pattern>
+	  </servlet-mapping>	  
+	
+ 	  <servlet>
+	    <servlet-name>downloadSpeedBinDistributionAggregateByTagReport</servlet-name>
+	    <servlet-class>org.worldbank.transport.tamt.server.downloads.DownloadSpeedBinAggregateByTagReport</servlet-class>
+	  </servlet>
+	  
+	  <servlet-mapping>
+	    <servlet-name>downloadSpeedBinDistributionAggregateByTagReport</servlet-name>
+	    <url-pattern>/download/speedbin/aggregatebytagreport</url-pattern>
+	  </servlet-mapping>
+	  
+ 	  <servlet>
+	    <servlet-name>downloadTripStatisticsTripBin</servlet-name>
+	    <servlet-class>org.worldbank.transport.tamt.server.downloads.DownloadTripStatisticsTripBinReport</servlet-class>
+	  </servlet>
+	  
+	  <servlet-mapping>
+	    <servlet-name>downloadTripStatisticsTripBin</servlet-name>
+	    <url-pattern>/download/tripstatistics/tripbin</url-pattern>
+	  </servlet-mapping>	
+	  
+ 	  <servlet>
+	    <servlet-name>downloadTripStatisticsSoakBin</servlet-name>
+	    <servlet-class>org.worldbank.transport.tamt.server.downloads.DownloadTripStatisticsSoakBinReport</servlet-class>
+	  </servlet>
+	  
+	  <servlet-mapping>
+	    <servlet-name>downloadTripStatisticsSoakBin</servlet-name>
+	    <url-pattern>/download/tripstatistics/soakbin</url-pattern>
+	  </servlet-mapping>	    
+	     
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>TransportActivityMeasurementToolkit.html</welcome-file>

@@ -160,7 +160,7 @@ public class TrafficFlowReportView extends Composite {
 		if( currentTagDetails != null)
 		{
 			// create the url string for the download
-			String url = "/download/trafficflowreport?tgid=" + currentTagDetails.getId();
+			String url = "/download/vehicleflow/trafficflowreport?tagid=" + currentTagDetails.getId();
 			Window.open(url, "_blank", null);
 		} else {
 			Window.alert("Please select a tag to download a report");

@@ -359,6 +359,64 @@ public class TrafficFlowReportDAO extends DAO {
 	    //logger.debug("report=" + report);
 		return report;
 		
+	}
+
+	public String getTrafficFlowReportForRegion() throws Exception {
+		
+		String output = "";
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("REGION,TAG,DAYTYPE,REPORTDATE,HOUR,W2,W3,PC,TX,LDV,LDC,HDC,MDB,HDB,TOTALFLOW\n");
+		
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "select "+
+				"s.name as region,"+
+				"t.name as tag,r.daytype,r.created,date_part('hour', r.hour_bin) as hour,"+
+				"w2,w3,pc,tx,ldv,ldc,hdc,mdb,hdb,totalflow "+
+				"from trafficflowreport r, studyregion s, tagdetails t "+
+				"where r.regionid = s.id and r.tagid = t.id "+
+				"order by s.name,t.name,r.daytype,r.created,r.hour_bin";
+			logger.debug("getTrafficFlowReport sql=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			
+			// change the formatter just for this method
+			//formatter = new DecimalFormat("#0.0000");
+			
+			while( r.next() ) { 
+				
+				sb.append(r.getString(1) + ","); // region
+				sb.append(r.getString(2) + ","); // tag
+				sb.append(r.getString(3) + ","); // daytype
+				sb.append(r.getTimestamp(4) + ","); // created
+				sb.append(r.getString(5) + ","); // hour
+				sb.append(formatter.format(r.getDouble(6)) + ","); // w2
+				sb.append(formatter.format(r.getDouble(7)) + ","); // w3
+				sb.append(formatter.format(r.getDouble(8)) + ","); // pc
+				sb.append(formatter.format(r.getDouble(9)) + ","); // tx
+				sb.append(formatter.format(r.getDouble(10)) + ","); // ldv
+				sb.append(formatter.format(r.getDouble(11)) + ","); // ldc
+				sb.append(formatter.format(r.getDouble(12)) + ","); // hdc
+				sb.append(formatter.format(r.getDouble(13)) + ","); // mdb
+				sb.append(formatter.format(r.getDouble(14)) + ","); // hdb
+				sb.append(formatter.format(r.getDouble(15)) + "\n"); // totalflow
+				
+			}
+			
+			output = sb.toString();
+			
+			//formatter = new DecimalFormat("#0.00");
+			
+			connection.close(); // returns connection to the pool
+
+		} 
+	    catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+			
+		} 	
+	    return output;
 	}	
 	
 }

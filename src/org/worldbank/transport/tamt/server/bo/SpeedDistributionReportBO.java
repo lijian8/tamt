@@ -59,124 +59,17 @@ public class SpeedDistributionReportBO {
 	
 	public String downloadSpeedDistributionReport(String tagId) throws Exception {
 
-		TagDetails tagDetails = new TagDetails();
-		tagDetails.setId(tagId);
-		
-		tagDetails = regionDao.getStudyRegion(tagDetails);
-		String tagName = tagDetails.getName();
-		String studyRegionName = tagDetails.getRegion().getName();
-		
-		SpeedDistributionReport weekday;
-		SpeedDistributionReport saturday;
-		SpeedDistributionReport sundayHoliday;
-		
 		String output = "";
 		
 		try {
 			
-			/*
-			weekday = dao.getSpeedDistributionReport(tagDetails, TrafficCountRecord.DAYTYPE_WEEKDAY);
-			saturday = dao.getSpeedDistributionReport(tagDetails, TrafficCountRecord.DAYTYPE_SATURDAY);
-			sundayHoliday = dao.getSpeedDistributionReport(tagDetails, TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY);
-			
-			// get the date the report was created
-			SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd/HH:mm:ss");
-			Date created = weekday.getCreated();
-			logger.debug("Date created:" + created);
-			String ts = format.format(created);
-			logger.debug("Formatted:" + ts);
-			String csvFileName = "traffic-flow-report-" + ts;
-			
-			StringBuffer sb = new StringBuffer();
-			sb.append("REPORTDATE,REGION,TAG,DAYTYPE,HOUR,W2,W3,PC,TX,LDV,LDC,HDC,MDB,HDB\n");
-			ArrayList<ArrayList> weekdayValues = weekday.getDayTypeValues();
-			for (Iterator iterator = weekdayValues.iterator(); iterator
-					.hasNext();) {
-				ArrayList row = (ArrayList) iterator.next();
-				
-				// add date report was created
-				sb.append(ts + ",");
-				
-				// add region name (need to lookup)
-				sb.append(studyRegionName + ",");
-				
-				// add tag name (need to lookup)
-				sb.append(tagName + ",");
-				
-				// add day type
-				sb.append(TrafficCountRecord.DAYTYPE_WEEKDAY + ",");
-				
-				for (Iterator iter = row.iterator(); iter.hasNext();) {
-					String item = (String) iter.next();
-					sb.append(item);
-					sb.append(",");
-				}
-				sb.append("\n");
-				
-				
-			}
-			
-			// saturday
-			ArrayList<ArrayList> saturdayValues = saturday.getDayTypeValues();
-			for (Iterator iterator = saturdayValues.iterator(); iterator
-					.hasNext();) {
-				ArrayList row = (ArrayList) iterator.next();
-				
-				// add date report was created
-				sb.append(ts + ",");
-				
-				// add region name (need to lookup)
-				sb.append(studyRegionName + ",");
-				
-				// add tag name (need to lookup)
-				sb.append(tagName + ",");
-				
-				// add day type
-				sb.append(TrafficCountRecord.DAYTYPE_SATURDAY + ",");
-				
-				for (Iterator iter = row.iterator(); iter.hasNext();) {
-					String item = (String) iter.next();
-					sb.append(item);
-					sb.append(",");
-				}
-				sb.append("\n");
-			}
-			
-			// sunday
-			ArrayList<ArrayList> sundayHolidayValues = sundayHoliday.getDayTypeValues();
-			for (Iterator iterator = sundayHolidayValues.iterator(); iterator
-					.hasNext();) {
-				ArrayList row = (ArrayList) iterator.next();
-				
-				// add date report was created
-				sb.append(ts + ",");
-				
-				// add region name (need to lookup)
-				sb.append(studyRegionName + ",");
-				
-				// add tag name (need to lookup)
-				sb.append(tagName + ",");
-				
-				// add day type
-				sb.append(TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY + ",");
-				
-				for (Iterator iter = row.iterator(); iter.hasNext();) {
-					String item = (String) iter.next();
-					sb.append(item);
-					sb.append(",");
-				}
-				sb.append("\n");
-			}
-			
-			output = sb.toString();
-			*/
+			output = dao.downloadSpeedDistributionReport(tagId);
 			
 		} catch (Exception e) {
-			// TODO throw an error the download page can handle
 			logger.error(e.getMessage());
 		}
 		
-		return output;
+		return output;		
 		
 	}
 
@@ -208,5 +101,93 @@ public class SpeedDistributionReportBO {
 	
 	public SpeedDistributionAggregateByTagReport getSpeedDistributionAggregateByTagReport() throws Exception {
 		return dao.getSpeedDistributionAggregateByTagReport();
+	}
+
+	public String downloadSpeedDistributionReportForRegion() throws Exception {
+
+		String output = "";
+		
+		try {
+			
+			output = dao.downloadSpeedDistributionReportForRegion();
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		
+		return output;
+		
+	}
+
+	public String downloadSpeedDistributionTrafficFlowReport(String tagId) throws Exception {
+
+		String output = "";
+		
+		try {
+			
+			output = dao.downloadSpeedDistributionTrafficFlowReport(tagId);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		
+		return output;
+	}
+
+	public String downloadSpeedDistributionTrafficFlowReportForRegion() throws Exception {
+
+		String output = "";
+		
+		try {
+			
+			output = dao.downloadSpeedDistributionTrafficFlowReportForRegion();
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		
+		return output;
+	}
+
+	public String downloadSpeedBinAggregateByDayTypeReport(String tagId) {
+		String output = "";
+		
+		try {
+			
+			output = dao.downloadSpeedBinAggregateByDayTypeReport(tagId);
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		
+		return output;
+	}
+
+	public String downloadSpeedBinAggregateByDayTypeReportForRegion() {
+		String output = "";
+		
+		try {
+			
+			output = dao.downloadSpeedBinAggregateByDayTypeReportForRegion();
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		
+		return output;
+	}
+
+	public String downloadSpeedBinAggregateByTagReport() throws Exception {
+		String output = "";
+		
+		try {
+			
+			output = dao.downloadSpeedBinAggregateByTagReport();
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		
+		return output;
 	}	
 }

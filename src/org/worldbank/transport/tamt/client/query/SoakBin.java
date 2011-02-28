@@ -147,7 +147,7 @@ public class SoakBin extends Composite {
 		if( currentStudyRegion != null)
 		{
 			// create the url string for the download
-			String url = "/download/soakbin?regionid=" + currentStudyRegion.getId();
+			String url = "/download/tripstatistics/soakbin?regionid=" + currentStudyRegion.getId();
 			Window.open(url, "_blank", null);
 		} else {
 			Window.alert("Cannot download soak bin report at this time");

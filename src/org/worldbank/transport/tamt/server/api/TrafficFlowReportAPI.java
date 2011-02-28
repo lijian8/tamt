@@ -39,5 +39,10 @@ public class TrafficFlowReportAPI {
 	{
 		return bo.downloadTrafficFlowReport(tagId);
 	}
+
+	public String downloadTrafficFlowReportForRegion() throws Exception
+	{
+		return bo.downloadTrafficFlowReportForRegion();
+	}
 	
 }

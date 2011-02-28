@@ -52,11 +52,6 @@ public class SpeedDistributionReportAPI {
 	{
 		return bo.getSpeedDistributionReport(tagDetails);
 	}
-	
-	public String downloadSpeedDistributionReport(String tagId) throws Exception
-	{
-		return bo.downloadSpeedDistributionReport(tagId);
-	}
 
 	public SpeedDistributionTrafficFlowReport getSpeedDistributionTrafficFlowReport(
 			TagDetails tagDetails) throws Exception {
@@ -70,6 +65,38 @@ public class SpeedDistributionReportAPI {
 	
 	public SpeedDistributionAggregateByTagReport getSpeedDistributionAggregateByTagReport() throws Exception {
 		return bo.getSpeedDistributionAggregateByTagReport();
-	}	
+	}
+
+	public String downloadSpeedDistributionReport(String tagId) throws Exception
+	{
+		return bo.downloadSpeedDistributionReport(tagId);
+	}
+	
+	public String downloadSpeedDistributionReportForRegion() throws Exception 
+	{
+		return bo.downloadSpeedDistributionReportForRegion();
+	}
+
+	public String downloadSpeedDistributionTrafficFlowReport(String tagId) throws Exception
+	{
+		return bo.downloadSpeedDistributionTrafficFlowReport(tagId);
+	}
+
+	public String downloadSpeedDistributionTrafficFlowReportForRegion() throws Exception
+	{
+		return bo.downloadSpeedDistributionTrafficFlowReportForRegion();
+	}
+
+	public String downloadSpeedBinAggregateByDayTypeReport(String tagId) throws Exception {
+		return bo.downloadSpeedBinAggregateByDayTypeReport(tagId);
+	}
+
+	public String downloadSpeedBinAggregateByDayTypeReportForRegion() throws Exception {
+		return bo.downloadSpeedBinAggregateByDayTypeReportForRegion();
+	}
+
+	public String downloadSpeedBinAggregateByTagReport() throws Exception {
+		return bo.downloadSpeedBinAggregateByTagReport();
+	}
 	
 }

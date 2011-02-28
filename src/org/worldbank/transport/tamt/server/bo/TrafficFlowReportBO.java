@@ -634,4 +634,19 @@ public class TrafficFlowReportBO {
 		
 	}
 
+	public String downloadTrafficFlowReportForRegion() {
+
+		String output = "";
+		
+		try {
+			
+			output = dao.getTrafficFlowReportForRegion();
+			
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		
+		return output;
+	}
+
 }
