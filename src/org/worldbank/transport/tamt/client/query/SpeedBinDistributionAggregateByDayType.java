@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.worldbank.transport.tamt.client.event.ClearSpeedBinReportsEvent;
+import org.worldbank.transport.tamt.client.event.ClearSpeedBinReportsEventHandler;
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
 import org.worldbank.transport.tamt.client.event.FetchedTagsEvent;
@@ -226,6 +228,14 @@ public class SpeedBinDistributionAggregateByDayType extends Composite {
 				resetScreen();
 			}
 		});		
+		
+		eventBus.addHandler(ClearSpeedBinReportsEvent.TYPE, new ClearSpeedBinReportsEventHandler() {
+			
+			@Override
+			public void onClearSpeedBinReports(ClearSpeedBinReportsEvent event) {
+				resetScreen();
+			}
+		});
 		
 		eventBus.addHandler(FetchedTagsEvent.TYPE, new FetchedTagsEventHandler() {
 			

@@ -169,7 +169,7 @@
 			
 			<g:HorizontalPanel styleName="{style.menu}">
 				<g:HTML ui:field="selectedTag" styleName="{style.selectedTag}"/>
-				<g:Label ui:field="downloadReport" styleName="{style.downloadReports} {style.clickable}">Download speed distribution x traffic flow for this tag</g:Label>
+				<g:Label ui:field="downloadReport" styleName="{style.downloadReports} {style.clickable}">Download the speed distribution x traffic flow report for this tag</g:Label>
 			</g:HorizontalPanel>
 
 			<g:HorizontalPanel styleName="{style.tableheader}">
