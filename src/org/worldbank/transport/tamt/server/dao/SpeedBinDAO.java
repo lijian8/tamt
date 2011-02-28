@@ -1251,7 +1251,7 @@ public class SpeedBinDAO extends DAO {
 	{
 		
 		// truncate subsequent speed distribution tables
-		truncateSpeedDistributionTablesPreSpeedDistTrafficFlowTagVehicleSpeed();
+		//truncateSpeedDistributionTablesPreSpeedDistTrafficFlowTagVehicleSpeed();
 		
 		// get default study region
 		ArrayList<StudyRegion> regions = regionDao.getStudyRegions();

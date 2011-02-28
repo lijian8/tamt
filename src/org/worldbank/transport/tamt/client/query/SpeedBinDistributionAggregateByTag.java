@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.worldbank.transport.tamt.client.event.ClearSpeedBinReportsEvent;
+import org.worldbank.transport.tamt.client.event.ClearSpeedBinReportsEventHandler;
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
 import org.worldbank.transport.tamt.client.event.FetchedTagsEvent;
@@ -74,7 +76,7 @@ public class SpeedBinDistributionAggregateByTag extends Composite {
 		String cell();
 		String hour();
 		String cellHeaderInteger();
-		String cellHeaderDouble();
+		String cellHeaderDoubleTop();
 		String checkbox();
 	}
 
@@ -147,7 +149,7 @@ public class SpeedBinDistributionAggregateByTag extends Composite {
 		if( currentTagDetails != null)
 		{
 			// create the url string for the download
-			String url = "/download/speeddistributionaggregatebydaytypereport?tgid=" + currentTagDetails.getId();
+			String url = "/download/speeddistributionaggregatebytagreport?regionid=" + currentStudyRegion.getId();
 			Window.open(url, "_blank", null);
 		} else {
 			Window.alert("Please select a tag to download a report");
@@ -182,7 +184,7 @@ public class SpeedBinDistributionAggregateByTag extends Composite {
 		dialog.center();
 		dialog.show();
 		
-		speedDistributionReportService.createSpeedDistributionAggregateByDayTypeReport(new AsyncCallback<Void>() {
+		speedDistributionReportService.createSpeedDistributionAggregateByTagReport(new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -196,6 +198,7 @@ public class SpeedBinDistributionAggregateByTag extends Composite {
 				dialog.hide();
 				resetScreen();
 				Window.alert("Aggregate by tag reports have been generated");
+				getSpeedDistributionAggregateByTagReport();
 			}
 		});
 		
@@ -226,6 +229,14 @@ public class SpeedBinDistributionAggregateByTag extends Composite {
 			}
 		});		
 		
+		eventBus.addHandler(ClearSpeedBinReportsEvent.TYPE, new ClearSpeedBinReportsEventHandler() {
+			
+			@Override
+			public void onClearSpeedBinReports(ClearSpeedBinReportsEvent event) {
+				resetScreen();
+			}
+		});
+		
 		eventBus.addHandler(TAMTResizeEvent.TYPE, new TAMTResizeEventHandler() {
 			
 			@Override
@@ -233,7 +244,7 @@ public class SpeedBinDistributionAggregateByTag extends Composite {
 				GWT.log("SIZE: SpeedBinDistributionAggregateByTag width: " + event.width);
 				int h = event.height - 225; // account for other query module UI
 				int reportH = h - 20;
-				int w = event.width - 283; // x - 696 = 564; .: x = 564 + 696 = 1260; 1260 - x = 413
+				int w = event.width - 90;
 				GWT.log("SIZE: SpeedBinDistributionAggregateByTag adjusted width: " + w);
 				if( h > -1)
 				{
@@ -260,30 +271,23 @@ public class SpeedBinDistributionAggregateByTag extends Composite {
 		reportTable.clear();
 	}
 
-	protected void getSpeedDistributionAggregateByTagReport(TagDetails tagDetails) {
+	protected void getSpeedDistributionAggregateByTagReport() {
 		
 		reportTable.removeAllRows();
 		reportTable.clear();
-		
-		currentTagDetails = tagDetails;
-		
-		//selectedTag.setHTML( TAG_SELECTED + " <b>"+tagDetails.getName()+"</b>");
-		downloadReport.setVisible(true);
-		
-		GWT.log("tagDetails prior to report fetch=" + tagDetails);
-		
 		
 		speedDistributionReportService.getSpeedDistributionAggregateByTagReport(new AsyncCallback<SpeedDistributionAggregateByTagReport>() {
 
 			public void onSuccess(SpeedDistributionAggregateByTagReport result) {
 				GWT.log("getSpeedDistributionAggregateByTagReport result:" + result);
-				if( result.getCreated() == null)
+				if( result == null)
 				{
-					Window.alert("There was no report generated. Please create a report and try again.");
+					Window.alert("There was no report to display. Please create a report and try again.");
 					resetScreen();
 				} else {
 					GWT.log("renderReport");
 					renderReport(result);
+					downloadReport.setVisible(true);
 				}
 			}
 			
@@ -326,9 +330,9 @@ public class SpeedBinDistributionAggregateByTag extends Composite {
 					if( !l.getText().equalsIgnoreCase("0"))
 					{
 						doubleValue = Double.parseDouble(l.getText());
-						l.setText(NumberFormat.getFormat("#0.00000").format(doubleValue)); // reformat double values to 
+						l.setText(NumberFormat.getFormat("#0.00").format(doubleValue)); // reformat double values to 
 					}
-					l.setStyleName(style.cellHeaderDouble());
+					l.setStyleName(style.cellHeaderDoubleTop());
 				}
 				reportTable.setWidget(row, column, l);
 				column++;

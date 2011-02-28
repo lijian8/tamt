@@ -362,7 +362,6 @@ BEGIN
 			AVG(t.avg_speed) avgSpeed 
 			FROM trips as t
 			WHERE regionid = _regionid
-			--GROUP BY regionid, gpstraceid, gpslogid, bin_number
 			GROUP BY regionid, bin_number
 			ORDER BY bin_number);
 

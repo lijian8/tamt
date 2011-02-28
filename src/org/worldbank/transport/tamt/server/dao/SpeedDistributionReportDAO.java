@@ -87,7 +87,7 @@ public class SpeedDistributionReportDAO extends DAO {
 			}
 
 			report.setReporValues(rows);
-			logger.debug("getSpeedDistribution DAO complete");
+			logger.debug("getSpeedDistribution DAO complete: rowcount=" + rows.size());
 			return report;
 		
 		} catch (SQLException e) {
@@ -216,11 +216,15 @@ public class SpeedDistributionReportDAO extends DAO {
 				
 				ArrayList<String> row = new ArrayList<String>();
 
-				row.add(r.getString(1)); // vehicletype
-				row.add(r.getString(2)); // speedbin
-				row.add(r.getString(3)); // meterspersecond
-				row.add(r.getString(4)); // tagmeters
-				row.add(r.getString(5)); // tagseconds
+				// skip the first column (regionid)
+				row.add(r.getString(2)); // vehicletype
+				row.add(r.getString(3)); // speedbin
+				//row.add(r.getString(4)); // meterspersecond
+				//row.add(r.getString(5)); // tagmeters
+				//row.add(r.getString(6)); // tagseconds
+				row.add(r.getString(7)); // tagkilometers
+				row.add(r.getString(8)); // taghours
+				row.add(r.getString(9)); // tagkph
 				rows.add(row);
 				
 			}

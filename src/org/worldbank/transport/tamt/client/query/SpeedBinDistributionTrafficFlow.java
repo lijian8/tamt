@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.worldbank.transport.tamt.client.event.ClearSpeedBinReportsEvent;
+import org.worldbank.transport.tamt.client.event.ClearSpeedBinReportsEventHandler;
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEvent;
 import org.worldbank.transport.tamt.client.event.CurrentStudyRegionUpdatedEventHandler;
 import org.worldbank.transport.tamt.client.event.FetchedTagsEvent;
@@ -145,7 +147,7 @@ public class SpeedBinDistributionTrafficFlow extends Composite {
 		if( currentTagDetails != null)
 		{
 			// create the url string for the download
-			String url = "/download/speeddistributiontrafficflowreport?tgid=" + currentTagDetails.getId();
+			String url = "/download/speeddistributiontrafficflowreport?tagid=" + currentTagDetails.getId();
 			Window.open(url, "_blank", null);
 		} else {
 			Window.alert("Please select a tag to download a report");
@@ -225,6 +227,14 @@ public class SpeedBinDistributionTrafficFlow extends Composite {
 				resetScreen();
 			}
 		});		
+		
+		eventBus.addHandler(ClearSpeedBinReportsEvent.TYPE, new ClearSpeedBinReportsEventHandler() {
+			
+			@Override
+			public void onClearSpeedBinReports(ClearSpeedBinReportsEvent event) {
+				resetScreen();
+			}
+		});
 		
 		eventBus.addHandler(FetchedTagsEvent.TYPE, new FetchedTagsEventHandler() {
 			

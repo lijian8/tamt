@@ -90,11 +90,11 @@
 			border: 0px solid black;
 		}	
 		.cellHeaderDoubleTop {
-			width: 75px;
+			width: 105px;
 			padding: 2px;
 			margin: 1px;
 			text-align: right;
-			border: 0px solid black;
+			border: 0px solid sfm;
 		}			
 		.dayTypeHeader {
 			width: 100px;
@@ -147,19 +147,25 @@
 		<g:VerticalPanel ui:field="rightPane" styleName="{style.rightPane}">
 		
 			<g:HTML styleName="{style.title}">Aggregate by Tag Report</g:HTML>
-			<g:Button ui:field="generateReport" styleName="{style.button}">Create report</g:Button>
+			
 			<g:HTML><hr/></g:HTML>
 			
 			<g:HorizontalPanel styleName="{style.menu}">
-				<g:Label ui:field="downloadReport" styleName="{style.downloadReports} {style.clickable}">Download aggregate by tag report</g:Label>
+				<g:Button ui:field="generateReport" styleName="{style.button}">Create report</g:Button>
+				<g:Label ui:field="downloadReport" styleName="{style.downloadReports} {style.clickable}">Download the aggregate by tag report</g:Label>
 			</g:HorizontalPanel>
 
 			<g:HorizontalPanel styleName="{style.tableheader}">
 				<g:Label styleName="{style.dayTypeHeader}">Vehicle Type</g:Label>
 				<g:Label styleName="{style.dayTypeHeader}">Speed Bin</g:Label>
+				<!-- 
 				<g:Label styleName="{style.cellHeaderDoubleTop}">m/s</g:Label>
 				<g:Label styleName="{style.cellHeaderDoubleTop}">tag (s)</g:Label>
 				<g:Label styleName="{style.cellHeaderDoubleTop}">tag (m)</g:Label>
+				-->
+				<g:Label styleName="{style.cellHeaderDoubleTop}">tag (km)</g:Label>
+				<g:Label styleName="{style.cellHeaderDoubleTop}">tag (hr)</g:Label>	
+				<g:Label styleName="{style.cellHeaderDoubleTop}">kph</g:Label>				
 			</g:HorizontalPanel>
 			<g:ScrollPanel ui:field="reportScroll" styleName="{style.scroll}">
 				<g:FlexTable ui:field="reportTable" styleName="{style.table}"/>
