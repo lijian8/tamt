@@ -464,7 +464,7 @@ public class SpeedDistributionReportDAO extends DAO {
 	}
 
 	public String downloadSpeedDistributionTrafficFlowReportForRegion() throws Exception {
-		return downloadSpeedDistributionReport(null);
+		return downloadSpeedDistributionTrafficFlowReport(null);
 	}
 
 	public String downloadSpeedBinAggregateByDayTypeReport(String tagId) throws Exception {
