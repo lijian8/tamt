@@ -114,6 +114,7 @@
 			<g:CheckBox ui:field="toggleAllCheckboxes" styleName="{style.checkAll}"/>
 			<g:Button ui:field="refresh" styleName="{style.button}">Refresh</g:Button>
 			<g:Button ui:field="delete" styleName="{style.button}">Delete checked</g:Button>
+			<g:Button ui:field="copy" styleName="{style.button}">Copy</g:Button>
 		</g:HorizontalPanel>
 		
 		<g:HTML><hr/></g:HTML>

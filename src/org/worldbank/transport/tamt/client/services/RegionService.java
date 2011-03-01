@@ -18,6 +18,7 @@ public interface RegionService extends RemoteService {
 	ArrayList<StudyRegion> getStudyRegions() throws Exception;
 	StudyRegion saveStudyRegion(StudyRegion studyRegion) throws Exception;
 	void deleteStudyRegions(ArrayList<String> studyRegionIds) throws Exception;
+	void copyStudyRegion(StudyRegion studyRegion) throws Exception;
 	
 	// study region related entities
 	DayTypePerYearOption getDayTypePerYearOption(String studyRegionId) throws Exception;
@@ -25,4 +26,5 @@ public interface RegionService extends RemoteService {
 	DefaultFlow getDefaultFlow(DefaultFlow defaultFlow) throws Exception;
 	DefaultFlow saveDefaultFlow(DefaultFlow defaultFlow) throws Exception;
 	void deleteDefaultFlow(DefaultFlow defaultFlow) throws Exception;
+	
 }

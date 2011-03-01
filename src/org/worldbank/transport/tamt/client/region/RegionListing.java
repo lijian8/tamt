@@ -73,6 +73,7 @@ public class RegionListing extends Composite {
 
 	@UiField CheckBox toggleAllCheckboxes;
 	@UiField Button save;
+	@UiField Button copy;
 	@UiField Button delete;
 	@UiField Button refresh;
 	
@@ -147,6 +148,11 @@ public class RegionListing extends Composite {
 		uncheckMasterCheckBox();
 		fetchStudyRegions();
 	}	
+
+	@UiHandler("copy")
+	void onClickCopy(ClickEvent e) {
+		copyStudyRegion();
+	}
 	
 	@UiHandler("save")
 	void onClickSave(ClickEvent e) {
@@ -417,6 +423,53 @@ public class RegionListing extends Composite {
 		});
 		
 	}	
+	
+	private void copyStudyRegion()
+	{
+		// ask the user for a new name
+		String regionName = Window.prompt("New name for copied region", "");
+		String regionIdToBeCopied = null;
+		if( regionName != null)
+		{
+			ArrayList<String> studyRegionIds = new ArrayList<String>();
+			for (Iterator iterator = checkboxes.iterator(); iterator.hasNext();) {
+				CheckBox cb = (CheckBox) iterator.next();
+				// boolean to see if it is checked
+				if(cb.getValue())
+				{
+					String studyRegionId = cb.getFormValue();
+					studyRegionIds.add(studyRegionId);
+					regionIdToBeCopied = studyRegionId;
+				}
+			}
+			if( studyRegionIds.size() > 1)
+			{
+				Window.alert("Only one region can be copied at a time");
+			} else 
+			{
+				//Window.alert("Copy the region..." + regionIdToBeCopied + " to " + regionName);
+				StudyRegion toCopy = new StudyRegion();
+				toCopy.setId(regionIdToBeCopied);
+				toCopy.setName(regionName);
+				regionService.copyStudyRegion(toCopy, new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert("Copy study region failed: " + caught);
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+						Window.alert("Copy study region succeeded");
+						eventBus.fireEvent(new GetRegionsEvent());
+					}
+				});
+			}
+			
+		} else {
+			// do nothing
+		}		
+	}
 
 	private void saveStudyRegion() {
 		

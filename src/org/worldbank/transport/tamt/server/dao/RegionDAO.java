@@ -670,5 +670,26 @@ public class RegionDAO extends DAO {
 			throw e;
 		}		
 	}
+
+	public void copyStudyRegion(StudyRegion studyRegion) throws Exception {
+		
+		String regionIdToCopy = studyRegion.getId();
+		String newName = studyRegion.getName();
+		
+		// delegate to stored procedure
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			String sql = "SELECT TAMT_copyStudyRegion('"+regionIdToCopy+"', '"+newName+"')";
+			logger.debug("TAMT_copyStudyRegion sql=" + sql);
+			s.execute(sql); 
+			connection.close(); // returns connection to the pool
+		} 
+		catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw new Exception("There was an error copying the study region");
+		}		
+	}
 	
 }
