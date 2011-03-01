@@ -86,6 +86,9 @@ public class RegionBO {
 			logger.debug("Deleting study region: " + studyRegionId);
 			dao.deleteStudyRegionById(studyRegionId);
 			
+			// cleans up analysis tables and supporting tables
+			dao.deleteAnalysisAndSupportRecords(studyRegionId);
+			
 			// create a StudyRegion to be used in deleting other entities
 			StudyRegion region = new StudyRegion();
 			region.setId(studyRegionId);
@@ -130,6 +133,7 @@ public class RegionBO {
 			logger.debug("Deleting tags for study region: " + studyRegionId);
 			tagDAO.deleteTagDetails(tagIds);
 			
+
 		
 		} catch (Exception e)
 		{

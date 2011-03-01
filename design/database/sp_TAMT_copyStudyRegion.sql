@@ -10,6 +10,7 @@ DECLARE
 	_tagDetailsRecord RECORD;
 	_roadDetailsRecord RECORD;
 	_zoneDetailsRecord RECORD;
+	_dayTypePerYearOptionRecord RECORD;
 BEGIN
 
  	--RAISE NOTICE 'START TAMT_copyStudyRegion';
@@ -89,7 +90,16 @@ BEGIN
 				_zoneDetailsRecord.zonetype,
 				_zoneDetailsRecord.geometry
 			);
-	END LOOP;	
+	END LOOP;
+
+	-- Step 5: Also add a default OPTION001 record to the dayTypePerYearOption table
+	INSERT INTO daytypeperyearoption (id, regionid, activeoption, option1weekday)
+		VALUES (
+			(SELECT _generate_uuid_v4()),
+			_studyregionRecord.id,
+			1,
+			260
+		);	
 
 	-- Now clean out our markers so we can copy again without duplication issues
 	UPDATE tagdetails SET original_tag_id = NULL;

@@ -348,7 +348,7 @@ public class TrafficCountRecordDAO extends DAO {
 					+ "', '"
 					+ trafficCountRecord.getRegion()
 					+ "', "
-					+ "(SELECT id FROM tagdetails WHERE name='" + trafficCountRecord.getTag() + "')"
+					+ "(SELECT id FROM tagdetails WHERE name='" + trafficCountRecord.getTag() + "' AND region = '"+trafficCountRecord.getRegion()+"')"
 					+ ", '"
 					+ trafficCountRecord.getDate()
 					+ "', '"

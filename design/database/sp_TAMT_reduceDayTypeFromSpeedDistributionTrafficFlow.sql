@@ -1,4 +1,4 @@
--- Function: tamt_reducedaytypefromspeeddistributiontrafficflow(text, integer, integer, integer, integer)
+﻿-- Function: tamt_reducedaytypefromspeeddistributiontrafficflow(text, integer, integer, integer, integer)
 
 -- DROP FUNCTION tamt_reducedaytypefromspeeddistributiontrafficflow(text, integer, integer, integer, integer);
 
@@ -13,6 +13,7 @@ DECLARE
 	summ RECORD;
 	sumsecs double precision;
 	summets double precision;
+	_regionid text;
 BEGIN
 
  	RAISE NOTICE 'START TAMT_reduceDayTypeFromSpeedDistributionTrafficFlow';
@@ -25,16 +26,23 @@ BEGIN
 	sumsecs := 0;
 	summets := 0;
 
-	-- drop
+	-- we should only be operating on the current study region
+	SELECT INTO _regionid id FROM studyregion WHERE iscurrentregion = TRUE;
+
+	-- Instead of dropping, just empty it out the rows with tagids corresponding to the current study region
+	DELETE FROM speeddistributiontrafficflowtagvehiclespeed 
+		WHERE tagid IN (SELECT id FROM tagdetails where region = _regionid);
+
+	-- drop tmp tables
 	RAISE NOTICE 'Dropping tables...';
 	DROP TABLE IF EXISTS tmp_speeddistribution_yearly_step1;
-	DROP TABLE IF EXISTS speeddistributiontrafficflowtagvehiclespeed;
 	
-	-- during dev, always start fresh
+	-- during analysis, always start with fresh percentages
 	UPDATE speeddistributiontrafficflow
-			SET
-			percentvehiclesecondsperyear = null,
-			percentvehiclemetersperyear = null;
+		SET
+		percentvehiclesecondsperyear = null,
+		percentvehiclemetersperyear = null
+		WHERE tagid IN (SELECT id FROM tagdetails where region = _regionid);
 			
 	IF activeoption = '1'
 	THEN
@@ -43,10 +51,11 @@ BEGIN
 			SET
 			percentvehiclesecondsperyear = percentvehiclesecondsperday * option1weekday,
 			percentvehiclemetersperyear = percentvehiclemetersperday * option1weekday
-			WHERE daytype = 'WEEKDAY';
+			WHERE daytype = 'WEEKDAY'
 			-- This means that at the end of this query, any rows with 
 			-- SATURDAY or SUNDAYHOLIDAY daytypes do NOT have percentvehiclesecondsperbinperyear
 			-- or percentvehiclemetersperbinperyear
+			AND tagid IN (SELECT id FROM tagdetails where region = _regionid);
 	ELSE
 		RAISE NOTICE 'Proceed with option 2 calculations';
 
@@ -55,19 +64,22 @@ BEGIN
 			SET
 			percentvehiclesecondsperyear = percentvehiclesecondsperday * option2weekday,
 			percentvehiclemetersperyear = percentvehiclemetersperday * option2weekday
-			WHERE daytype = 'WEEKDAY';
+			WHERE daytype = 'WEEKDAY'
+			AND tagid IN (SELECT id FROM tagdetails where region = _regionid);
 		-- SATURDAY 
 		UPDATE speeddistributiontrafficflow
 			SET
 			percentvehiclesecondsperyear = percentvehiclesecondsperday * option2saturday,
 			percentvehiclemetersperyear = percentvehiclemetersperday * option2saturday
-			WHERE daytype = 'SATURDAY';
+			WHERE daytype = 'SATURDAY'
+			AND tagid IN (SELECT id FROM tagdetails where region = _regionid);
 		-- SUNDAY_HOLIDAY 
 		UPDATE speeddistributiontrafficflow
 			SET
 			percentvehiclesecondsperyear = percentvehiclesecondsperday * option2sundayholiday,
 			percentvehiclemetersperyear = percentvehiclemetersperday * option2sundayholiday
-			WHERE daytype = 'SUNDAY_HOLIDAY';
+			WHERE daytype = 'SUNDAY_HOLIDAY'
+			AND tagid IN (SELECT id FROM tagdetails where region = _regionid);
 		
 	END IF;
 
@@ -79,16 +91,22 @@ BEGIN
 			percentvehiclemetersperyear,
 			weightedaveragespeed as averagemeterspersecond
 		FROM speeddistributiontrafficflow
-		WHERE percentvehiclesecondsperyear IS NOT NULL;
+		WHERE percentvehiclesecondsperyear IS NOT NULL
+		AND tagid IN (SELECT id FROM tagdetails where region = _regionid);
 		
 	-- do the sum step for option2 based on tag/veh/speedbin
 	-- select tags
 	IF activeoption = '2'
 	THEN
 
-		SELECT INTO lastspeedbin speedbinnumber FROM gpspoints ORDER BY speedbinnumber DESC LIMIT 1;
+		SELECT INTO lastspeedbin speedbinnumber 
+			FROM gpspoints 
+			WHERE tag_id IN (SELECT id FROM tagdetails where region = _regionid)
+			ORDER BY speedbinnumber DESC LIMIT 1;
 		
-		FOR tag IN SELECT DISTINCT tagid FROM tmp_speeddistribution_yearly_step1
+		FOR tag IN 
+			SELECT DISTINCT tagid 
+			FROM tmp_speeddistribution_yearly_step1
 		LOOP
 			RAISE NOTICE 'tag=%', tag;
 			FOR vtype IN SELECT vehicletype FROM vehicletypes
@@ -124,19 +142,34 @@ BEGIN
 	ELSE
 	END IF;
 
-	-- move the tmp table into a more permanent space
-	-- By using the DISTINCT clause we get rid of duplicate rows 
-	-- (which happens in the OPTION002 case)
-	CREATE TABLE speeddistributiontrafficflowtagvehiclespeed WITH(OIDS=TRUE) AS 
-		SELECT 
-		DISTINCT ON(tagid, vehicletype, speedbin) *
+
+	-- Copy data from temporary table to more permanent table and remove useless columns
+	-- Note: this is a two step copy so we can group by tagid, vehicle type and speed bin without grouping by other fields
+	DROP TABLE IF EXISTS tmp_sdtftvs;
+	CREATE TABLE tmp_sdtftvs WITH (OIDS = FALSE) AS 
+		SELECT DISTINCT ON(tagid, vehicletype, speedbin) 
+		*
 		FROM tmp_speeddistribution_yearly_step1;
+ 	INSERT INTO speeddistributiontrafficflowtagvehiclespeed 
+		(tagid, vehicletype, speedbin, percentvehiclesecondsperyear, 
+		 percentvehiclemetersperyear, averagemeterspersecond)
+		(SELECT
+			  tagid,
+			  vehicletype,
+			  speedbin,
+			  percentvehiclesecondsperyear,
+			  percentvehiclemetersperyear,
+			  averagemeterspersecond
+		FROM tmp_sdtftvs);
+	DROP TABLE IF EXISTS tmp_sdtftvs;	
 		
 	-- recalculate the average speed in the new table
 	-- (doing it here instead of the temp table improves performance
 	-- since we don't have to update rows that are eliminated during
 	-- the table creation above)
-	FOR r IN SELECT * FROM speeddistributiontrafficflowtagvehiclespeed
+	FOR r IN 
+		SELECT * FROM speeddistributiontrafficflowtagvehiclespeed
+		WHERE tagid IN (SELECT id FROM tagdetails where region = _regionid)
 	LOOP
 		IF r.percentvehiclesecondsperyear = 0
 		THEN
