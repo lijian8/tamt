@@ -100,15 +100,15 @@ public class RegionBO {
 			logger.debug("Deleting GPS traces for study region: " + studyRegionId);
 			gpsTraceDAO.deleteGPSTraces(gpsTraceIds);
 			
-			// delete tag
-			ArrayList<TagDetails> tags = tagDAO.getTagDetails(region);
-			ArrayList<String> tagIds = new ArrayList<String>();
-			for (Iterator iterator = tags.iterator(); iterator.hasNext();) {
-				TagDetails tag = (TagDetails) iterator.next();
-				tagIds.add(tag.getId());
+			// delete zones
+			ArrayList<ZoneDetails> zones = zoneDAO.getZoneDetails(region);
+			ArrayList<String> zoneIds = new ArrayList<String>();
+			for (Iterator iterator = zones.iterator(); iterator.hasNext();) {
+				ZoneDetails zone = (ZoneDetails) iterator.next();
+				zoneIds.add(zone.getId());
 			}
-			logger.debug("Deleting tags for study region: " + studyRegionId);
-			tagDAO.deleteTagDetails(tagIds);
+			logger.debug("Deleting zones for study region: " + studyRegionId);
+			zoneDAO.deleteZoneDetails(zoneIds);	
 			
 			// delete roads
 			ArrayList<RoadDetails> roads = roadDAO.getRoadDetails(region);
@@ -120,15 +120,16 @@ public class RegionBO {
 			logger.debug("Deleting roads for study region: " + studyRegionId);
 			roadDAO.deleteRoadDetails(roadIds);
 			
-			// delete zones
-			ArrayList<ZoneDetails> zones = zoneDAO.getZoneDetails(region);
-			ArrayList<String> zoneIds = new ArrayList<String>();
-			for (Iterator iterator = zones.iterator(); iterator.hasNext();) {
-				ZoneDetails zone = (ZoneDetails) iterator.next();
-				zoneIds.add(zone.getId());
+			// delete tag
+			ArrayList<TagDetails> tags = tagDAO.getTagDetails(region);
+			ArrayList<String> tagIds = new ArrayList<String>();
+			for (Iterator iterator = tags.iterator(); iterator.hasNext();) {
+				TagDetails tag = (TagDetails) iterator.next();
+				tagIds.add(tag.getId());
 			}
-			logger.debug("Deleting zones for study region: " + studyRegionId);
-			zoneDAO.deleteZoneDetails(zoneIds);		
+			logger.debug("Deleting tags for study region: " + studyRegionId);
+			tagDAO.deleteTagDetails(tagIds);
+			
 		
 		} catch (Exception e)
 		{
@@ -160,10 +161,9 @@ public class RegionBO {
 	public StudyRegion saveStudyRegion(StudyRegion studyRegion) throws Exception {
 		
 		logger.debug("Preparing to save study region:" + studyRegion);
-		if( studyRegion.getName().equalsIgnoreCase(""))
-		{
-			throw new Exception("Study region must have a name");
-		}
+		
+		// validate name for comma
+		validateStudyRegion(studyRegion);
 		
 		// we want to store the Vertex array list as a JTS linestring
 		ArrayList<Vertex> vertices = studyRegion.getVertices();
@@ -437,5 +437,33 @@ public class RegionBO {
 	public void deleteDefaultFlow(DefaultFlow defaultFlow) throws Exception
 	{
 		dao.deleteDefaultFlow(defaultFlow);
+	}
+
+	public void copyStudyRegion(StudyRegion studyRegion) throws Exception {
+		
+		try {
+			validateStudyRegion(studyRegion);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw e;
+		}
+		
+		// if we did not error out, keep going
+		dao.copyStudyRegion(studyRegion);
+		
+	}
+
+	protected void validateStudyRegion(StudyRegion studyRegion) throws Exception {
+		
+		// name cannot have COMMAS or be empty
+		if( studyRegion.getName().indexOf(",") != -1)
+		{
+			throw new Exception("Study region name cannot contain commas");
+		}
+		
+		if( studyRegion.getName().equalsIgnoreCase(""))
+		{
+			throw new Exception("Study region must have a name");
+		}		
 	}
 }

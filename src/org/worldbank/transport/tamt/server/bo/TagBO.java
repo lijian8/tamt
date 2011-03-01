@@ -62,11 +62,9 @@ public class TagBO {
 	}
 
 	public TagDetails saveTagDetails(TagDetails tagDetails) throws Exception {
-		//TODO: validate tagDetails
-		if( tagDetails.getName().equalsIgnoreCase(""))
-		{
-			throw new Exception("Tag must have a name");
-		}
+
+		// validate name for comma, empty
+		validateTagDetails(tagDetails);
 		
 		try {
 			if( tagDetails.getId() == null )
@@ -120,5 +118,19 @@ public class TagBO {
 		 * go ahead and delete all related (default traffic flows, traffic flow reports)
 		 */
 		
+	}
+
+	protected void validateTagDetails(TagDetails tagDetails) throws Exception {
+		
+		// name cannot have COMMAS or be empty
+		if( tagDetails.getName().indexOf(",") != -1)
+		{
+			throw new Exception("Tag name cannot contain commas");
+		}
+		
+		if( tagDetails.getName().equalsIgnoreCase(""))
+		{
+			throw new Exception("Tag must have a name");
+		}		
 	}
 }

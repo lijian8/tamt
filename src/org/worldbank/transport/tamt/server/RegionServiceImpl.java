@@ -63,6 +63,11 @@ public class RegionServiceImpl extends RemoteServiceServlet implements RegionSer
 	@Override
 	public void deleteDefaultFlow(DefaultFlow defaultFlow) throws Exception {
 		regionAPI.deleteDefaultFlow(defaultFlow);
+	}
+
+	@Override
+	public void copyStudyRegion(StudyRegion studyRegion) throws Exception {
+		regionAPI.copyStudyRegion(studyRegion);
 	}	
 	
 }

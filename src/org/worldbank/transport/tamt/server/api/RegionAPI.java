@@ -56,5 +56,9 @@ public class RegionAPI {
 	{
 		bo.deleteDefaultFlow(defaultFlow);
 	}
+
+	public void copyStudyRegion(StudyRegion studyRegion) throws Exception {
+		bo.copyStudyRegion(studyRegion);
+	}
 	
 }

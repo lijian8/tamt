@@ -25,4 +25,5 @@ public interface RegionServiceAsync {
 	void saveDefaultFlow(DefaultFlow defaultFlow,
 			AsyncCallback<DefaultFlow> callback);
 	void deleteDefaultFlow(DefaultFlow defaultFlow, AsyncCallback<Void> callback);
+	void copyStudyRegion(StudyRegion studyRegion, AsyncCallback<Void> callback);
 }
