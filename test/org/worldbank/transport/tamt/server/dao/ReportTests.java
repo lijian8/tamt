@@ -118,6 +118,22 @@ public class ReportTests {
 	}	
 	
 	@Test
+	public void downloadSpeedDistributionTrafficFlowReportForRegion()
+	{
+		logger.debug("test downloadSpeedDistributionTrafficFlowReportForRegion");
+		String output = null;
+		try {
+			// null to get all tags for region
+			output = speedDistributionReportDAO.downloadSpeedDistributionTrafficFlowReportForRegion();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger.debug(output);
+		assertNotNull(output);
+	
+	}	
+	@Test
 	public void downloadSpeedDistributionAggregateByDayTypeReportForRegion()
 	{
 		logger.debug("test downloadSpeedDistributionAggregateByDayTypeReportForRegion");

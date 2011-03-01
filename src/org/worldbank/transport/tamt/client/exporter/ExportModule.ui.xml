@@ -28,11 +28,45 @@
 			height: 500px;
 			width: 900px;	
 		}
+		.studyRegionLabel {
+			background-color: white;
+			font-size: 14px;
+			font-weight: bold;
+			padding-top: 4px;
+			padding-left: 4px;
+			padding-right: 4px;
+			padding-bottom: 8px;
+			color: #666666;
+		}
+		.studyRegionTitle {
+			font-size: 14px;
+			font-weight: bold;
+			padding-top: 4px;
+			padding-left: 4px;
+			padding-right: 4px;
+			padding-bottom: 8px;
+			text-decoration: underline;
+			color: blue;
+			cursor: pointer;
+			cursor: hand;
+		}		
 	</ui:style>
-	<g:HorizontalPanel ui:field="hpanel" styleName="{style.outerBorder}">
-		<g:HTMLPanel styleName="{style.buffer}">
-			<g:HTML>Placeholder for Export Module</g:HTML>
-		</g:HTMLPanel>
+	<g:VerticalPanel ui:field="vPanel" styleName="{style.outerBorder}">
+	<g:HorizontalPanel>
+		<g:HTML styleName="{style.studyRegionLabel}">Current study region:</g:HTML>
+		<g:HTML ui:field="studyRegionName" styleName="{style.studyRegionTitle}">&lt;Not set&gt;</g:HTML>
 	</g:HorizontalPanel>
-	
+	<g:HorizontalPanel ui:field="hpanel">
+		<g:TabLayoutPanel ui:field="tabLayoutPanel" barUnit="PX" barHeight="20">
+			<g:tab>
+				<g:header>Download CSV</g:header>
+				<exporterm:DownloadCSV/>
+			</g:tab>	
+			<g:tab>
+				<g:header>Database</g:header>
+				<exporterm:BackupDatabase/>
+			</g:tab>						
+		</g:TabLayoutPanel>
+	</g:HorizontalPanel>
+	</g:VerticalPanel>
 </ui:UiBinder> 

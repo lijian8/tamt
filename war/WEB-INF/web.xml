@@ -238,7 +238,18 @@ version="2.4">
 	  <servlet-mapping>
 	    <servlet-name>downloadTripStatisticsSoakBin</servlet-name>
 	    <url-pattern>/download/tripstatistics/soakbin</url-pattern>
-	  </servlet-mapping>	    
+	  </servlet-mapping>	
+	  
+	  <!--  backup service -->
+  <servlet>
+    <servlet-name>backupServiceServlet</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.BackupDatabaseServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>backupServiceServlet</servlet-name>
+    <url-pattern>/tamt/backupService</url-pattern>
+  </servlet-mapping>	      
 	     
   <!-- Default page to serve -->
   <welcome-file-list>

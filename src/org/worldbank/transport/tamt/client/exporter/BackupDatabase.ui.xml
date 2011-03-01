@@ -1,0 +1,171 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style type="org.worldbank.transport.tamt.client.exporter.BackupDatabase.Style">
+		.outer {
+			background-color: white;
+		}
+		.leftPane {
+			background-color: white;
+			margin-right: 10px;
+		}			
+		.rightPane {
+			background-color: white;
+		}		
+		.hpanel {
+			width: 100%;
+		}	
+		.title {
+			font-size: 12px;
+			font-weight: bold;	
+		}
+		.subtitle {
+			font-size: 10px;
+			font-weight: bold;
+		}	
+		.clickable {
+			cursor: pointer;
+			text-decoration: underline;
+			color: blue;	
+		}	
+		.scroll {
+			height: 358px;
+			background-color: white;
+			border: 1px solid #cccccc;
+			margin-top: 6px;
+		}	
+		.tagScroll {
+			height: 358px;
+			width: 200px;
+			background-color: white;
+			border: 1px solid #cccccc;
+			margin-top: 6px;
+		}		
+		.countHeader {
+			width: 400px;
+			vertical-align: bottom;
+		}
+		.table {
+			margin: 2px;
+			padding: 1px;
+		}
+		.tableheader {
+			border: 0px solid red;
+			height: 20px;	
+			margin: 1px;
+			padding: 2px;			
+		}		
+		.record {
+			width: 140px;
+		}
+		.cell {
+			width: 50px;
+			border: 0px solid black;
+		}
+		.cellHeader {
+			width: 150px;
+			padding: 2px;
+			border: 0px solid black;
+		}
+		.cellHeaderInteger {
+			width: 50px;
+			padding: 0px;
+			margin: 0px;
+			text-align: right;
+			border: 0px solid black;
+		}	
+		.cellHeaderIntegerTop {
+			width: 50px;
+			padding: 2px;
+			margin: 1px;
+			text-align: right;
+			border: 0px solid black;
+		}			
+		.cellHeaderDouble {
+			width: 75px;
+			padding: 0px;
+			margin: 0px;
+			text-align: right;
+			border: 0px solid black;
+		}	
+		.cellHeaderDoubleTop {
+			width: 150px;
+			padding: 2px;
+			margin: 1px;
+			text-align: right;
+			border: 0px solid black;
+		}			
+		.dayTypeHeader {
+			width: 100px;
+			padding: 2px;
+			margin: 1px;
+			border: 0px solid black;
+		}
+		.dayType {
+			width: 100px;
+			padding: 0px;
+			margin: 0px;
+			border: 0px solid black;
+		}
+		.hourHeader {
+			width: 80px;
+			padding: 2px;
+			margin: 1px;
+			border: 0px solid black;
+		}
+		.hour {
+			width: 50px;
+			padding: 0px;
+			margin: 0px;
+			border: 0px solid black;
+		}				
+		.button {
+			margin-left: 10px;
+		}
+		.checkbox {
+			width: 10px;
+		}	 
+		.checkAll {
+			margin-top: 2px;	
+		}
+		.menu {
+			height: auto;
+			background-color: white;
+		}
+		.selectedTag {
+			margin-left: 10px;	
+		}	
+		.downloadReports {
+			margin-left: 10px;
+		}			
+			
+	</ui:style>
+	<g:HorizontalPanel ui:field="outerHPanel" styleName="{style.outer}">
+		<!-- left pane for Tags -->
+
+		<!-- right pane for backup database -->
+		<g:VerticalPanel ui:field="rightPane" styleName="{style.rightPane}">
+		
+			<g:HorizontalPanel styleName="{style.menu}">
+				<g:HTML styleName="{style.title}">Database</g:HTML>
+			</g:HorizontalPanel>
+			<g:HTML><hr/></g:HTML>
+			
+			<!-- <g:Label ui:field="exportDatabase" styleName="{style.downloadReports} {style.clickable}">Export entire database to desktop</g:Label>
+			 -->
+			<g:HTML>
+			To export the entire TAMT database, do the following:
+			<ul>
+				<li>Open a terminal. Applications > Accessories > Terminal</li>
+				<li>Switch users: <code>tamt@tamt-vbox:~$ su - postgres</code> (At the password prompt, type 'tamt')</li>
+				<li>As the postgresql user, execute the database dump: <code>pg_dump tamt15 > /tmp/tamt15-{today's date}.bak</code>. For instance, <code>pg_dump tamt15 > /tmp/tamt15-2011-03-01.bak</code></li>
+				<li>Return to the regular tamt user: <code>exit</code></li>
+				<li>Copy the backup to the Desktop: <code>cp /tmp/tamt15-{today's date}.bak /home/tamt/Desktop</code></li>
+				<li>Close the terminal: <code>exit</code></li>
+				<li>Minimize the browser running the TAMT application. Your database backup file is now on the desktop.</li>
+				<li>Follow the TAMT documentation for copying a file from the TAMT desktop to your host computer.</li>
+			</ul>
+			</g:HTML>
+		</g:VerticalPanel>
+	</g:HorizontalPanel>
+</ui:UiBinder> 
