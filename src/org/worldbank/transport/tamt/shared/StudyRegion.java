@@ -12,7 +12,9 @@ public class StudyRegion implements Serializable {
 	private String utcOffset;
 	
 	private String defaultZoneType;
-	private String zoneBlockLength;
+	private String residentialZoneBlockLength;
+	private String industrialZoneBlockLength;
+	private String commercialZoneBlockLength;
 	
 	private ArrayList<Vertex> vertices;
 	private Vertex centroid;
@@ -107,12 +109,28 @@ public class StudyRegion implements Serializable {
 		return utcOffset;
 	}
 
-	public String getZoneBlockLength() {
-		return zoneBlockLength;
+	public String getResidentialZoneBlockLength() {
+		return residentialZoneBlockLength;
 	}
 
-	public void setZoneBlockLength(String zoneBlockLength) {
-		this.zoneBlockLength = zoneBlockLength;
+	public void setResidentialZoneBlockLength(String residentialZoneBlockLength) {
+		this.residentialZoneBlockLength = residentialZoneBlockLength;
+	}
+
+	public String getIndustrialZoneBlockLength() {
+		return industrialZoneBlockLength;
+	}
+
+	public void setIndustrialZoneBlockLength(String industrialZoneBlockLength) {
+		this.industrialZoneBlockLength = industrialZoneBlockLength;
+	}
+
+	public String getCommercialZoneBlockLength() {
+		return commercialZoneBlockLength;
+	}
+
+	public void setCommercialZoneBlockLength(String commercialZoneBlockLength) {
+		this.commercialZoneBlockLength = commercialZoneBlockLength;
 	}
 
 	@Override
@@ -120,6 +138,8 @@ public class StudyRegion implements Serializable {
 		StringBuilder builder = new StringBuilder();
 		builder.append("StudyRegion [centroid=");
 		builder.append(centroid);
+		builder.append(", commercialZoneBlockLength=");
+		builder.append(commercialZoneBlockLength);
 		builder.append(", currentRegion=");
 		builder.append(currentRegion);
 		builder.append(", defaultZoneType=");
@@ -128,18 +148,20 @@ public class StudyRegion implements Serializable {
 		builder.append(description);
 		builder.append(", id=");
 		builder.append(id);
+		builder.append(", industrialZoneBlockLength=");
+		builder.append(industrialZoneBlockLength);
 		builder.append(", mapCenter=");
 		builder.append(mapCenter);
 		builder.append(", mapZoomLevel=");
 		builder.append(mapZoomLevel);
 		builder.append(", name=");
 		builder.append(name);
+		builder.append(", residentialZoneBlockLength=");
+		builder.append(residentialZoneBlockLength);
 		builder.append(", utcOffset=");
 		builder.append(utcOffset);
 		builder.append(", vertices=");
 		builder.append(vertices);
-		builder.append(", zoneBlockLength=");
-		builder.append(zoneBlockLength);
 		builder.append("]");
 		return builder.toString();
 	}

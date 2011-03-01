@@ -66,7 +66,7 @@ public class RegionDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "select id, name, description, AsText(geometry) geom, " +
 			"mapzoomlevel, AsText(mapcenter) center, iscurrentregion, " +
-			"default_zone_type, utcoffset, default_block_length " +
+			"default_zone_type, utcoffset, commercial_block_length, industrial_block_length, residential_block_length " +
 			"FROM studyregion WHERE id = '"+studyRegion.getId()+"' ORDER BY name";
 			logger.debug("getStudyRegions sql=" + sql);
 			ResultSet r = s.executeQuery(sql); 
@@ -85,7 +85,9 @@ public class RegionDAO extends DAO {
 			      boolean currentRegion = r.getBoolean(7);
 			      String defaultZoneType = r.getString(8);
 			      String utcOffset = r.getString(9);
-			      String zoneBlockLength = r.getString(10);
+			      String commercialZoneBlockLength = r.getString(10);
+			      String industrialZoneBlockLength = r.getString(11);
+			      String residentialZoneBlockLength = r.getString(12);
 			      
 			      // convert a linestring to a JTS geometry
 			      WKTReader reader = new WKTReader();
@@ -100,7 +102,9 @@ public class RegionDAO extends DAO {
 			      fetched.setMapZoomLevel(mapZoomLevel);
 			      fetched.setDefaultZoneType(defaultZoneType);
 			      fetched.setUtcOffset(utcOffset);
-			      fetched.setZoneBlockLength(zoneBlockLength);
+			      fetched.setCommercialZoneBlockLength(commercialZoneBlockLength);
+			      fetched.setIndustrialZoneBlockLength(industrialZoneBlockLength);
+			      fetched.setResidentialZoneBlockLength(residentialZoneBlockLength);
 			      
 			      // now convert the geometry to an ArrayList<Vertex> and
 			      // set in the roadDetails
@@ -137,7 +141,7 @@ public class RegionDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "select id, name, description, AsText(geometry) geom, " +
 					"mapzoomlevel, AsText(mapcenter) center, iscurrentregion, " +
-					"default_zone_type, utcoffset, default_block_length " +
+					"default_zone_type, utcoffset, commercial_block_length, industrial_block_length, residential_block_length " +
 					"FROM studyregion ORDER BY name";
 			logger.debug("getStudyRegions sql=" + sql);
 			ResultSet r = s.executeQuery(sql); 
@@ -154,8 +158,10 @@ public class RegionDAO extends DAO {
 			      String mapCenterWKT = r.getString(6);
 			      boolean currentRegion = r.getBoolean(7);
 			      String defaultZoneType = r.getString(8);
-			      String utcOffset = r.getString(9);
-			      String zoneBlockLength = r.getString(10);
+			      String utcOffset = r.getString(9);			      
+			      String commercialZoneBlockLength = r.getString(10);
+			      String industrialZoneBlockLength = r.getString(11);
+			      String residentialZoneBlockLength = r.getString(12);
 			      
 			      // convert a linestring to a JTS geometry
 			      WKTReader reader = new WKTReader();
@@ -170,7 +176,9 @@ public class RegionDAO extends DAO {
 			      studyRegion.setMapZoomLevel(mapZoomLevel);
 			      studyRegion.setDefaultZoneType(defaultZoneType);
 			      studyRegion.setUtcOffset(utcOffset);
-			      studyRegion.setZoneBlockLength(zoneBlockLength);
+			      studyRegion.setCommercialZoneBlockLength(commercialZoneBlockLength);
+			      studyRegion.setIndustrialZoneBlockLength(industrialZoneBlockLength);
+			      studyRegion.setResidentialZoneBlockLength(residentialZoneBlockLength);
 			      
 			      // now convert the geometry to an ArrayList<Vertex> and
 			      // set in the roadDetails
@@ -212,8 +220,6 @@ public class RegionDAO extends DAO {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			// TODO: extend the model to include regionName string or region StudyRegion as property of ZoneDetails
-			// for now we just use 'default'
 			String sql = "UPDATE \"studyregion\" SET " +
 					" name = '"+studyRegion.getName()+"'," +
 					" description = '"+studyRegion.getDescription()+"'," +
@@ -223,7 +229,9 @@ public class RegionDAO extends DAO {
 					" iscurrentregion = "+studyRegion.isCurrentRegion()+"," +
 					" default_zone_type = '"+studyRegion.getDefaultZoneType()+"', " +
 					" utcoffset = '"+studyRegion.getUtcOffset()+"', " +
-					" default_block_length = '"+studyRegion.getZoneBlockLength()+"' " +
+					" commercial_block_length = '"+studyRegion.getCommercialZoneBlockLength()+"', " +
+					" industrial_block_length = '"+studyRegion.getIndustrialZoneBlockLength()+"', " +
+					" residential_block_length = '"+studyRegion.getResidentialZoneBlockLength()+"' " +
 					"WHERE id = '"+studyRegion.getId()+"'";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
@@ -270,7 +278,8 @@ public class RegionDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "INSERT INTO \"studyregion\" (pid, id, name, " +
 					"description, geometry, mapzoomlevel, mapcenter, " +
-					"iscurrentregion, default_zone_type, utcoffset, default_block_length) " +
+					"iscurrentregion, default_zone_type, utcoffset, " +
+					"commercial_block_length, industrial_block_length, residential_block_length) " +
 					"VALUES (" + 
 					"(SELECT nextval('studyregion_pid_seq'))," +
 					"'"+studyRegion.getId()+"', " +
@@ -282,7 +291,9 @@ public class RegionDAO extends DAO {
 					" "+studyRegion.isCurrentRegion()+"," +
 					" '"+studyRegion.getDefaultZoneType()+"', " +
 					" '"+studyRegion.getUtcOffset()+"', " +
-					" '"+studyRegion.getZoneBlockLength()+"' " +
+					" '"+studyRegion.getCommercialZoneBlockLength()+"', " +
+					" '"+studyRegion.getIndustrialZoneBlockLength()+"', " +
+					" '"+studyRegion.getResidentialZoneBlockLength()+"' " +
 					")";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
@@ -296,7 +307,6 @@ public class RegionDAO extends DAO {
 			
 		} 
 	    catch (SQLException e) {
-			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
 			throw e;
 			
@@ -333,7 +343,6 @@ public class RegionDAO extends DAO {
 				
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
 			throw e;
 			
@@ -380,7 +389,6 @@ public class RegionDAO extends DAO {
 
 		} 
 	    catch (SQLException e) {
-			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
 			throw e;
 			
@@ -410,7 +418,6 @@ public class RegionDAO extends DAO {
 
 		} 
 	    catch (SQLException e) {
-			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
 			throw e;
 			
@@ -505,7 +512,6 @@ public class RegionDAO extends DAO {
 
 		} 
 	    catch (SQLException e) {
-			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
 			throw e;
 			
@@ -640,7 +646,6 @@ public class RegionDAO extends DAO {
 
 		} 
 	    catch (SQLException e) {
-			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
 			throw e;
 			
