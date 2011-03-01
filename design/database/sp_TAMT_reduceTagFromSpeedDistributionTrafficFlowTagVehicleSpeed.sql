@@ -41,6 +41,19 @@ BEGIN
 	FROM studyregion where iscurrentregion = TRUE;
 	RAISE NOTICE 'study_region.id=%', study_region.id;
 	
+	-- Step 0.1a: get blocklength for studyregion's default zone type
+	SELECT INTO _default_zone_type default_zone_type FROM studyregion WHERE id = study_region.id;
+	IF _default_zone_type = '#COM'
+	THEN
+		SELECT INTO blocklength commercial_block_length from studyregion WHERE id = study_region.id;
+	ELSIF _default_zone_type = '#IND'
+	THEN
+		SELECT INTO blocklength industrial_block_length from studyregion WHERE id = study_region.id;
+	ELSIF _default_zone_type = '#RES'
+	THEN
+		SELECT INTO blocklength residential_block_length from studyregion WHERE id = study_region.id;
+	END IF;
+	
 	-- Step 0.2: get tags for current study region
 	FOR tag IN SELECT * from tagdetails where region = study_region.id
 	LOOP
@@ -54,8 +67,6 @@ BEGIN
 		-- Step 2: Calculate proxy length for user-defined zones
 		
 		-- Step 2a: get blocklength for studyregion's default zone type
-		-- Step 2a: get blocklength for studyregion's default zone type
-		SELECT INTO blocklength default_block_length from studyregion WHERE id = study_region.id;
 		RAISE NOTICE '----blocklength=%', blocklength;
 		
 		-- Step 2b: get the proxy length of user-defined zones in this region

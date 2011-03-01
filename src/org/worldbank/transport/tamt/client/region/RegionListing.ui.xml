@@ -79,9 +79,17 @@
 			<g:ListBox ui:field="zoneTypes"/>
 		</g:HorizontalPanel>	
 		<g:HorizontalPanel styleName="{style.detailRow}">
-			<g:HTML styleName="{style.label}">Zone block length:</g:HTML>
-			<g:TextBox ui:field="zoneBlockLength" styleName="{style.utc}"/> 
-		</g:HorizontalPanel>			
+			<g:HTML styleName="{style.label}">Commercial zone block length:</g:HTML>
+			<g:TextBox ui:field="commercialZoneBlockLength" styleName="{style.utc}"/> 
+		</g:HorizontalPanel>
+		<g:HorizontalPanel styleName="{style.detailRow}">
+			<g:HTML styleName="{style.label}">Industrial zone block length:</g:HTML>
+			<g:TextBox ui:field="industrialZoneBlockLength" styleName="{style.utc}"/> 
+		</g:HorizontalPanel>	
+		<g:HorizontalPanel styleName="{style.detailRow}">
+			<g:HTML styleName="{style.label}">Residential zone block length:</g:HTML>
+			<g:TextBox ui:field="residentialZoneBlockLength" styleName="{style.utc}"/> 
+		</g:HorizontalPanel>						
 		<g:HorizontalPanel styleName="{style.detailRow}">
 			<g:HTML styleName="{style.label}">Current region?</g:HTML>
 			<g:CheckBox ui:field="currentStudyRegionCheckBox" /> 

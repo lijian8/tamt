@@ -79,7 +79,11 @@ public class RegionListing extends Composite {
 	@UiField TextBox name;
 	@UiField TextBox description;
 	@UiField TextBox utcOffset;
-	@UiField TextBox zoneBlockLength;
+	
+	@UiField TextBox commercialZoneBlockLength;
+	@UiField TextBox industrialZoneBlockLength;
+	@UiField TextBox residentialZoneBlockLength;
+	
 	@UiField Label polyline;
 	@UiField Label vertices;
 	
@@ -213,7 +217,6 @@ public class RegionListing extends Composite {
 			@Override
 			public void onCache(CacheRegionMapMetaDataEvent event) {
 				GWT.log("DUPE CacheRegionMapMetaDataEventHandler");
-				// TODO: apply zoomLevel and mapCenter to currently selected region
 				GWT.log("DUPE Apply mapCenter and zoomLevel to currentStudyRegionId:" + currentStudyRegionId);
 				for (Iterator<StudyRegion> iterator = studyRegionList.iterator(); iterator
 						.hasNext();) {
@@ -260,7 +263,7 @@ public class RegionListing extends Composite {
 			public void onTAMTResize(TAMTResizeEvent event) {
 				GWT.log("SIZE: RegionListing scroll panel height within: " + event.height);
 				
-				int h = event.height - 392; // account for other study region UI
+				int h = event.height - 460; // account for other study region UI (was 392)
 				
 				if( h > -1 )
 				{
@@ -440,7 +443,9 @@ public class RegionListing extends Composite {
 		studyRegion.setCurrentRegion(currentStudyRegionCheckBox.getValue());
 		studyRegion.setDefaultZoneType(zoneTypes.getValue(zoneTypes.getSelectedIndex()));
 		studyRegion.setUtcOffset(utcOffset.getValue());
-		studyRegion.setZoneBlockLength(zoneBlockLength.getText());
+		studyRegion.setCommercialZoneBlockLength(commercialZoneBlockLength.getText());
+		studyRegion.setIndustrialZoneBlockLength(industrialZoneBlockLength.getText());
+		studyRegion.setResidentialZoneBlockLength(residentialZoneBlockLength.getText());
 		
 		GWT.log("DUPE Saving study region with id:" + currentStudyRegionId);
 		
@@ -529,7 +534,9 @@ public class RegionListing extends Composite {
 		name.setText("");
 		description.setText("");
 		utcOffset.setText("");
-		zoneBlockLength.setText("");
+		commercialZoneBlockLength.setText("");
+		industrialZoneBlockLength.setText("");
+		residentialZoneBlockLength.setText("");
 		currentStudyRegionId = null;
 		currentPolygon = null;
 		GWT.log("DUPE clearRegionEditView currentPolygon="+currentPolygon);
@@ -662,13 +669,6 @@ public class RegionListing extends Composite {
 	
 	public void loadRegionDetails(StudyRegion studyRegion)
 	{
-		/*
-		 * TODO: If the user clicks on the text for this region in the list,
-		 * we don't have a handle on the currentPolygon, so when it is updated
-		 * it assumes the same shape as the last current polygon, which was
-		 * probably loaded when the user clicked on map shape instead of the
-		 * text list.
-		 */
 		// send a message to RegionMap to set the associated polygon to editable
 		String id = studyRegion.getId();
 		Vertex v = studyRegion.getMapCenter();
@@ -693,8 +693,9 @@ public class RegionListing extends Composite {
 			}
 		}
 		utcOffset.setText(studyRegion.getUtcOffset());
-		zoneBlockLength.setText(studyRegion.getZoneBlockLength());
-		
+		commercialZoneBlockLength.setText(studyRegion.getCommercialZoneBlockLength());
+		industrialZoneBlockLength.setText(studyRegion.getIndustrialZoneBlockLength());
+		residentialZoneBlockLength.setText(studyRegion.getResidentialZoneBlockLength());
 		save.setText("Update");
 		
 	}
