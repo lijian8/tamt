@@ -372,7 +372,7 @@ public class RegionDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "SELECT id, regionid, activeoption, option1weekday, " +
 					"option2weekday, option2saturday, option2sundayholiday " +
-					"FROM daytypeperyearoption";
+					"FROM daytypeperyearoption WHERE regionid = '"+studyRegionId+"'";
 			logger.debug("getDayTypePerYearOption sql=" + sql);
 			ResultSet r = s.executeQuery(sql); 
 			while( r.next() ) { 
@@ -689,6 +689,36 @@ public class RegionDAO extends DAO {
 		catch (SQLException e) {
 			logger.error(e.getMessage());
 			throw new Exception("There was an error copying the study region");
+		}		
+	}
+
+	public void deleteAnalysisAndSupportRecords(String studyRegionId) throws Exception {
+		/*
+		 * TODO: delete any data from the other tables:
+		 * - daytypeperyearoption (by regionid)
+		 * - defaulttrafficflow (by regionid)
+		 * - soakbin (by regionid)
+		 * - speeddistobserved (by tag)
+		 * - speeddistributiontrafficflow (by tag)
+		 * - speeddistributiontrafficflowtagvehiclespeed (by tag)
+		 * - trafficcount (by regionid)
+		 * - trafficflowreport (by regionid)
+		 * - tripbin (by regionid)
+		 * - trips (by regionid)
+		 */
+		// delegate to stored procedure
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			
+			String sql = "SELECT TAMT_deleteAnalysisAndSupportRecords('"+studyRegionId+"')";
+			logger.debug("TAMT_deleteAnalysisAndSupportRecords sql=" + sql);
+			s.execute(sql); 
+			connection.close(); // returns connection to the pool
+		} 
+		catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw new Exception("There was an error deleting analysis and supporting records for the study region");
 		}		
 	}
 	

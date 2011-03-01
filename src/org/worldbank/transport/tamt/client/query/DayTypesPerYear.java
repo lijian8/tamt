@@ -189,7 +189,8 @@ public class DayTypesPerYear extends Composite {
 			public void onUpdate(CurrentStudyRegionUpdatedEvent event) {
 				currentStudyRegion = event.studyRegion;
 				resetForm();
-				setOption1Active();
+				//setOption1Active();
+				fetchDayTypePerYearOption();
 			}
 		});
 		
@@ -219,26 +220,33 @@ public class DayTypesPerYear extends Composite {
 	}
 	
 	protected void fetchDayTypePerYearOption() {
-		regionService.getDayTypePerYearOption("", new AsyncCallback<DayTypePerYearOption>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert("Could not get option:" + caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(DayTypePerYearOption result) {
-				// there is the chance on the creation of new study region
-				// that the option is null. if so, enable option 1 with nothing
-				if( result != null)
-				{
-					currentOption = result;
-					loadOption(currentOption);
-				} else {
-					setOption1Active();
+		
+		if( currentStudyRegion != null)
+		{
+			regionService.getDayTypePerYearOption(currentStudyRegion.getId(), new AsyncCallback<DayTypePerYearOption>() {
+	
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Could not get option:" + caught.getMessage());
 				}
-			}
-		});
+	
+				@Override
+				public void onSuccess(DayTypePerYearOption result) {
+					// there is the chance on the creation of new study region
+					// that the option is null. if so, enable option 1 with nothing
+					if( result != null)
+					{
+						currentOption = result;
+						loadOption(currentOption);
+					} else {
+						setOption1Active();
+					}
+				}
+			});
+		} else 
+		{
+			setOption1Active();
+		}
 	}
 
 	private void setOption1Active()

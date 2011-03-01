@@ -206,7 +206,10 @@ public class SpeedDistributionReportDAO extends DAO {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
 			
-			String sql = "SELECT * FROM speeddistributiontrafficflowvehiclespeed ORDER BY vehicletype, speedbin";
+			// need to query only the current study region
+			String sql = "SELECT * FROM speeddistributiontrafficflowvehiclespeed " +
+					" WHERE regionid = (SELECT id FROM studyregion WHERE iscurrentregion = TRUE) " +
+					"ORDER BY vehicletype, speedbin";
 			
 			logger.debug("SQL for getSpeedDistributionAggregateByTagTypeReport: " + sql);
 			
@@ -216,12 +219,25 @@ public class SpeedDistributionReportDAO extends DAO {
 				
 				ArrayList<String> row = new ArrayList<String>();
 
+				/*
+				  vehicletype text,
+				  speedbin integer,
+				  meterspersecond double precision,
+				  tagmeters double precision,
+				  tagseconds double precision,
+				  regionid text,
+				  taghours double precision,
+				  tagkilometers double precision,
+				  tagkph double precision
+				 */
 				// skip the first column (regionid)
-				row.add(r.getString(2)); // vehicletype
-				row.add(r.getString(3)); // speedbin
-				//row.add(r.getString(4)); // meterspersecond
-				//row.add(r.getString(5)); // tagmeters
-				//row.add(r.getString(6)); // tagseconds
+				row.add(r.getString(1)); // vehicletype
+				row.add(r.getString(2)); // speedbin
+				// DON'T NEED TO SHOW THESE IN THE UI
+				//row.add(r.getString(3)); // meterspersecond
+				//row.add(r.getString(4)); // tagmeters
+				//row.add(r.getString(5)); // tagseconds
+				//row.add(r.getString(6)); // regionid
 				row.add(r.getString(7)); // tagkilometers
 				row.add(r.getString(8)); // taghours
 				row.add(r.getString(9)); // tagkph

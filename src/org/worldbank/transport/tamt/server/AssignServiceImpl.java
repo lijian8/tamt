@@ -141,7 +141,7 @@ public class AssignServiceImpl extends RemoteServiceServlet implements AssignSer
 		} catch (Exception e)
 		{
 			logger.error("AssignService error:" + e.getMessage());
-			throw new Exception("There was a problem checking the status of the GPS point assignment process.");
+			throw new Exception("There was a problem checking the status of the GPS point assignment process:" + e.getMessage());
 		}
 		
 		return status;

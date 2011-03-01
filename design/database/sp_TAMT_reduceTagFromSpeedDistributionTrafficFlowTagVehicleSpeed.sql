@@ -1,4 +1,4 @@
--- Function: tamt_reducetagfromspeeddistributiontrafficflowtagvehiclespeed()
+﻿-- Function: tamt_reducetagfromspeeddistributiontrafficflowtagvehiclespeed()
 
 -- DROP FUNCTION tamt_reducetagfromspeeddistributiontrafficflowtagvehiclespeed();
 
@@ -17,29 +17,42 @@ DECLARE
 	vtype RECORD;
 	lastspeedbin integer;
 	summ RECORD;
+	_regionid text;
+	_default_zone_type text;
 BEGIN
 
- 	RAISE NOTICE 'START TAMT_reduceTagFromSpeedDistributionTrafficFlowTagVehicleSpeed';
- 	
-	-- drop
-	RAISE NOTICE 'Dropping tables...';
+ 	--RAISE NOTICE 'START TAMT_reduceTagFromSpeedDistributionTrafficFlowTagVehicleSpeed';
+
+	-- we should only be operating on the current study region
+	SELECT INTO _regionid id FROM studyregion WHERE iscurrentregion = TRUE;
+
+	-- should drop this one, but should zero out any rows for this region id
+	DELETE FROM speeddistributiontrafficflowvehiclespeed WHERE regionid = _regionid;
+	 	
+	-- clean up previous data 
+	--RAISE NOTICE 'Drop and recreate tmp tables...';
 	DROP TABLE IF EXISTS tmp_speeddistribution_tagless;
-	DROP TABLE IF EXISTS speeddistributiontrafficflowvehiclespeed;
-	
 	CREATE TABLE tmp_speeddistribution_tagless WITH (OIDS = TRUE) AS 
 		SELECT 
 			*
-		FROM speeddistributiontrafficflowtagvehiclespeed;
+		FROM speeddistributiontrafficflowtagvehiclespeed
+		-- should get no rows (since we just deleted them), just the schema
+		WHERE tagid IN (SELECT id FROM tagdetails WHERE region = _regionid);
 	-- add a few columns:
 	ALTER TABLE tmp_speeddistribution_tagless ADD tagMeters double precision;
 	ALTER TABLE tmp_speeddistribution_tagless ADD tagSeconds double precision;
+	-- we also want to report out in kph
+	ALTER TABLE tmp_speeddistribution_tagless ADD tagKilometers double precision;
+	ALTER TABLE tmp_speeddistribution_tagless ADD tagHours double precision;
+	ALTER TABLE tmp_speeddistribution_tagless ADD tagKph double precision;
+	
 	 	
 	-- Step 0.1: get current study region
 	SELECT INTO study_region 
 		id, 
 		st_area(st_transform(geometry,900913)) as area
-	FROM studyregion where iscurrentregion = TRUE;
-	RAISE NOTICE 'study_region.id=%', study_region.id;
+	FROM studyregion where id = _regionid;
+	--RAISE NOTICE 'study_region.id=%', study_region.id;
 	
 	-- Step 0.1a: get blocklength for studyregion's default zone type
 	SELECT INTO _default_zone_type default_zone_type FROM studyregion WHERE id = study_region.id;
@@ -57,36 +70,35 @@ BEGIN
 	-- Step 0.2: get tags for current study region
 	FOR tag IN SELECT * from tagdetails where region = study_region.id
 	LOOP
-		RAISE NOTICE '--tagid=%', tag.id;
+		--RAISE NOTICE '--tagid=%', tag.id;
 		
 		-- Step 1: getUserDefinedRoadsLength for the current tag
 		SELECT INTO lengthUserDefinedRoadsByTag SUM(st_length(st_transform(geometry,900913))) 
 			from roaddetails WHERE tag_id = tag.id;
-		RAISE NOTICE '----lengthUserDefinedRoadsByTag=%', lengthUserDefinedRoadsByTag;
+		--RAISE NOTICE '----lengthUserDefinedRoadsByTag=%', lengthUserDefinedRoadsByTag;
 
 		-- Step 2: Calculate proxy length for user-defined zones
 		
-		-- Step 2a: get blocklength for studyregion's default zone type
-		RAISE NOTICE '----blocklength=%', blocklength;
+		-- Step 2a: blocklength has already been fetched
 		
 		-- Step 2b: get the proxy length of user-defined zones in this region
 		SELECT INTO zone 
 			SUM(st_area(st_transform(geometry,900913)) / blocklength) as proxyLengthUserDefinedZonesByRegion,
 			SUM(ST_Area(st_transform(geometry,900913))) as sumArea
 			from zonedetails WHERE region = study_region.id;
-		RAISE NOTICE '----zone.proxyLengthUserDefinedZonesByRegion=%', zone.proxyLengthUserDefinedZonesByRegion;
-		RAISE NOTICE '----zone.sumArea=%', zone.sumArea;
+		--RAISE NOTICE '----zone.proxyLengthUserDefinedZonesByRegion=%', zone.proxyLengthUserDefinedZonesByRegion;
+		--RAISE NOTICE '----zone.sumArea=%', zone.sumArea;
 
 		-- Step 3: getProxyDefaultZonesLength
 		-- subtract zone.sumArea from study_region.area
 		proxyDefaultZoneLength = (study_region.area - zone.sumArea) / blocklength;
-		RAISE NOTICE '----proxyDefaultZoneLength=%', proxyDefaultZoneLength;	
+		--RAISE NOTICE '----proxyDefaultZoneLength=%', proxyDefaultZoneLength;	
 
 		-- Step 4: getTotalMeterLengthByTag
 		totalMeterLengthByTag = lengthUserDefinedRoadsByTag + 
 			zone.proxyLengthUserDefinedZonesByRegion +
 			proxyDefaultZoneLength;
-		RAISE NOTICE '----totalMeterLengthByTag=%', totalMeterLengthByTag;
+		--RAISE NOTICE '----totalMeterLengthByTag=%', totalMeterLengthByTag;
 
 		-- Step 5: update the table 
 			-- tagMeters = percentVehicleMetersPerYear * totalMeterLengthByTag
@@ -108,7 +120,10 @@ BEGIN
 	--		this is Table E in http://code.google.com/p/tamt/wiki/RemovingTagFromSpeedDistributionTrafficFlow
 
 	-- Step 6a: get last speed bin for looping below
-	SELECT INTO lastspeedbin speedbinnumber FROM gpspoints ORDER BY speedbinnumber DESC LIMIT 1;
+	SELECT INTO lastspeedbin speedbinnumber 
+		FROM gpspoints 
+		WHERE tag_id IN (SELECT id FROM tagdetails WHERE region = _regionid)
+		ORDER BY speedbinnumber DESC LIMIT 1;
 
 	-- Step 6b: loop over vehicle types and speedbins, summing tagseconds and tagmeters
 	FOR vtype IN SELECT vehicletype FROM vehicletypes
@@ -143,38 +158,36 @@ BEGIN
 	END LOOP;
 
 	-- Step 6c: copy data from temporary table to more permanent table and remove useless columns
-	CREATE TABLE speeddistributiontrafficflowvehiclespeed WITH (OIDS = FALSE) AS 
+	-- Note: this is a two step copy so we can group by vehicle type and speed bin without grouping by other fields
+	DROP TABLE IF EXISTS tmp_sptfvs;
+	CREATE TABLE tmp_sptfvs WITH (OIDS = FALSE) AS 
 		SELECT DISTINCT ON (vehicletype, speedbin)
 			*
-		FROM tmp_speeddistribution_tagless;
-	ALTER TABLE speeddistributiontrafficflowvehiclespeed RENAME averagemeterspersecond TO meterspersecond;
-	ALTER TABLE speeddistributiontrafficflowvehiclespeed DROP tagid;
-	ALTER TABLE speeddistributiontrafficflowvehiclespeed DROP percentvehiclesecondsperyear;
-	ALTER TABLE speeddistributiontrafficflowvehiclespeed DROP percentvehiclemetersperyear;
+		FROM tmp_speeddistribution_tagless;	
+	ALTER TABLE tmp_sptfvs RENAME averagemeterspersecond TO meterspersecond;
+	ALTER TABLE tmp_sptfvs DROP tagid;
+	ALTER TABLE tmp_sptfvs DROP percentvehiclesecondsperyear;
+	ALTER TABLE tmp_sptfvs DROP percentvehiclemetersperyear;
+	INSERT INTO speeddistributiontrafficflowvehiclespeed (regionid, vehicletype, speedbin, tagmeters, tagseconds)
+		(SELECT 
+			--(select id from studyregion where iscurrentregion = true),
+			_regionid,
+			vehicletype,
+			speedbin,
+			tagmeters,
+			tagseconds
+		FROM tmp_sptfvs);
+	DROP TABLE IF EXISTS tmp_sptfvs;
 
-	-- Step 6d: in new table, recalculate average speed
+	-- Step 6d: in new table, recalculate m/s, taghours, tagkilometers, and tagkph
 	UPDATE speeddistributiontrafficflowvehiclespeed
-		SET meterspersecond = tagmeters / tagseconds;
+		SET 
+			meterspersecond = tagmeters / tagseconds,
+			taghours = tagseconds / 3600,
+			tagkilometers = tagmeters / 1000,
+			tagkph = (tagmeters / 1000)/(tagseconds / 3600)
+		WHERE regionid = _regionid;
 		
-
-	-- Step 7: Fractional seconds and meters
-	-- TODO:
-	-- WAIT!! According to John's last instructions, we don't have to do Step 7 because we aren't 
-	-- normalizing at this point any more. So Table E is the final table!!
-		-- DEPRECATED: copy table E into table F (see: http://code.google.com/p/tamt/wiki/FinalSpeedBinTablePseudoCode)
-		--	sum tagMeters and tagSeconds on same vehicle type (.: across all speedbins for this vehicletype)
-		--	for each row, calc tagMeters/sumTagMeters and tagSeconds/sumTagSeconds
-		--		once again, not sure what average speed means here.
-
-	-- TODO:
-	--	UI: present a button on Speed Bin UI to trigger the same code as fullTest in SpeedBinTests
-	--	UI: present a screen to display output of table E, with downloadable CSV (like trafficflow reports)
-	--	UI: nice to have -- downloadable CSV for all intermediate tables
-	--					* speeddistribution, 
-	--					* speeddistributiontrafficflow, 			
-	--					* speeddistributiontrafficflowtagvehiclespeed,		(Table D)
-	--					* speeddistributiontrafficflowvehiclespeed,		(Table E)
-	
 END;
 $BODY$
   LANGUAGE 'plpgsql' VOLATILE
