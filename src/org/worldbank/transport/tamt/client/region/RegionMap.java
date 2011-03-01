@@ -267,6 +267,12 @@ public class RegionMap extends Composite implements RequiresResize {
 		          	    	  map.checkResizeAndCenter();
 		          	       }
 		          	    });
+					} else
+					{
+						/*
+						 * We don't have a current study region for the map, so remove the polygons
+						 */
+						map.removeOverlay(currentPolygon);
 					}
 				}
 			}
