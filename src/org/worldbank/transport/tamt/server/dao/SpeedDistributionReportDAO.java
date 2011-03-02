@@ -238,8 +238,8 @@ public class SpeedDistributionReportDAO extends DAO {
 				//row.add(r.getString(4)); // tagmeters
 				//row.add(r.getString(5)); // tagseconds
 				//row.add(r.getString(6)); // regionid
-				row.add(r.getString(7)); // tagkilometers
-				row.add(r.getString(8)); // taghours
+				row.add(r.getString(7)); // taghours
+				row.add(r.getString(8)); // tagkilometers
 				row.add(r.getString(9)); // tagkph
 				rows.add(row);
 				
@@ -326,7 +326,8 @@ public class SpeedDistributionReportDAO extends DAO {
 			"sd.daytype,sd.hourbin,sd.speedbin,sd.secondsinbin,sd.metersinbin, "+
 			"sd.avgmeterspersecond,sd.percentsecondsinbin,sd.percentmetersinbin	"+
 			"from speeddistribution sd,tagdetails t,studyregion s "+
-			"where sd.tagid = t.id and t.region = s.id "+
+			"where sd.tagid = t.id and t.region = s.id " +
+			"AND s.iscurrentregion=true "+
 			"order by s.name, t.name, sd.daytype desc, sd.hourbin, sd.speedbin ";
 			
 			logger.debug("downloadSpeedDistributionReportForRegion sql=" + sql);
@@ -435,7 +436,8 @@ public class SpeedDistributionReportDAO extends DAO {
 			"sd.daytype,sd.vehicletype,sd.speedbin,sd.vehiclesecondsperday,sd.vehiclemetersperday,"+
 			"sd.weightedaveragespeed,sd.percentvehiclesecondsperday,sd.percentvehiclemetersperday "+
 			"from speeddistributiontrafficflow sd,tagdetails t,studyregion s "+
-			"where sd.tagid = t.id and t.region = s.id ";
+			"where sd.tagid = t.id and t.region = s.id " +
+			"AND s.iscurrentregion=true ";
 			
 			if(tagId != null)
 			{
@@ -499,7 +501,8 @@ public class SpeedDistributionReportDAO extends DAO {
 			"t.name as tag,"+
 			"sd.vehicletype,sd.speedbin,sd.percentvehiclesecondsperyear,sd.percentvehiclemetersperyear, sd.averagemeterspersecond "+
 			"from speeddistributiontrafficflowtagvehiclespeed sd, tagdetails t, studyregion s "+
-			"where sd.tagid = t.id and t.region = s.id ";
+			"where sd.tagid = t.id and t.region = s.id " +
+			"AND s.iscurrentregion=true ";
 			
 			if(tagId != null)
 			{
@@ -554,11 +557,10 @@ public class SpeedDistributionReportDAO extends DAO {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
 			
-			String sql = "select "+
-			"s.name,sd.vehicletype,sd.speedbin,sd.tagkilometers,sd.taghours,sd.tagkph "+
-			"from speeddistributiontrafficflowvehiclespeed sd,studyregion s "+
-			"where s.iscurrentregion=true "+
-			"ORDER BY vehicletype, speedbin; ";
+			String sql = "SELECT s.name,sd.vehicletype,sd.speedbin,sd.tagkilometers,sd.taghours,sd.tagkph "+
+			"FROM speeddistributiontrafficflowvehiclespeed sd,studyregion s "+
+			"WHERE sd.regionid = s.id "+
+			"AND s.iscurrentregion=true ORDER BY vehicletype, speedbin";
 			
 			logger.debug("downloadSpeedBinAggregateByTagReport() sql=" + sql);
 			ResultSet r = s.executeQuery(sql); 

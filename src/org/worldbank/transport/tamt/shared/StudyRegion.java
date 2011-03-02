@@ -16,6 +16,8 @@ public class StudyRegion implements Serializable {
 	private String industrialZoneBlockLength;
 	private String commercialZoneBlockLength;
 	
+	private String minimumSoakInterval;
+	
 	private ArrayList<Vertex> vertices;
 	private Vertex centroid;
 	
@@ -133,6 +135,14 @@ public class StudyRegion implements Serializable {
 		this.commercialZoneBlockLength = commercialZoneBlockLength;
 	}
 
+	public String getMinimumSoakInterval() {
+		return minimumSoakInterval;
+	}
+
+	public void setMinimumSoakInterval(String minimumSoakInterval) {
+		this.minimumSoakInterval = minimumSoakInterval;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -154,6 +164,8 @@ public class StudyRegion implements Serializable {
 		builder.append(mapCenter);
 		builder.append(", mapZoomLevel=");
 		builder.append(mapZoomLevel);
+		builder.append(", minimumSoakInterval=");
+		builder.append(minimumSoakInterval);
 		builder.append(", name=");
 		builder.append(name);
 		builder.append(", residentialZoneBlockLength=");
@@ -166,4 +178,5 @@ public class StudyRegion implements Serializable {
 		return builder.toString();
 	}
 
+	
 }

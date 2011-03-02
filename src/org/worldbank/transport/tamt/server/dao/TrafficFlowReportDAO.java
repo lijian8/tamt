@@ -376,7 +376,8 @@ public class TrafficFlowReportDAO extends DAO {
 				"t.name as tag,r.daytype,r.created,date_part('hour', r.hour_bin) as hour,"+
 				"w2,w3,pc,tx,ldv,ldc,hdc,mdb,hdb,totalflow "+
 				"from trafficflowreport r, studyregion s, tagdetails t "+
-				"where r.regionid = s.id and r.tagid = t.id "+
+				"where r.regionid = s.id and r.tagid = t.id " +
+				"AND s.iscurrentregion=true "+
 				"order by s.name,t.name,r.daytype,r.created,r.hour_bin";
 			logger.debug("getTrafficFlowReport sql=" + sql);
 			ResultSet r = s.executeQuery(sql); 

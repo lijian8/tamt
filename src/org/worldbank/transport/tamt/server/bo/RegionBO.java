@@ -1,5 +1,7 @@
 package org.worldbank.transport.tamt.server.bo;
 
+import static org.junit.Assert.assertNull;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -445,8 +447,10 @@ public class RegionBO {
 
 	public void copyStudyRegion(StudyRegion studyRegion) throws Exception {
 		
+		logger.debug("Copy studyregion=" + studyRegion);
 		try {
-			validateStudyRegion(studyRegion);
+			// we only validate the name on copy
+			validateStudyRegionName(studyRegion);
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
 			throw e;
@@ -457,17 +461,77 @@ public class RegionBO {
 		
 	}
 
-	protected void validateStudyRegion(StudyRegion studyRegion) throws Exception {
-		
-		// name cannot have COMMAS or be empty
-		if( studyRegion.getName().indexOf(",") != -1)
-		{
-			throw new Exception("Study region name cannot contain commas");
-		}
-		
+	protected void validateStudyRegionName(StudyRegion studyRegion) throws Exception
+	{
 		if( studyRegion.getName().equalsIgnoreCase(""))
 		{
 			throw new Exception("Study region must have a name");
 		}		
+		if( !studyRegion.getName().matches("[a-zA-Z0-9]*") )
+		{
+				throw new Exception("Study region cannot contain spaces or special characters");
+		}	
+	
+	}
+	protected void validateStudyRegion(StudyRegion studyRegion) throws Exception {
+			
+		// validate the name
+		validateStudyRegionName(studyRegion);
+		
+		// commercial block length
+		if( studyRegion.getUtcOffset().equalsIgnoreCase(""))
+		{
+			throw new Exception("Study region must have a UTC offset");
+		}
+		
+		if( !studyRegion.getUtcOffset().matches("^-{0,1}[0-9]*") )
+		{
+				throw new Exception("UTC offset must be an integer (in hours)");
+		}
+		
+		// commercial block length
+		if( studyRegion.getCommercialZoneBlockLength().equalsIgnoreCase(""))
+		{
+			throw new Exception("Study region must have a commerical zone block length");
+		}
+		
+		if( !studyRegion.getCommercialZoneBlockLength().matches("[0-9]*") )
+		{
+				throw new Exception("Commercial zone block length must be an integer (in meters)");
+		}
+		
+		// residential  block length
+		if( studyRegion.getResidentialZoneBlockLength().equalsIgnoreCase(""))
+		{
+			throw new Exception("Study region must have a residential zone block length");
+		}
+		
+		if( !studyRegion.getResidentialZoneBlockLength().matches("[0-9]*") )
+		{
+				throw new Exception("Residential zone block length must be an integer (in meters)");
+		}	
+		
+		// industrial  block length
+		if( studyRegion.getIndustrialZoneBlockLength().equalsIgnoreCase(""))
+		{
+			throw new Exception("Study region must have a industrial zone block length");
+		}
+		
+		if( !studyRegion.getIndustrialZoneBlockLength().matches("[0-9]*") )
+		{
+				throw new Exception("Industrial zone block length must be an integer (in meters)");
+		}			
+		
+		// minimum soak interval
+		if( studyRegion.getMinimumSoakInterval().equalsIgnoreCase(""))
+		{
+			throw new Exception("Study region must have a minimum soak interval");
+		}
+		
+		if( !studyRegion.getMinimumSoakInterval().matches("[0-9]*") )
+		{
+				throw new Exception("Minimum soak interval must be an integer (in seconds)");
+		}		
+		
 	}
 }

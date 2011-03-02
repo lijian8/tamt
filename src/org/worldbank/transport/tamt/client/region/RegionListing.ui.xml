@@ -35,13 +35,15 @@
 			font-size: 10px;;	
 		}
 		.label {
-			width: 150px;
+			width: 200px;
 		}
 		.detailRow {
 			vertical-align: middle;
 			padding: 4px;
-			
 		}
+		.detailColumn {
+			
+		}	
 		.zoneList td {
 			text-align: left;	
 		}
@@ -60,15 +62,18 @@
 		.utc {
 			width: 80px;
 		}
+		.defaultTextBox {
+			width: 150px;	
+		}
 	</ui:style>
-	<g:VerticalPanel>
+	<g:VerticalPanel styleName="{style.detailColumn}">
 		<g:HorizontalPanel styleName="{style.detailRow}">
 			<g:HTML styleName="{style.label}">Name:</g:HTML>
-			<g:TextBox ui:field="name"/>
+			<g:TextBox ui:field="name" styleName="{style.defaultTextBox}"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel styleName="{style.detailRow}">
 			<g:HTML styleName="{style.label}">Description:</g:HTML>
-			<g:TextBox ui:field="description"/>
+			<g:TextBox ui:field="description" styleName="{style.defaultTextBox}"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel styleName="{style.detailRow}">
 			<g:HTML styleName="{style.label}">UTC offset:</g:HTML>
@@ -89,6 +94,10 @@
 		<g:HorizontalPanel styleName="{style.detailRow}">
 			<g:HTML styleName="{style.label}">Residential zone block length:</g:HTML>
 			<g:TextBox ui:field="residentialZoneBlockLength" styleName="{style.utc}"/> 
+		</g:HorizontalPanel>		
+		<g:HorizontalPanel styleName="{style.detailRow}">
+			<g:HTML styleName="{style.label}">Minimum soak interval (s):</g:HTML>
+			<g:TextBox ui:field="minimumSoakInterval" styleName="{style.utc}"/> 
 		</g:HorizontalPanel>						
 		<g:HorizontalPanel styleName="{style.detailRow}">
 			<g:HTML styleName="{style.label}">Current region?</g:HTML>

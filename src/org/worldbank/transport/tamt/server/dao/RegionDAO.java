@@ -66,7 +66,7 @@ public class RegionDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "select id, name, description, AsText(geometry) geom, " +
 			"mapzoomlevel, AsText(mapcenter) center, iscurrentregion, " +
-			"default_zone_type, utcoffset, commercial_block_length, industrial_block_length, residential_block_length " +
+			"default_zone_type, utcoffset, minsoakinterval, commercial_block_length, industrial_block_length, residential_block_length " +
 			"FROM studyregion WHERE id = '"+studyRegion.getId()+"' ORDER BY name";
 			logger.debug("getStudyRegions sql=" + sql);
 			ResultSet r = s.executeQuery(sql); 
@@ -85,9 +85,10 @@ public class RegionDAO extends DAO {
 			      boolean currentRegion = r.getBoolean(7);
 			      String defaultZoneType = r.getString(8);
 			      String utcOffset = r.getString(9);
-			      String commercialZoneBlockLength = r.getString(10);
-			      String industrialZoneBlockLength = r.getString(11);
-			      String residentialZoneBlockLength = r.getString(12);
+			      String minimumSoakInterval = r.getString(10);
+			      String commercialZoneBlockLength = r.getString(11);
+			      String industrialZoneBlockLength = r.getString(12);
+			      String residentialZoneBlockLength = r.getString(13);
 			      
 			      // convert a linestring to a JTS geometry
 			      WKTReader reader = new WKTReader();
@@ -102,6 +103,7 @@ public class RegionDAO extends DAO {
 			      fetched.setMapZoomLevel(mapZoomLevel);
 			      fetched.setDefaultZoneType(defaultZoneType);
 			      fetched.setUtcOffset(utcOffset);
+			      fetched.setMinimumSoakInterval(minimumSoakInterval);
 			      fetched.setCommercialZoneBlockLength(commercialZoneBlockLength);
 			      fetched.setIndustrialZoneBlockLength(industrialZoneBlockLength);
 			      fetched.setResidentialZoneBlockLength(residentialZoneBlockLength);
@@ -141,7 +143,7 @@ public class RegionDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "select id, name, description, AsText(geometry) geom, " +
 					"mapzoomlevel, AsText(mapcenter) center, iscurrentregion, " +
-					"default_zone_type, utcoffset, commercial_block_length, industrial_block_length, residential_block_length " +
+					"default_zone_type, utcoffset, minsoakinterval, commercial_block_length, industrial_block_length, residential_block_length " +
 					"FROM studyregion ORDER BY name";
 			logger.debug("getStudyRegions sql=" + sql);
 			ResultSet r = s.executeQuery(sql); 
@@ -158,10 +160,11 @@ public class RegionDAO extends DAO {
 			      String mapCenterWKT = r.getString(6);
 			      boolean currentRegion = r.getBoolean(7);
 			      String defaultZoneType = r.getString(8);
-			      String utcOffset = r.getString(9);			      
-			      String commercialZoneBlockLength = r.getString(10);
-			      String industrialZoneBlockLength = r.getString(11);
-			      String residentialZoneBlockLength = r.getString(12);
+			      String utcOffset = r.getString(9);	
+			      String minimumSoakInterval = r.getString(10);
+			      String commercialZoneBlockLength = r.getString(11);
+			      String industrialZoneBlockLength = r.getString(12);
+			      String residentialZoneBlockLength = r.getString(13);
 			      
 			      // convert a linestring to a JTS geometry
 			      WKTReader reader = new WKTReader();
@@ -176,6 +179,7 @@ public class RegionDAO extends DAO {
 			      studyRegion.setMapZoomLevel(mapZoomLevel);
 			      studyRegion.setDefaultZoneType(defaultZoneType);
 			      studyRegion.setUtcOffset(utcOffset);
+			      studyRegion.setMinimumSoakInterval(minimumSoakInterval);
 			      studyRegion.setCommercialZoneBlockLength(commercialZoneBlockLength);
 			      studyRegion.setIndustrialZoneBlockLength(industrialZoneBlockLength);
 			      studyRegion.setResidentialZoneBlockLength(residentialZoneBlockLength);
@@ -229,6 +233,7 @@ public class RegionDAO extends DAO {
 					" iscurrentregion = "+studyRegion.isCurrentRegion()+"," +
 					" default_zone_type = '"+studyRegion.getDefaultZoneType()+"', " +
 					" utcoffset = '"+studyRegion.getUtcOffset()+"', " +
+					" minsoakinterval = '"+studyRegion.getMinimumSoakInterval()+"', " +
 					" commercial_block_length = '"+studyRegion.getCommercialZoneBlockLength()+"', " +
 					" industrial_block_length = '"+studyRegion.getIndustrialZoneBlockLength()+"', " +
 					" residential_block_length = '"+studyRegion.getResidentialZoneBlockLength()+"' " +
@@ -278,7 +283,7 @@ public class RegionDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "INSERT INTO \"studyregion\" (pid, id, name, " +
 					"description, geometry, mapzoomlevel, mapcenter, " +
-					"iscurrentregion, default_zone_type, utcoffset, " +
+					"iscurrentregion, default_zone_type, utcoffset, minsoakinterval, " +
 					"commercial_block_length, industrial_block_length, residential_block_length) " +
 					"VALUES (" + 
 					"(SELECT nextval('studyregion_pid_seq'))," +
@@ -291,6 +296,7 @@ public class RegionDAO extends DAO {
 					" "+studyRegion.isCurrentRegion()+"," +
 					" '"+studyRegion.getDefaultZoneType()+"', " +
 					" '"+studyRegion.getUtcOffset()+"', " +
+					" '"+studyRegion.getMinimumSoakInterval()+"', " +
 					" '"+studyRegion.getCommercialZoneBlockLength()+"', " +
 					" '"+studyRegion.getIndustrialZoneBlockLength()+"', " +
 					" '"+studyRegion.getResidentialZoneBlockLength()+"' " +
