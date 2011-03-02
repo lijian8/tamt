@@ -641,6 +641,8 @@ public class GPSTracesView extends Composite {
 			public void onFailure(Throwable caught) {
 				GWT.log("failed!", caught);
 				Window.alert(caught.getMessage());
+				// hide the dialog so the user can return to work
+				dialogBox.hide();
 			}
 
 			@Override
