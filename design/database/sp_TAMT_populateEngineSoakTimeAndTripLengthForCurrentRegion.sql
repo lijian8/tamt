@@ -1,4 +1,4 @@
--- Function: tamt_updatefromclosestdistribution(text, text, integer, double precision, double precision)
+﻿-- Function: tamt_updatefromclosestdistribution(text, text, integer, double precision, double precision)
 
 -- DROP FUNCTION tamt_updatefromclosestdistribution(text, text, integer, double precision, double precision);
 
@@ -41,6 +41,8 @@ DECLARE
 	diffFromLastTrip interval;
 	currentAverageSpeedInBin double precision;
 	currentBinCount integer;
+
+	tmpDouble double precision;
 BEGIN
 
 	-- we should only be operating on the current study region
@@ -75,7 +77,7 @@ BEGIN
 		WHERE region = _regionid
 		ORDER BY id
 	LOOP
-		--RAISE NOTICE 'gpstrace=%',gpstrace;
+		RAISE NOTICE 'gpstrace=%',gpstrace.id;
 		 
 		FOR logs IN SELECT 
 			DISTINCT gpslogid 
@@ -83,7 +85,7 @@ BEGIN
 			WHERE gpstraceid = gpstrace.id  
 			ORDER BY gpslogid
 		LOOP
-			--RAISE NOTICE 'logs=%',logs;
+			RAISE NOTICE 'logs=%',logs;
 			
 			startTrip := FALSE;
 			lastTrip := FALSE;
@@ -96,21 +98,24 @@ BEGIN
 			FOR r IN SELECT * FROM gpspoints 
 				WHERE gpslogid = logs.gpslogid
 				ORDER BY created
+				-- LIMIT 100 -- remove for production
 			LOOP
-				--RAISE NOTICE 'r=%',r;
+				RAISE NOTICE 'r=%',r;
+				RAISE NOTICE 'startTrip=%',startTrip;
 				IF startTrip IS FALSE
 				THEN
 
 					-- We are only looking at moving vehicles for now
 					IF r.speed > minSpeedThreshold
 					THEN
-						--RAISE NOTICE '*************************************************';
+						RAISE NOTICE '*********************MOVING VEHICLE*********************';
 						
 						-- Calculate trip length
+						RAISE NOTICE 'endTrip=%',endTrip;
 						IF endTrip IS NOT NULL
 						THEN
 							-- Calculate trip length
-							--RAISE NOTICE 'CALCULATE tripLength from startTripRecord(%, %) to lastTripRecord(%,%)', startTripRecord.pid, startTripRecord.created, lastTripRecord.pid, lastTripRecord.created;
+							RAISE NOTICE 'CALCULATE tripLength from startTripRecord(%, %) to lastTripRecord(%,%)', startTripRecord.pid, startTripRecord.created, lastTripRecord.pid, lastTripRecord.created;
 							-- Let's use POSTGIS to calculate trip length
 							-- 1. select all records from startTripRecord.pid to lastTripRecord.pid	(in PID order)
 							-- 2. inject each point geometry from the resulting rows into a line
@@ -128,8 +133,8 @@ BEGIN
 							tripAverageSpeed = tripLength / elapsedTimeDoublePrecision;
 			
 			
-							--RAISE NOTICE 'tripLength(m)=%, elapsedTime(s)=%, tripAverageSpeed(m/s)=%, verify(kph)=%', tripLength, elapsedTime, tripAverageSpeed, (tripAverageSpeed * 3.6);
-							--RAISE NOTICE '*************************************************';
+							RAISE NOTICE 'tripLength(m)=%, elapsedTime(s)=%, tripAverageSpeed(m/s)=%, verify(kph)=%', tripLength, elapsedTime, tripAverageSpeed, (tripAverageSpeed * 3.6);
+							RAISE NOTICE '*************************************************';
 
 							-- Determine which bin the trip length goes in
 							-- TODO: insert row into trip bin
@@ -178,6 +183,7 @@ BEGIN
 									tripBinNumber = 0;
 								END IF;
 
+								RAISE NOTICE 'Insert record into trips table at tripBinNumber=%', tripBinNumber;
 								-- keep a record in trips table;
 								INSERT INTO trips (regionid, gpstraceid, gpslogid, bin_number, trip_length, avg_speed, geometry)
 									VALUES (_regionid, gpstrace.id, logs.gpslogid, tripBinNumber, tripLength, tripAverageSpeed, tripGeometry);				
@@ -186,11 +192,11 @@ BEGIN
 							END IF;										
 							
 						END IF;
-										
+									
 						-- Starting a trip
 						startTrip := TRUE;
 						startTripRecord := r;
-						--RAISE NOTICE 'CREATE startTripRecord(pid, created)=(%,%)', startTripRecord.pid, startTripRecord.created;
+						RAISE NOTICE 'CREATE startTripRecord(pid, created)=(%,%)', startTripRecord.pid, startTripRecord.created;
 
 						-- Initializing lastTrip if needed
 						IF lastTrip IS FALSE
@@ -278,12 +284,12 @@ BEGIN
 
 						-- Keep the first of the non-moving records during a trip as the startSoakRecord
 						--RAISE NOTICE 'POSSIBLE SOAK (this record not moving): r.pid=%, r.created=%, lastMoving=%, last(pid,created,speed)=(%,%,%)', r.pid, r.created, lastMoving, lastRecord.pid, lastRecord.created, lastRecord.speed;
-						--RAISE NOTICE 'POSSIBLE SOAK (this record not moving): r.pid=%, r.created=%, lastMoving=%', r.pid, r.created, lastMoving;
+						RAISE NOTICE 'POSSIBLE SOAK (this record not moving): r.pid=%, r.created=%, lastMoving=%', r.pid, r.created, lastMoving;
 						IF startSoak IS FALSE
 						THEN
 							startSoakRecord = r;
 							startSoak = TRUE;
-							--RAISE NOTICE 'startSoakRecord pid=%', startSoakRecord.pid;
+							RAISE NOTICE 'startSoakRecord pid=%', startSoakRecord.pid;
 						END IF;
 
 						-- Determine if we have a trip end based on exceeding the soak interval
@@ -299,7 +305,7 @@ BEGIN
 							THEN
 								endTrip := r.created;
 								startTrip := FALSE;
-								--RAISE NOTICE 'ENDTRIP DUE TO SOAK=(%,%), reset start trip to FALSE' , r.pid, endTrip;						
+								RAISE NOTICE 'ENDTRIP DUE TO SOAK=(%,%), reset start trip to FALSE' , r.pid, endTrip;						
 							END IF;						
 						END IF;
 					ELSE
@@ -313,17 +319,17 @@ BEGIN
 						THEN
 							
 							diffFromLastTrip = r.created - lastTripRecord.created;
-							--RAISE NOTICE 'TESTING FOR ENDTRIP at r.pid(%): diffFromLastTrip=%', r.pid, diffFromLastTrip;
+							RAISE NOTICE 'TESTING FOR ENDTRIP at r.pid(%): diffFromLastTrip=%', r.pid, diffFromLastTrip;
 							IF diffFromLastTrip > _minSoakInterval
 							THEN
-								--RAISE NOTICE 'END TRIP: diffFromLastTrip=%' , diffFromLastTrip;
+								RAISE NOTICE 'END TRIP: diffFromLastTrip=%' , diffFromLastTrip;
 								endTrip := r.created;
 								startTrip := FALSE;
-								--RAISE NOTICE 'ENDTRIP=(%,%), reset start trip to NULL' , r.pid, endTrip;
+								RAISE NOTICE 'ENDTRIP=(%,%), reset start trip to NULL' , r.pid, endTrip;
 								
 							ELSE
 								-- ignore, this is not an endTrip
-								--RAISE NOTICE 'NO ENDTRIP at (%), CONTINUE TRIP: stopped for total(%), which is less than _minSoakInterval of(%), continue trip from (%)', r.pid, diffFromLastTrip, _minSoakInterval, startTrip;
+								RAISE NOTICE 'NO ENDTRIP at (%), CONTINUE TRIP: stopped for total(%), which is less than _minSoakInterval of(%), continue trip from (%)', r.pid, diffFromLastTrip, _minSoakInterval, startTrip;
 								endTrip := NULL;
 								-- reset soak variables
 								startSoak := FALSE;
@@ -345,7 +351,7 @@ BEGIN
 					lastMoving = FALSE;
 				END IF;
 				--lastRecord = r;
-				--RAISE NOTICE 'GO TO NEXT RECORD';
+				RAISE NOTICE 'GO TO NEXT RECORD';
 				
 			END LOOP;
 		END LOOP;

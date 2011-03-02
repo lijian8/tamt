@@ -66,6 +66,41 @@ public class RegionBOTests {
 		logger.debug(r.getName().indexOf(","));
 		assertEquals(-1, r.getName().indexOf(","));
 	}
+	
+	@Test
+	public void validateMinimumSoakIntervalEmpty()
+	{
+		StudyRegion studyRegion = new StudyRegion();
+		studyRegion.setMinimumSoakInterval("1");
+		if( !studyRegion.getMinimumSoakInterval().matches("[0-9]*") )
+		{
+			try {
+				throw new Exception("Minimum soak interval must be an integer (in seconds)");
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+				assertNull(e);
+			}
+			
+		}
+		assertTrue(true);
+	}	
+	
+	@Test
+	public void validateUTCOffset()
+	{
+		StudyRegion studyRegion = new StudyRegion();
+		studyRegion.setUtcOffset("12");
+		if( !studyRegion.getUtcOffset().matches("^-{0,1}[0-9]*") )
+		{
+				try {
+					throw new Exception("UTC offset must be an integer (in hours)");
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+					assertNull(e);
+				}
+		}
+		assertTrue(true);
+	}
 
 	@Test
 	public void validateStudyRegionBO()

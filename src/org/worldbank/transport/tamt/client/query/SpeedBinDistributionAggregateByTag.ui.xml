@@ -163,8 +163,8 @@
 				<g:Label styleName="{style.cellHeaderDoubleTop}">tag (s)</g:Label>
 				<g:Label styleName="{style.cellHeaderDoubleTop}">tag (m)</g:Label>
 				-->
-				<g:Label styleName="{style.cellHeaderDoubleTop}">tag (km)</g:Label>
-				<g:Label styleName="{style.cellHeaderDoubleTop}">tag (hr)</g:Label>	
+				<g:Label styleName="{style.cellHeaderDoubleTop}">tag (hr)</g:Label>
+				<g:Label styleName="{style.cellHeaderDoubleTop}">tag (km)</g:Label>	
 				<g:Label styleName="{style.cellHeaderDoubleTop}">kph</g:Label>				
 			</g:HorizontalPanel>
 			<g:ScrollPanel ui:field="reportScroll" styleName="{style.scroll}">

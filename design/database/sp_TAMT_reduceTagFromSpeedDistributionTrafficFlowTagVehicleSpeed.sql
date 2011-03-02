@@ -21,22 +21,21 @@ DECLARE
 	_default_zone_type text;
 BEGIN
 
- 	--RAISE NOTICE 'START TAMT_reduceTagFromSpeedDistributionTrafficFlowTagVehicleSpeed';
+ 	RAISE NOTICE 'START TAMT_reduceTagFromSpeedDistributionTrafficFlowTagVehicleSpeed';
 
 	-- we should only be operating on the current study region
 	SELECT INTO _regionid id FROM studyregion WHERE iscurrentregion = TRUE;
 
-	-- should drop this one, but should zero out any rows for this region id
+	-- should not drop this one, but should zero out any rows for this region id
 	DELETE FROM speeddistributiontrafficflowvehiclespeed WHERE regionid = _regionid;
 	 	
 	-- clean up previous data 
-	--RAISE NOTICE 'Drop and recreate tmp tables...';
+	RAISE NOTICE 'Drop and recreate tmp_speeddistribution_tagless with only data for current region';
 	DROP TABLE IF EXISTS tmp_speeddistribution_tagless;
 	CREATE TABLE tmp_speeddistribution_tagless WITH (OIDS = TRUE) AS 
 		SELECT 
 			*
-		FROM speeddistributiontrafficflowtagvehiclespeed
-		-- should get no rows (since we just deleted them), just the schema
+		FROM speeddistributiontrafficflowtagvehiclespeed -- data generated in reduce day type
 		WHERE tagid IN (SELECT id FROM tagdetails WHERE region = _regionid);
 	-- add a few columns:
 	ALTER TABLE tmp_speeddistribution_tagless ADD tagMeters double precision;
@@ -52,7 +51,7 @@ BEGIN
 		id, 
 		st_area(st_transform(geometry,900913)) as area
 	FROM studyregion where id = _regionid;
-	--RAISE NOTICE 'study_region.id=%', study_region.id;
+	RAISE NOTICE 'study_region.id=%', study_region.id;
 	
 	-- Step 0.1a: get blocklength for studyregion's default zone type
 	SELECT INTO _default_zone_type default_zone_type FROM studyregion WHERE id = study_region.id;
@@ -66,11 +65,12 @@ BEGIN
 	THEN
 		SELECT INTO blocklength residential_block_length from studyregion WHERE id = study_region.id;
 	END IF;
+	RAISE NOTICE '--blocklength=%', blocklength;
 	
 	-- Step 0.2: get tags for current study region
 	FOR tag IN SELECT * from tagdetails where region = study_region.id
 	LOOP
-		--RAISE NOTICE '--tagid=%', tag.id;
+		RAISE NOTICE '--tagid=%', tag.id;
 		
 		-- Step 1: getUserDefinedRoadsLength for the current tag
 		SELECT INTO lengthUserDefinedRoadsByTag SUM(st_length(st_transform(geometry,900913))) 
@@ -86,23 +86,24 @@ BEGIN
 			SUM(st_area(st_transform(geometry,900913)) / blocklength) as proxyLengthUserDefinedZonesByRegion,
 			SUM(ST_Area(st_transform(geometry,900913))) as sumArea
 			from zonedetails WHERE region = study_region.id;
-		--RAISE NOTICE '----zone.proxyLengthUserDefinedZonesByRegion=%', zone.proxyLengthUserDefinedZonesByRegion;
-		--RAISE NOTICE '----zone.sumArea=%', zone.sumArea;
+		RAISE NOTICE '----zone.proxyLengthUserDefinedZonesByRegion=%', zone.proxyLengthUserDefinedZonesByRegion;
+		RAISE NOTICE '----zone.sumArea=%', zone.sumArea;
 
 		-- Step 3: getProxyDefaultZonesLength
 		-- subtract zone.sumArea from study_region.area
 		proxyDefaultZoneLength = (study_region.area - zone.sumArea) / blocklength;
-		--RAISE NOTICE '----proxyDefaultZoneLength=%', proxyDefaultZoneLength;	
+		RAISE NOTICE '----proxyDefaultZoneLength=%', proxyDefaultZoneLength;	
 
 		-- Step 4: getTotalMeterLengthByTag
 		totalMeterLengthByTag = lengthUserDefinedRoadsByTag + 
 			zone.proxyLengthUserDefinedZonesByRegion +
 			proxyDefaultZoneLength;
-		--RAISE NOTICE '----totalMeterLengthByTag=%', totalMeterLengthByTag;
+		RAISE NOTICE '----totalMeterLengthByTag=%', totalMeterLengthByTag;
 
 		-- Step 5: update the table 
 			-- tagMeters = percentVehicleMetersPerYear * totalMeterLengthByTag
 			-- tagSeconds = percentVehicleSecondsPerYear * totalMeterLengthByTag
+		RAISE NOTICE '----update tmp_speeddistribution_tagless';
 		UPDATE tmp_speeddistribution_tagless SET
 			tagMeters = percentVehicleMetersPerYear * totalMeterLengthByTag,
 			tagSeconds = percentVehicleSecondsPerYear * totalMeterLengthByTag
@@ -124,14 +125,15 @@ BEGIN
 		FROM gpspoints 
 		WHERE tag_id IN (SELECT id FROM tagdetails WHERE region = _regionid)
 		ORDER BY speedbinnumber DESC LIMIT 1;
-
+	RAISE NOTICE 'lastspeedbin=%', lastspeedbin;
+	
 	-- Step 6b: loop over vehicle types and speedbins, summing tagseconds and tagmeters
 	FOR vtype IN SELECT vehicletype FROM vehicletypes
 	LOOP
-		--RAISE NOTICE 'vtype=%', vtype;
+		RAISE NOTICE 'vtype=%', vtype;
 		FOR i IN 0..lastspeedbin
 		LOOP
-			--RAISE NOTICE 'speedbin=%', i;
+			RAISE NOTICE 'speedbin=%', i;
 				SELECT INTO summ
 					SUM(t.tagseconds) AS seconds,
 					SUM(t.tagmeters) AS meters
@@ -139,10 +141,11 @@ BEGIN
 					WHERE t.vehicletype = vtype.vehicletype
 					AND speedbin = i
 					LIMIT 1;
-				-- RAISE NOTICE 'summ=%', summ;
+				RAISE NOTICE 'summ=%', summ;
 
 				-- overwrite per-record tagmeters and tagseconds with 
 				-- sums of those variales on vehicletype+speedbin, disregarding tags
+				RAISE NOTICE 'Update tmp_speeddistribution_tagless with summ';
 				UPDATE tmp_speeddistribution_tagless
 					SET
 					tagseconds = summ.seconds,
@@ -177,7 +180,7 @@ BEGIN
 			tagmeters,
 			tagseconds
 		FROM tmp_sptfvs);
-	DROP TABLE IF EXISTS tmp_sptfvs;
+	--DROP TABLE IF EXISTS tmp_sptfvs;
 
 	-- Step 6d: in new table, recalculate m/s, taghours, tagkilometers, and tagkph
 	UPDATE speeddistributiontrafficflowvehiclespeed

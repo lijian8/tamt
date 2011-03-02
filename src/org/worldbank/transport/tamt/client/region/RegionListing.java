@@ -85,6 +85,8 @@ public class RegionListing extends Composite {
 	@UiField TextBox industrialZoneBlockLength;
 	@UiField TextBox residentialZoneBlockLength;
 	
+	@UiField TextBox minimumSoakInterval;
+	
 	@UiField Label polyline;
 	@UiField Label vertices;
 	
@@ -269,7 +271,7 @@ public class RegionListing extends Composite {
 			public void onTAMTResize(TAMTResizeEvent event) {
 				GWT.log("SIZE: RegionListing scroll panel height within: " + event.height);
 				
-				int h = event.height - 460; // account for other study region UI (was 392)
+				int h = event.height - 500; // account for other study region UI (was 392)
 				
 				if( h > -1 )
 				{
@@ -499,7 +501,7 @@ public class RegionListing extends Composite {
 		studyRegion.setCommercialZoneBlockLength(commercialZoneBlockLength.getText());
 		studyRegion.setIndustrialZoneBlockLength(industrialZoneBlockLength.getText());
 		studyRegion.setResidentialZoneBlockLength(residentialZoneBlockLength.getText());
-		
+		studyRegion.setMinimumSoakInterval(minimumSoakInterval.getText());
 		GWT.log("DUPE Saving study region with id:" + currentStudyRegionId);
 		
 		/*
@@ -590,6 +592,7 @@ public class RegionListing extends Composite {
 		commercialZoneBlockLength.setText("");
 		industrialZoneBlockLength.setText("");
 		residentialZoneBlockLength.setText("");
+		minimumSoakInterval.setText("");
 		currentStudyRegionId = null;
 		currentPolygon = null;
 		GWT.log("DUPE clearRegionEditView currentPolygon="+currentPolygon);
@@ -749,6 +752,7 @@ public class RegionListing extends Composite {
 		commercialZoneBlockLength.setText(studyRegion.getCommercialZoneBlockLength());
 		industrialZoneBlockLength.setText(studyRegion.getIndustrialZoneBlockLength());
 		residentialZoneBlockLength.setText(studyRegion.getResidentialZoneBlockLength());
+		minimumSoakInterval.setText(studyRegion.getMinimumSoakInterval());
 		save.setText("Update");
 		
 	}
