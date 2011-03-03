@@ -10,31 +10,30 @@ import os, sys
 import urllib2
 
 # configure logging
-#import logging
-#import datetime
-#LOG_FILENAME = '/tmp/plpython.log'
-#logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+import logging
+import datetime
+LOG_FILENAME = '/tmp/tamt_updateassignstatus.log'
+logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
 
-# http://127.0.0.1:8888/tamt/assignStatusHandler?g=9601f469-d003-46ae-b003-ff71f139aaf0&m=99&p=8
-# TODO: this URL / PORT will have to change for production
+# This is the dev URL / PORT for production
 # webhook = "http://127.0.0.1:8888/tamt/assignStatusHandler?"
 
-# for production
-webhook = "http://localhost:8080/assignStatusHandler?"
+# for production -- comment out for dev
+webhook = "http://127.0.0.1:8080/tamt/assignStatusHandler?"
 webhook += "g=" + _gpstraceid
 webhook += "&p=" + str(_processed)
 webhook += "&m=" + str(_matched)
 webhook += "&t=" + str(_total)
 webhook += "&c=" + str(_completed)
-#logging.debug('send webhook to:' + webhook)
+logging.debug('send webhook to:' + webhook)
 
 try:
 	req = urllib2.Request(url=webhook)
 	f = urllib2.urlopen(req)
-#	logging.debug('done, returning')
+	logging.debug('done, returning')
 except:
 	message = "Unexpected error: ", sys.exc_info()
-#	logging.debug(message)
+	logging.debug(message)
 
 return 1;
 
