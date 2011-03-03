@@ -1,5 +1,4 @@
 
-
 If you are looking for the TAMT design documents, go to http://goo.gl/k0bl
 
 This design area is for design assets that cannot be created in a wiki, like 
