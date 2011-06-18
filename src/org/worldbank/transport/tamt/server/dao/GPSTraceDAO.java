@@ -412,8 +412,7 @@ public class GPSTraceDAO extends DAO {
 		FileWriter fstream = new FileWriter(copyFileName, true);
 		BufferedWriter copy = new BufferedWriter(fstream);
 
-		// a place holder for the GGA line
-		String line2;
+		// keep track of the number of records
 		int numRecords = 0;
 
 		/*
@@ -423,6 +422,11 @@ public class GPSTraceDAO extends DAO {
 		 * LINESTRING, then for viewing convert the linestring into Google Maps
 		 * encoded string.
 		 */
+		
+		// this pattern is for making sure we only parse GPRMC-formatted NMEA sentences
+		String patternGPRMC = "^\\$GPRMC.*";
+		
+		// this pattern is for extracting columns of data from the NMEA sentence
 		Pattern pattern = Pattern.compile(",\\s*");
 
 		while (entries.hasMoreElements()) {
@@ -442,14 +446,9 @@ public class GPSTraceDAO extends DAO {
 				BufferedReader buff = new BufferedReader(new InputStreamReader(
 						is));
 				while ((line = buff.readLine()) != null) {
-					if (line.indexOf("$GPRMC") != -1) {
-						// this assumes that GPGGA is the only other captured
-						// sentence
-						// and will not work if another sentence is recorded or
-						// if the
-						// sentence sequence is NOT in the correct order (RMC,
-						// GGA)
-						line2 = buff.readLine();
+					
+					if( line.matches(patternGPRMC))
+					{
 						try {
 							// processLineSet(line, line2);
 
@@ -493,7 +492,7 @@ public class GPSTraceDAO extends DAO {
 							 * Extract the data from the GPGGA sentence (ie,
 							 * line2)
 							 */
-							String[] data2 = pattern.split(line2);
+							String[] data2 = pattern.split(line);
 
 							// altitude
 							p.setAltitude(Double.parseDouble(data2[9]));
