@@ -30,6 +30,7 @@ public class ParseGPRMCTest {
 
 	static Logger logger = Logger.getLogger(ParseGPRMCTest.class);
 	static String FILENAME = "/home/tamt/eclipse/workspace/tamt/test/org/worldbank/transport/tamt/gps/nmea-test.DAT";
+	static String ACTUALDATALOGGER = "/home/tamt/eclipse/workspace/tamt/test/org/worldbank/transport/tamt/gps/Datalog_out.nma";
 	
 	@Test
 	public void testRegex()
@@ -55,5 +56,28 @@ public class ParseGPRMCTest {
 		
 	}
 	
+	@Test
+	public void testDataLogger()
+	{
+		
+		logger.debug("parse GPRMC lines only from John's data logger file");
+		String patternGPRMC = "^\\$GPRMC.*";
+		String output = null;
+		try {
+			BufferedReader input =  new BufferedReader(new FileReader(ACTUALDATALOGGER));
+			String line = null;
+			while ((line = input.readLine()) != null) {
+				if( line.matches(patternGPRMC))
+				{
+					logger.debug(line);	
+				}
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 }
