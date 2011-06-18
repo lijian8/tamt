@@ -65,7 +65,7 @@ public class ImportModule extends Composite {
 	}
 	
 	@UiHandler("studyRegionName")
-	void onClickCancel(ClickEvent e) {
+	void onClickStudyRegionName(ClickEvent e) {
 		eventBus.fireEvent(new SwitchModuleEvent(SwitchModuleEvent.REGION, true));
 		eventBus.fireEvent(new LoadCurrentStudyRegionEvent());				
 	}	
