@@ -177,7 +177,7 @@ public class RegionListing extends Composite {
 	void onClickDelete(ClickEvent e) {
 		if( Window.confirm("Delete all checked regions?" +
 				"\nThis will delete all associated roads, zones" +
-				", GPS traces, any tagged points.") )
+				", GPS traces, and any tagged points.") )
 		{
 			deleteRegionDetails();
 		} else {

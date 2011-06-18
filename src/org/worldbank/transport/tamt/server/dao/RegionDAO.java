@@ -699,19 +699,6 @@ public class RegionDAO extends DAO {
 	}
 
 	public void deleteAnalysisAndSupportRecords(String studyRegionId) throws Exception {
-		/*
-		 * TODO: delete any data from the other tables:
-		 * - daytypeperyearoption (by regionid)
-		 * - defaulttrafficflow (by regionid)
-		 * - soakbin (by regionid)
-		 * - speeddistobserved (by tag)
-		 * - speeddistributiontrafficflow (by tag)
-		 * - speeddistributiontrafficflowtagvehiclespeed (by tag)
-		 * - trafficcount (by regionid)
-		 * - trafficflowreport (by regionid)
-		 * - tripbin (by regionid)
-		 * - trips (by regionid)
-		 */
 		// delegate to stored procedure
 		try {
 			Connection connection = getConnection();
