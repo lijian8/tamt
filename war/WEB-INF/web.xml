@@ -178,7 +178,18 @@ version="2.4">
 	    <servlet-name>downloadTrafficFlowReport</servlet-name>
 	    <url-pattern>/download/vehicleflow/trafficflowreport</url-pattern>
 	  </servlet-mapping> 
+
+	  <!-- Road Length -->
+	  <servlet>
+	    <servlet-name>downloadRoadLengthReport</servlet-name>
+	    <servlet-class>org.worldbank.transport.tamt.server.downloads.DownloadRoadLengthReport</servlet-class>
+	  </servlet>
 	  
+	  <servlet-mapping>
+	    <servlet-name>downloadRoadLengthReport</servlet-name>
+	    <url-pattern>/download/roadlength/roadlengthbytag</url-pattern>
+	  </servlet-mapping> 
+	  	  
 	  <!-- Speed Bins -->
 	  <servlet>
 	    <servlet-name>downloadSpeedBinDistribution</servlet-name>

@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.worldbank.transport.tamt.shared.RoadLengthReport;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
 
@@ -143,6 +144,77 @@ public class TagDAO extends DAO {
 			logger.error(e.getMessage());
 			throw e;
 		}		
+	}
+
+	public void createRoadLengthReport() throws Exception {
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "SELECT * FROM TAMT_convertAndBinSpeeds();";
+			logger.debug(sql);
+			ResultSet r = s.executeQuery(sql); // returns a 1, which can be ignored
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw new Exception(
+					"There was an error creating the road length report: "
+							+ e.getMessage());
+		}	
+	}
+
+	public RoadLengthReport getRoadLengthReport() {
+		/**
+		 * TODO: query the roadlength table
+		 * - for the current study region
+		 * - return a report with an array of values in the report
+		 * - [0] = tagname (based on tagid and regionid)
+		 * - [1] = distance (km)
+		 */
+		RoadLengthReport report = new RoadLengthReport();
+		ArrayList<ArrayList> reportValues = new ArrayList<ArrayList>();
+
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "select r.name as region, " +
+					"t.name as tag, " +
+					"round(d.vkt, 3) " +
+					"from " +
+					"totaldistancebytag d, " +
+					"tagdetails t, " +
+					"studyregion r " +
+					"where d.tag_id = t.id " +
+					"and " +
+					"r.id = t.region " +
+					"and " +
+					"r.id = (SELECT id FROM studyregion WHERE iscurrentregion IS TRUE)";
+			logger.debug("SQL=" + sql);
+			ResultSet r = s.executeQuery(sql); 
+			while( r.next() ) { 
+			      /* 
+			      * Retrieve the geometry as an object then cast it to the geometry type. 
+			      * Print things out. 
+			      */ 
+				  String region = r.getString(1);
+			      String tag = r.getString(2);
+			      String vkt = r.getString(3);
+			      
+			      ArrayList<String> thisRow = new ArrayList<String>();
+			      thisRow.add(region);
+			      thisRow.add(tag);
+			      thisRow.add(vkt);
+			      
+			      reportValues.add(thisRow);
+			      
+			} 
+			connection.close(); // returns connection to the pool
+		} 
+	    catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		report.setReportValues(reportValues);
+		return report;
 	}
 	 
 }

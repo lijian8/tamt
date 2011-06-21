@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.worldbank.transport.tamt.server.dao.RegionDAO;
 import org.worldbank.transport.tamt.server.dao.TagDAO;
+import org.worldbank.transport.tamt.shared.RoadLengthReport;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
 
@@ -132,5 +133,41 @@ public class TagBO {
 		{
 			throw new Exception("Tag must have a name");
 		}		
+	}
+
+	public void createRoadLengthReport() throws Exception {
+		tagDAO.createRoadLengthReport();
+	}
+
+	public RoadLengthReport getRoadLengthReport() {
+		return tagDAO.getRoadLengthReport();
+	}
+
+	public String downloadRoadLengthReport(String regionid) {
+		
+		// fetch the report
+		RoadLengthReport report = getRoadLengthReport();
+		
+		// now format it for CSV download
+		String output = "";
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append("REGION,TAG,VKT\n");
+		
+		// pull out the report values
+		ArrayList<ArrayList> reportValues = report.getReportValues();
+		
+		// loop through the records
+		for (Iterator iterator = reportValues.iterator(); iterator.hasNext();) {
+			ArrayList row = (ArrayList) iterator.next();
+			sb.append(row.get(0) + ",");
+			sb.append(row.get(1) + ",");
+			sb.append(row.get(2) + "\n");
+		}
+		
+		// concat it all into a single string
+		output = sb.toString();
+		
+		return output;
 	}
 }
