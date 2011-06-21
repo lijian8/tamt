@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.worldbank.transport.tamt.client.services.TagService;
 import org.worldbank.transport.tamt.server.api.TagAPI;
+import org.worldbank.transport.tamt.shared.RoadLengthReport;
 import org.worldbank.transport.tamt.shared.Vertex;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
@@ -34,5 +35,15 @@ public class TagServiceImpl extends RemoteServiceServlet implements TagService {
 	@Override
 	public void deleteTagDetails(ArrayList<String> tagDetailIds) throws Exception {
 		tagAPI.deleteTagDetails(tagDetailIds);
+	}
+
+	@Override
+	public void createRoadLengthReport() throws Exception {
+		tagAPI.createRoadLengthReport();
+	}
+
+	@Override
+	public RoadLengthReport getRoadLengthReport() throws Exception {
+		return tagAPI.getRoadLengthReport();
 	}
 }

@@ -63,6 +63,10 @@ public class QueryModule extends Composite {
 		return new VehicleFlow(this.eventBus);
 	}
 	
+	@UiFactory RoadLength initRoadLength() {
+		return new RoadLength(this.eventBus);
+	}
+	
 	@UiFactory SpeedBins initSpeedBins() {
 		return new SpeedBins(this.eventBus);
 	}	

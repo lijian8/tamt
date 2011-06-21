@@ -1,0 +1,29 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:querym="urn:import:org.worldbank.transport.tamt.client.query">
+	<ui:style>
+		.innertabs {
+			margin-top: 10px;
+			margin-left: 4px;
+			margin-right: 4px;
+			margin-bottom: 10px;
+		}
+		.button {
+			margin-left: 10px;
+		}		
+	</ui:style>
+	<g:HorizontalPanel ui:field="hpanel">
+		<g:VerticalPanel>
+		<g:HorizontalPanel ui:field="buttonBar">
+			<g:Button ui:field="generateRoadLengthReport" styleName="{style.button}">Create report</g:Button>
+		</g:HorizontalPanel>
+		<g:TabLayoutPanel styleName="{style.innertabs}" ui:field="tabLayoutPanel" barUnit="PX" barHeight="20">
+			<g:tab>
+				<g:header>Road Length By Tag</g:header>
+				<querym:RoadLengthByTag ui:field="roadLengthByTag"/>
+			</g:tab>				
+		</g:TabLayoutPanel>
+		</g:VerticalPanel>
+	</g:HorizontalPanel>
+</ui:UiBinder> 

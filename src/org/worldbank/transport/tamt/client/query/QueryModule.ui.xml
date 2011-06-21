@@ -61,7 +61,11 @@
 			<g:tab>
 				<g:header>Vehicle Flow</g:header>
 				<querym:VehicleFlow/>
-			</g:tab>	
+			</g:tab>
+			<g:tab>
+				<g:header>Road Length</g:header>
+				<querym:RoadLength/>
+			</g:tab>				
 			<g:tab>
 				<g:header>Speed Bins</g:header>
 				<querym:SpeedBins/>
