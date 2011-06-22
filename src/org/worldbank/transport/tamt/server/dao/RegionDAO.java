@@ -66,7 +66,7 @@ public class RegionDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "select id, name, description, AsText(geometry) geom, " +
 			"mapzoomlevel, AsText(mapcenter) center, iscurrentregion, " +
-			"default_zone_type, utcoffset, minsoakinterval, commercial_block_length, industrial_block_length, residential_block_length " +
+			"default_zone_type, utcoffset, minsoakinterval, commercial_block_length, industrial_block_length, residential_block_length, gps_tagging_tolerance " +
 			"FROM studyregion WHERE id = '"+studyRegion.getId()+"' ORDER BY name";
 			logger.debug("getStudyRegions sql=" + sql);
 			ResultSet r = s.executeQuery(sql); 
@@ -89,6 +89,7 @@ public class RegionDAO extends DAO {
 			      String commercialZoneBlockLength = r.getString(11);
 			      String industrialZoneBlockLength = r.getString(12);
 			      String residentialZoneBlockLength = r.getString(13);
+			      String gpsTaggingTolerance = r.getString(14);
 			      
 			      // convert a linestring to a JTS geometry
 			      WKTReader reader = new WKTReader();
@@ -107,6 +108,7 @@ public class RegionDAO extends DAO {
 			      fetched.setCommercialZoneBlockLength(commercialZoneBlockLength);
 			      fetched.setIndustrialZoneBlockLength(industrialZoneBlockLength);
 			      fetched.setResidentialZoneBlockLength(residentialZoneBlockLength);
+			      fetched.setGpsTaggingTolerance(gpsTaggingTolerance);
 			      
 			      // now convert the geometry to an ArrayList<Vertex> and
 			      // set in the roadDetails
@@ -143,7 +145,8 @@ public class RegionDAO extends DAO {
 			Statement s = connection.createStatement();
 			String sql = "select id, name, description, AsText(geometry) geom, " +
 					"mapzoomlevel, AsText(mapcenter) center, iscurrentregion, " +
-					"default_zone_type, utcoffset, minsoakinterval, commercial_block_length, industrial_block_length, residential_block_length " +
+					"default_zone_type, utcoffset, minsoakinterval, commercial_block_length, industrial_block_length, residential_block_length, " +
+					"gps_tagging_tolerance " +
 					"FROM studyregion ORDER BY name";
 			logger.debug("getStudyRegions sql=" + sql);
 			ResultSet r = s.executeQuery(sql); 
@@ -165,6 +168,7 @@ public class RegionDAO extends DAO {
 			      String commercialZoneBlockLength = r.getString(11);
 			      String industrialZoneBlockLength = r.getString(12);
 			      String residentialZoneBlockLength = r.getString(13);
+			      String gpsTaggingTolerance = r.getString(14);
 			      
 			      // convert a linestring to a JTS geometry
 			      WKTReader reader = new WKTReader();
@@ -183,6 +187,7 @@ public class RegionDAO extends DAO {
 			      studyRegion.setCommercialZoneBlockLength(commercialZoneBlockLength);
 			      studyRegion.setIndustrialZoneBlockLength(industrialZoneBlockLength);
 			      studyRegion.setResidentialZoneBlockLength(residentialZoneBlockLength);
+			      studyRegion.setGpsTaggingTolerance(gpsTaggingTolerance);
 			      
 			      // now convert the geometry to an ArrayList<Vertex> and
 			      // set in the roadDetails
@@ -236,7 +241,8 @@ public class RegionDAO extends DAO {
 					" minsoakinterval = '"+studyRegion.getMinimumSoakInterval()+"', " +
 					" commercial_block_length = '"+studyRegion.getCommercialZoneBlockLength()+"', " +
 					" industrial_block_length = '"+studyRegion.getIndustrialZoneBlockLength()+"', " +
-					" residential_block_length = '"+studyRegion.getResidentialZoneBlockLength()+"' " +
+					" residential_block_length = '"+studyRegion.getResidentialZoneBlockLength()+"', " +
+					" gps_tagging_tolerance = '"+studyRegion.getGpsTaggingTolerance()+"' " +
 					"WHERE id = '"+studyRegion.getId()+"'";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 
@@ -284,7 +290,7 @@ public class RegionDAO extends DAO {
 			String sql = "INSERT INTO \"studyregion\" (pid, id, name, " +
 					"description, geometry, mapzoomlevel, mapcenter, " +
 					"iscurrentregion, default_zone_type, utcoffset, minsoakinterval, " +
-					"commercial_block_length, industrial_block_length, residential_block_length) " +
+					"commercial_block_length, industrial_block_length, residential_block_length, gps_tagging_tolerance) " +
 					"VALUES (" + 
 					"(SELECT nextval('studyregion_pid_seq'))," +
 					"'"+studyRegion.getId()+"', " +
@@ -299,7 +305,8 @@ public class RegionDAO extends DAO {
 					" '"+studyRegion.getMinimumSoakInterval()+"', " +
 					" '"+studyRegion.getCommercialZoneBlockLength()+"', " +
 					" '"+studyRegion.getIndustrialZoneBlockLength()+"', " +
-					" '"+studyRegion.getResidentialZoneBlockLength()+"' " +
+					" '"+studyRegion.getResidentialZoneBlockLength()+"', " +
+					" '"+studyRegion.getGpsTaggingTolerance()+"' " +
 					")";
 			logger.debug("sql=" + sql);
 			s.executeUpdate(sql); 

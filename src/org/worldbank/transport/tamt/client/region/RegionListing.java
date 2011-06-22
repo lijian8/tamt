@@ -33,6 +33,10 @@ import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.Vertex;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
@@ -46,11 +50,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class RegionListing extends Composite {
@@ -85,6 +93,9 @@ public class RegionListing extends Composite {
 	@UiField TextBox industrialZoneBlockLength;
 	@UiField TextBox residentialZoneBlockLength;
 	
+	@UiField TextBox gpsTaggingTolerance;
+	@UiField HTML gpsHelp;
+	
 	@UiField TextBox minimumSoakInterval;
 	
 	@UiField Label polyline;
@@ -108,6 +119,7 @@ public class RegionListing extends Composite {
 
 	protected RegionPolygon currentPolygon;
 	private boolean wasDeletingCurrentStudyRegion;
+	private BlockLengthBlurHandler blockLengthBlurHandler = new BlockLengthBlurHandler();
 	
 	public RegionListing(HandlerManager eventBus) {
 		
@@ -124,12 +136,47 @@ public class RegionListing extends Composite {
 		zoneTypes.addItem("Commercial", ZoneListing.ZONETYPE_COMMERCIAL);
 		zoneTypes.addItem("Industrial", ZoneListing.ZONETYPE_INDUSTRIAL);
 		zoneTypes.setSelectedIndex(0);
+		zoneTypes.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				updateGPSTaggingTolerance();
+			}
+		});
 		
 		regionService = GWT.create(RegionService.class);
 		
 		initWidget(uiBinder.createAndBindUi(this));
 		
+		// this is not user-editable
+		gpsTaggingTolerance.setEnabled(false);
+		updateGPSTaggingTolerance();
+		
 		bind();
+	}
+	
+	@UiHandler("gpsHelp")
+	void onClickGPSHelp(ClickEvent e) {
+		final DialogBox dialogBox = new DialogBox();
+		dialogBox.setText("GPS Tagging Tolerance");
+		VerticalPanel dialogVerticalPanel = new VerticalPanel();
+		HTML dialogDesc = new HTML("GPS points are tagged based on nearness to user-defined roads. " +
+				"The GPS tagging tolerance defines the maximum distance a point can be from a road and be included in the road's tag. " +
+				"The system will use 1/2 of the block length that is set for the default zone type OR 50 m, whichever is greater.");
+		Button ok = new Button("OK");
+		ok.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				dialogBox.hide();
+			}
+		});
+		dialogVerticalPanel.add(dialogDesc);
+		dialogVerticalPanel.add(ok);
+		dialogVerticalPanel.setCellHorizontalAlignment(ok, HasHorizontalAlignment.ALIGN_CENTER);
+		dialogBox.setWidget(dialogVerticalPanel);
+		dialogBox.center();
+		dialogBox.show();
+				
 	}
 	
 	@UiHandler("toggleAllCheckboxes")
@@ -196,6 +243,11 @@ public class RegionListing extends Composite {
 	
 	private void bind()
 	{
+		
+		// handler to update the gps tagging tolerance
+		commercialZoneBlockLength.addBlurHandler(blockLengthBlurHandler);
+		residentialZoneBlockLength.addBlurHandler(blockLengthBlurHandler);
+		industrialZoneBlockLength.addBlurHandler(blockLengthBlurHandler);
 		
 		eventBus.addHandler(LoadCurrentStudyRegionEvent.TYPE, new LoadCurrentStudyRegionEventHandler() {
 			
@@ -427,7 +479,7 @@ public class RegionListing extends Composite {
 	}	
 	
 	private void copyStudyRegion()
-	{
+	{	
 		// ask the user for a new name
 		String regionName = Window.prompt("New name for copied region", "");
 		String regionIdToBeCopied = null;
@@ -444,7 +496,11 @@ public class RegionListing extends Composite {
 					regionIdToBeCopied = studyRegionId;
 				}
 			}
-			if( studyRegionIds.size() > 1)
+			if( studyRegionIds.size() == 0)
+			{
+				Window.alert("Please check the box beside a study region to copy it");
+			}
+			else if( studyRegionIds.size() > 1)
 			{
 				Window.alert("Only one region can be copied at a time");
 			} else 
@@ -502,6 +558,7 @@ public class RegionListing extends Composite {
 		studyRegion.setIndustrialZoneBlockLength(industrialZoneBlockLength.getText());
 		studyRegion.setResidentialZoneBlockLength(residentialZoneBlockLength.getText());
 		studyRegion.setMinimumSoakInterval(minimumSoakInterval.getText());
+		studyRegion.setGpsTaggingTolerance(gpsTaggingTolerance.getText());
 		GWT.log("DUPE Saving study region with id:" + currentStudyRegionId);
 		
 		/*
@@ -593,6 +650,7 @@ public class RegionListing extends Composite {
 		industrialZoneBlockLength.setText("");
 		residentialZoneBlockLength.setText("");
 		minimumSoakInterval.setText("");
+		gpsTaggingTolerance.setText("");
 		currentStudyRegionId = null;
 		currentPolygon = null;
 		GWT.log("DUPE clearRegionEditView currentPolygon="+currentPolygon);
@@ -753,8 +811,11 @@ public class RegionListing extends Composite {
 		industrialZoneBlockLength.setText(studyRegion.getIndustrialZoneBlockLength());
 		residentialZoneBlockLength.setText(studyRegion.getResidentialZoneBlockLength());
 		minimumSoakInterval.setText(studyRegion.getMinimumSoakInterval());
+		gpsTaggingTolerance.setText(studyRegion.getGpsTaggingTolerance());
 		save.setText("Update");
 		
+		// and update gps tag if nothing was set previously
+		updateGPSTaggingTolerance();
 	}
 
 	public HashMap<String, ArrayList<Vertex>> getVertexHash() {
@@ -764,5 +825,54 @@ public class RegionListing extends Composite {
 	public void setVertexHash(HashMap<String, ArrayList<Vertex>> vertexHash) {
 		this.vertexHash = vertexHash;
 	}
+	
+	public void updateGPSTaggingTolerance()
+	{
+		
+		// clear gps tagging value
+		gpsTaggingTolerance.setValue("");
+		
+		// get the block length value for the default zone type
+		String selectedZoneType = zoneTypes.getValue(zoneTypes.getSelectedIndex());
+		GWT.log(selectedZoneType);
+		String blocklengthValue = "";
+		if( selectedZoneType.equals("#RES"))
+		{
+			blocklengthValue = residentialZoneBlockLength.getValue();
+		} else if (selectedZoneType.equals("#COM"))
+		{
+			blocklengthValue = commercialZoneBlockLength.getValue();
+		} else // #IND
+		{
+			blocklengthValue = industrialZoneBlockLength.getValue();
+		}
+		
+		// update the gps tagging tolerance value
+		GWT.log("blocklengthValue=--" + blocklengthValue + "--");
+		if( !blocklengthValue.equals(""))
+		{
+				float blocklength = Integer.parseInt(blocklengthValue);
+				int half = Math.round(blocklength / 2);
+				if (half < 50)
+				{
+					gpsTaggingTolerance.setValue("50");
+				} else {
+					String halfString = Integer.toString(half);
+					gpsTaggingTolerance.setValue(halfString);
+				}
+		} 
+		
+	}
+	
+	public class BlockLengthBlurHandler implements BlurHandler
+	{
+		@Override
+		public void onBlur(BlurEvent event) {
+			updateGPSTaggingTolerance();
+		}
+	}
+	
+
+
 	
 }

@@ -16,6 +16,7 @@ public class StudyRegion implements Serializable {
 	private String industrialZoneBlockLength;
 	private String commercialZoneBlockLength;
 	
+	private String gpsTaggingTolerance;
 	private String minimumSoakInterval;
 	
 	private ArrayList<Vertex> vertices;
@@ -143,6 +144,14 @@ public class StudyRegion implements Serializable {
 		this.minimumSoakInterval = minimumSoakInterval;
 	}
 
+	public String getGpsTaggingTolerance() {
+		return gpsTaggingTolerance;
+	}
+
+	public void setGpsTaggingTolerance(String gpsTaggingTolerance) {
+		this.gpsTaggingTolerance = gpsTaggingTolerance;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -170,6 +179,8 @@ public class StudyRegion implements Serializable {
 		builder.append(name);
 		builder.append(", residentialZoneBlockLength=");
 		builder.append(residentialZoneBlockLength);
+		builder.append(", gpsTaggingTolerance=");
+		builder.append(gpsTaggingTolerance);
 		builder.append(", utcOffset=");
 		builder.append(utcOffset);
 		builder.append(", vertices=");
