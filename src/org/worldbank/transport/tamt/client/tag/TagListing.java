@@ -13,6 +13,7 @@ import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
 import org.worldbank.transport.tamt.client.event.TAMTResizeEventHandler;
 import org.worldbank.transport.tamt.client.services.TagService;
 import org.worldbank.transport.tamt.client.services.TagServiceAsync;
+import org.worldbank.transport.tamt.shared.ReservedWordTags;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
 
@@ -178,18 +179,9 @@ public class TagListing extends Composite {
 		tagDetails.setId(currentTagDetailsId);
 		tagDetails.setRegion(currentStudyRegion);
 		
-
-		/*
-		 * Just a little client-side validation, the rest
-		 * is done on the server
-		 */
-		ArrayList<String> reservedZoneTypes = new ArrayList<String>();
-		reservedZoneTypes.add(ZoneListing.ZONETYPE_COMMERCIAL);
-		reservedZoneTypes.add(ZoneListing.ZONETYPE_INDUSTRIAL);
-		reservedZoneTypes.add(ZoneListing.ZONETYPE_RESIDENTIAL);
-		if (reservedZoneTypes.contains(tagDetails.getName()))
+		if( ReservedWordTags.isReservedTag(tagDetails))
 		{
-			Window.alert("The tag name is not valid");
+			Window.alert("The tag name or description is reserved");
 			return;
 		}
 		
@@ -278,6 +270,15 @@ public class TagListing extends Composite {
 	          for (int i = 0; i < tagDetailsList.size(); i++) {
 	        	final int count = i;
 				final TagDetails tagDetails = tagDetailsList.get(i);
+				
+				/*
+				 * Prevent reserved-word tags from displaying
+				 */
+				if( ReservedWordTags.isReservedTag(tagDetails))
+				{
+					continue;
+				}
+				
 				GWT.log(tagDetails.getName());
 				
 				CheckBox cb = new CheckBox();
