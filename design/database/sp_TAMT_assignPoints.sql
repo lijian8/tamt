@@ -1,8 +1,8 @@
-﻿-- Function: tamt_assignpoints(text, double precision, double precision)
+-- Function: tamt_assignpoints(text)
 
--- DROP FUNCTION tamt_assignpoints(text, double precision, double precision);
+-- DROP FUNCTION tamt_assignpoints(text);
 
-CREATE OR REPLACE FUNCTION tamt_assignpoints(gid text, distance_tolerance double precision, bearing_tolerance double precision)
+CREATE OR REPLACE FUNCTION tamt_assignpoints(gid text)
   RETURNS integer AS
 $BODY$
 DECLARE
@@ -28,6 +28,8 @@ DECLARE
 
     -- important identifiers
     studyRegionId text;
+    distance_tolerance numeric;
+    bearing_tolerance numeric;
     tagId text;
     roadId text;
     zoneId text;
@@ -44,9 +46,20 @@ BEGIN
     totalProcessed := 0;
     totalPoints := 0;
     incrementCount := 0;
+    bearing_tolerance := 45.0;
 
     -- What studyRegion are we working on?
     SELECT INTO studyRegionId region FROM gpstraces WHERE id = gid;
+
+    -- What is the default gps tagging tolerance for this study region?
+    SELECT INTO distance_tolerance gps_tagging_tolerance FROM studyregion WHERE id = studyRegionId;
+
+    -- If the tagging tolerance is not configured, use the default of 50m. 
+    -- The UI is responsible to make sure this value is not less than 50m.
+    IF distance_tolerance IS NULL
+    THEN
+	distance_tolerance = 50.0;
+    END IF;
     
     -- How many GPS records are there for this trace?
     SELECT INTO totalPoints recordcount FROM gpstraces WHERE id = gid;
@@ -168,4 +181,4 @@ END;
 $BODY$
   LANGUAGE 'plpgsql' VOLATILE
   COST 100;
-ALTER FUNCTION tamt_assignpoints(text, double precision, double precision) OWNER TO postgres;
+ALTER FUNCTION tamt_assignpoints(text) OWNER TO postgres;

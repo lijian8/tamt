@@ -99,7 +99,7 @@ public class ParseGPRMCTest {
 				if( line.matches(patternGPRMC))
 				{
 					logger.debug(line);	
-					gpsTraceDAO.processGPRMCLine(line);
+					// removed
 				}
 			}
 
@@ -127,7 +127,7 @@ public class ParseGPRMCTest {
 				if( line.matches(patternGPRMC))
 				{
 					logger.debug(line);	
-					gpsTraceDAO.processGPRMCLine(line);
+					// removed
 				}
 			}
 

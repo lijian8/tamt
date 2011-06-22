@@ -37,6 +37,13 @@
 		.label {
 			width: 200px;
 		}
+		.help {
+			margin-left:10px;
+			width: 10px;
+			color:blue;
+			text-decoration: underline;
+			cursor: pointer;
+		}		
 		.detailRow {
 			vertical-align: middle;
 			padding: 4px;
@@ -84,17 +91,22 @@
 			<g:ListBox ui:field="zoneTypes"/>
 		</g:HorizontalPanel>	
 		<g:HorizontalPanel styleName="{style.detailRow}">
-			<g:HTML styleName="{style.label}">Commercial zone block length:</g:HTML>
+			<g:HTML styleName="{style.label}">Commercial block length (m):</g:HTML>
 			<g:TextBox ui:field="commercialZoneBlockLength" styleName="{style.utc}"/> 
 		</g:HorizontalPanel>
 		<g:HorizontalPanel styleName="{style.detailRow}">
-			<g:HTML styleName="{style.label}">Industrial zone block length:</g:HTML>
+			<g:HTML styleName="{style.label}">Industrial block length (m):</g:HTML>
 			<g:TextBox ui:field="industrialZoneBlockLength" styleName="{style.utc}"/> 
 		</g:HorizontalPanel>	
 		<g:HorizontalPanel styleName="{style.detailRow}">
-			<g:HTML styleName="{style.label}">Residential zone block length:</g:HTML>
+			<g:HTML styleName="{style.label}">Residential block length (m):</g:HTML>
 			<g:TextBox ui:field="residentialZoneBlockLength" styleName="{style.utc}"/> 
-		</g:HorizontalPanel>		
+		</g:HorizontalPanel>
+		<g:HorizontalPanel styleName="{style.detailRow}">
+			<g:HTML styleName="{style.label}">GPS tagging tolerance (m):</g:HTML>
+			<g:TextBox ui:field="gpsTaggingTolerance" styleName="{style.utc}"/> 
+			<g:HTML ui:field="gpsHelp" styleName="{style.help}">[?]</g:HTML>
+		</g:HorizontalPanel>				
 		<g:HorizontalPanel styleName="{style.detailRow}">
 			<g:HTML styleName="{style.label}">Minimum soak interval (s):</g:HTML>
 			<g:TextBox ui:field="minimumSoakInterval" styleName="{style.utc}"/> 
