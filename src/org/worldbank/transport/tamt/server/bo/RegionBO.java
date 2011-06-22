@@ -35,6 +35,7 @@ public class RegionBO {
 	private RegionDAO dao;
 	private GPSTraceDAO gpsTraceDAO;
 	private TagDAO tagDAO;
+	private TagBO tagBO;
 	private RoadDAO roadDAO;
 	private ZoneDAO zoneDAO;
 	private boolean allFlowValuesNull;
@@ -57,6 +58,7 @@ public class RegionBO {
 		tagDAO = TagDAO.get();
 		roadDAO = RoadDAO.get();
 		zoneDAO = ZoneDAO.get();
+		tagBO = TagBO.get();
 	}
 
 	public void deleteStudyRegions(ArrayList<String> studyRegionIds) throws Exception {
@@ -198,15 +200,38 @@ public class RegionBO {
 		Coordinate mapCenterCoord = new Coordinate(mapCenterVertex.getLng(), mapCenterVertex.getLat());
 		Geometry mapCenter = new GeometryFactory().createPoint(mapCenterCoord);
 		
+		StudyRegion savedStudyRegion = null;
+		
 		try {
 			if( studyRegion.getId().indexOf("TEMP") != -1 )
 			{
 				// create an id, and save it
 				studyRegion.setId( UUID.randomUUID().toString() );
-				return dao.saveStudyRegion(studyRegion, geometry, mapCenter);
+				savedStudyRegion = dao.saveStudyRegion(studyRegion, geometry, mapCenter);
+				
+				// After we save a study region initially, we also want
+				// to create 3 special reserved word tags (Issue 67)
+				TagDetails resTag = new TagDetails();
+				resTag.setName("Residential");
+				resTag.setDescription("#RES"); // changing the reserved word from name to description
+				resTag.setRegion(studyRegion);
+				tagBO.saveTagDetails(resTag);
+				
+				TagDetails comTag = new TagDetails();
+				comTag.setName("Commercial");
+				comTag.setDescription("#COM"); // changing the reserved word from name to description
+				comTag.setRegion(studyRegion);
+				tagBO.saveTagDetails(comTag);
+				
+				TagDetails indTag = new TagDetails();
+				indTag.setName("Industrial");
+				indTag.setDescription("#IND"); // changing the reserved word from name to description
+				indTag.setRegion(studyRegion);
+				tagBO.saveTagDetails(indTag);
+				
 			} else {
 				// use the existing id to update it
-				return dao.updateStudyRegion(studyRegion, geometry, mapCenter);
+				savedStudyRegion = dao.updateStudyRegion(studyRegion, geometry, mapCenter);
 			}			
 		} catch (SQLException e)
 		{
@@ -221,6 +246,8 @@ public class RegionBO {
 			logger.error("An unknown error occured while trying to save a study region");
 			throw new Exception("An unknown error occured while trying to save a study region");
 		}
+		
+		return savedStudyRegion;
 	}
 
 	public DayTypePerYearOption saveDayTypePerYearOption(DayTypePerYearOption option) throws Exception {

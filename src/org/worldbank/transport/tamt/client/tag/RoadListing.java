@@ -35,6 +35,7 @@ import org.worldbank.transport.tamt.client.event.TAMTResizeEvent;
 import org.worldbank.transport.tamt.client.event.TAMTResizeEventHandler;
 import org.worldbank.transport.tamt.client.services.RoadService;
 import org.worldbank.transport.tamt.client.services.RoadServiceAsync;
+import org.worldbank.transport.tamt.shared.ReservedWordTags;
 import org.worldbank.transport.tamt.shared.RoadDetails;
 import org.worldbank.transport.tamt.shared.StudyRegion;
 import org.worldbank.transport.tamt.shared.TagDetails;
@@ -208,6 +209,13 @@ public class RoadListing extends Composite {
 				tagDetailsList = event.getTags();
 				for (Iterator iterator = tagDetailsList.iterator(); iterator.hasNext();) {
 					TagDetails td = (TagDetails) iterator.next();
+					/*
+					 * Prevent reserved-word tags from displaying
+					 */
+					if( ReservedWordTags.isReservedTag(td))
+					{
+						continue;
+					}					
 					tagSuggestions.add(td.getName());
 				}
 			}
