@@ -710,12 +710,20 @@ public class RegionMap extends Composite implements RequiresResize {
 		if( isNew )
 		{
 			
+			/**
+			 * TODO: Possible fix for Issue 36 (two point area). I think what
+			 * may be happening is that the polygon does not have a PolylineEndHandler
+			 * (accounting for a 2D polygon). Insert one and try to trap it with
+			 * a warning that a region cannot be a line (must have 3+ points)
+			 */
+			
 			polygon.addPolygonEndLineHandler(new PolygonEndLineHandler() {
 		      public void onEnd(PolygonEndLineEvent event) {
 		    	  
 		    	  currentPolygon = polygon;
 		    	  
 		    	  LatLng points[] = new LatLng[currentPolygon.getVertexCount()];
+		    	  GWT.log("vertex count on add-p-end-line-handler=" + points.length);
 		    	  for (int i = 0; i < currentPolygon.getVertexCount(); i++) {
 		    		  LatLng v = currentPolygon.getVertex(i);
 		    		  LatLng p = LatLng.newInstance(v.getLatitude(), v.getLongitude());
@@ -754,6 +762,7 @@ public class RegionMap extends Composite implements RequiresResize {
 		    	   * in order to send it across the wire.
 		    	   */
 		    	  LatLng points[] = new LatLng[currentPolygon.getVertexCount()];
+		    	  GWT.log("vertex count on update=" + points.length);
 		    	  for (int i = 0; i < currentPolygon.getVertexCount(); i++) {
 		    		  LatLng v = currentPolygon.getVertex(i);
 		    		  LatLng p = LatLng.newInstance(v.getLatitude(), v.getLongitude());
