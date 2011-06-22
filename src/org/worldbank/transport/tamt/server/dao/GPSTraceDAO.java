@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -37,8 +38,6 @@ public class GPSTraceDAO extends DAO {
 
 	static Logger logger = Logger.getLogger(GPSTraceDAO.class);
 	protected final String DELIMITER = "\t";
-	private final double ASSIGN_POINTS_TOLERANCE_DISTANCE = 20.0;
-	private final double ASSIGN_POINTS_TOLERANCE_BEARING = 45.0;
 	private RegionDAO regionDao;
 	
 	private static GPSTraceDAO singleton = null;
@@ -428,7 +427,8 @@ public class GPSTraceDAO extends DAO {
 		
 		// this pattern is for extracting columns of data from the NMEA sentence
 		Pattern pattern = Pattern.compile(",\\s*");
-
+		Pattern coordRegex = Pattern.compile("(.*)(\\d{2})(\\d{2})\\.(.*)$");
+		
 		while (entries.hasMoreElements()) {
 			
 			/*
@@ -450,11 +450,7 @@ public class GPSTraceDAO extends DAO {
 					if( line.matches(patternGPRMC))
 					{
 						try {
-							// processLineSet(line, line2);
-
-							/*
-							 * Process the 2 lines to create a TAMTPoint
-							 */
+							
 							TAMTPoint p = new TAMTPoint();
 							p.setId(UUID.randomUUID().toString());
 
@@ -469,36 +465,24 @@ public class GPSTraceDAO extends DAO {
 							p.setTimestamp(timestamp);
 
 							// latitude (ddmm.ss), latitude hemisphere (N or S)
-							double latitude = parseCoord(data[3], data[4]);
+							double latitude = parseCoordRegex(data[3], data[4], coordRegex);
 							p.setLatitude(latitude);
 
 							// longitude (ddmm.ss), longitude hemisphere (E or
 							// W)
-							double longitude = parseCoord(data[5], data[6]);
+							double longitude = parseCoordRegex(data[5], data[6], coordRegex);
 							p.setLongitude(longitude);
 
 							// bearing
 							double bearing = Double.parseDouble(data[8]);
 							p.setBearing(bearing);
-
+							
 							// speed (in knots)
 							double speed = Double.parseDouble(data[7]);
 							// convert to meters per second
 							// 1 knot = 0.514444444 meters per second
 							speed = (speed * 0.5144);
 							p.setSpeed(speed);
-
-							/*
-							 * Extract the data from the GPGGA sentence (ie,
-							 * line2)
-							 */
-							String[] data2 = pattern.split(line);
-
-							// altitude
-							p.setAltitude(Double.parseDouble(data2[9]));
-
-							// altitude units
-							p.setAltitudeUnits(data2[10]);
 
 							// if we have not failed up to this point
 							// (as indicated by fetching the timestamp -- kind
@@ -579,7 +563,10 @@ public class GPSTraceDAO extends DAO {
 							logger.error("error adding point to database:"
 									+ e.getMessage());
 							continue;
-						}
+						} catch (Exception e) {
+							logger.error(e);
+							continue;
+						}						
 
 					}
 				}
@@ -779,8 +766,6 @@ public class GPSTraceDAO extends DAO {
 		copyFile.delete();
 
 	}
-
-	
 	
 	private void setNextGPSPointSequenceValue() throws Exception {
 		try {
@@ -820,25 +805,31 @@ public class GPSTraceDAO extends DAO {
 		return seqVal;
 	}
 
-	private double parseCoord(String ddmmss, String hemisphere) {
-		double coord = 0;
-
-		// degrees
-		double degrees = Double.parseDouble(ddmmss.substring(0, 2));
-
-		// minutes (with any leftover decimal seconds)
-		double minutes = Double.parseDouble(ddmmss
-				.substring(2, ddmmss.length()));
-
-		// calc coord
-		coord = degrees + ((minutes * 60) / 3600);
-
-		// if hemisphere is W or S, then make coord negative
-		if (hemisphere.equals("W") || hemisphere.equals("S")) {
-			// coord = Math.abs(coord) * -1;
-			coord = coord * -1;
+	private double parseCoordRegex(String ddmmss, String hemisphere, Pattern p) throws Exception
+	{
+		double coord = 0.0;
+		//logger.debug("ddmmss=" + ddmmss);
+		Matcher m = p.matcher(ddmmss);
+		if( m.matches())
+		{
+			// build degrees and minutes
+			double degrees = Double.parseDouble(m.group(2));
+			//logger.debug("degrees=" + degrees);
+			String min = m.group(3) + "." + m.group(4);
+			//logger.debug("min=" + min);
+			double minutes = Double.parseDouble(min);
+			coord = degrees + ((minutes * 60) / 3600);
+			
+			// if hemisphere is W or S, then make coord negative
+			if (hemisphere.equals("W") || hemisphere.equals("S")) {
+				// coord = Math.abs(coord) * -1;
+				coord = coord * -1;
+				//logger.debug("multiply coord by -1=" + coord);
+			}
+			
+		} else {
+			throw new Exception("There was an error parsing the coordinate");
 		}
-
 		return coord;
 	}
 
@@ -936,15 +927,8 @@ public class GPSTraceDAO extends DAO {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
 
-			// e.g. select * from
-			// TAMT_assignPoints('349ef8d2-8ca9-4870-9085-aa851bcfbe44',10.0,30.0)
-
-			// first, we need to fetch the gpsTrace (by id) to get the
-			// associated fileId
-			String sql = "SELECT * FROM TAMT_assignPoints(\'"
-					+ gpsTrace.getId() + "\', " +
-							ASSIGN_POINTS_TOLERANCE_DISTANCE + "," +
-							ASSIGN_POINTS_TOLERANCE_BEARING + ")";
+			// New stored procedure "tamt_assignpoints(id)" uses gpsTaggingTolerance from studyregion and default bearing of 45 degrees
+			String sql = "SELECT * FROM TAMT_assignPoints(\'" + gpsTrace.getId() + "\') ";
 			logger.debug("assignPoints sql=" + sql);
 			ResultSet r = s.executeQuery(sql);
 			// should only get 1 in the result set
