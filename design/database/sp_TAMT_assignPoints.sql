@@ -26,6 +26,7 @@ DECLARE
     tmp text;
     output int;
     sql text;
+    regionTagIdDefaultZoneType text;
 
     -- important identifiers
     studyRegionId text;
@@ -55,6 +56,18 @@ BEGIN
     -- What is the default gps tagging tolerance for this study region?
     SELECT INTO distance_tolerance gps_tagging_tolerance FROM studyregion WHERE id = studyRegionId;
 
+    -- What is the tagID of the study-region-specific tag whose description matches the default zone type 
+    -- of the study region? (We'll use this as the tagId rather than the reserved-words tags for insertion later on)
+    SELECT INTO regionTagIdDefaultZoneType
+		t.id
+	FROM
+		tagdetails t,
+		studyregion s
+	WHERE
+		t.description = s.default_zone_type
+	AND
+		s.iscurrentregion = true;
+	
     -- If the tagging tolerance is not configured, use the default of 50m. 
     -- The UI is responsible to make sure this value is not less than 50m.
     IF distance_tolerance IS NULL
@@ -145,7 +158,7 @@ BEGIN
 			-- if we found a zone, record the zoneId and zoneType in the point record
 			-- Note: the zoneType acts like a tag, so it is recorded in the tag_id column
 			IF( zoneId != '') THEN
-				UPDATE gpspoints SET tag_id = zoneType, zone_id = zoneId  WHERE pid = p.pid;
+				UPDATE gpspoints SET tag_id = regionTagIdDefaultZoneType, zone_id = zoneId  WHERE pid = p.pid;
 				totalAffected := totalAffected + 1;
 				hasZoneId := true;
 			END IF;
@@ -157,9 +170,7 @@ BEGIN
 	-- and now we apply the default zonetype to all remaining untagged points
 	IF( hasRoadId = false AND hasZoneId = false ) THEN
 		defaultZoneType := '';
-		SELECT INTO defaultZoneType default_zone_type FROM studyregion
-			WHERE id = studyRegionId;
-		UPDATE gpspoints SET tag_id = defaultZoneType, zone_id = 'DEFAULT' WHERE pid = p.pid;
+		UPDATE gpspoints SET tag_id = regionTagIdDefaultZoneType, zone_id = 'DEFAULT' WHERE pid = p.pid;
 		totalAffected := totalAffected + 1;
 	END IF;
 	

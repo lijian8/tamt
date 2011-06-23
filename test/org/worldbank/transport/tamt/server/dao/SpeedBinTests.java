@@ -130,9 +130,11 @@ public class SpeedBinTests {
 		try {
 			speedBinDAO.populateSpeedDistObserved();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			assertTrue(false);
 		}
+		logger.debug("Done");
+		assertTrue(true);
 	}
 	
 	@Test
@@ -221,9 +223,11 @@ public class SpeedBinTests {
 		try {
 			speedBinDAO.interpolateSpeedDistribution();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			assertTrue(false);
 		}
+		logger.debug("Done");
+		assertTrue(true);
 	
 	}
 
@@ -234,9 +238,11 @@ public class SpeedBinTests {
 		try {
 			speedBinDAO.populateSpeedDistribution();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			assertTrue(false);
 		}
+		logger.debug("Done");
+		assertTrue(true);
 	
 	}
 	
@@ -389,6 +395,18 @@ public class SpeedBinTests {
 			e.printStackTrace();
 		}
 		// what can i assert?
+	}
+	
+	@Test 
+	public void truncateTables()
+	{
+		logger.debug("test truncateTables");
+		try {
+			speedBinDAO.truncateSpeedDistributionTables();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Test

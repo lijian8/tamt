@@ -938,7 +938,7 @@ public class SpeedBinDAO extends DAO {
 							
 					          // traffic count from traffic flow report (e.g. w2 traffic count per hour = 3)
 							  double trafficCount = getTrafficCount( tagId, dayType, hourBin, vehicleType);
-							  
+							  //logger.debug("trafficount for " + tagId + dayType + hourBin + vehicleType + "=" + trafficCount);
 							
 					          // fractional time in bin and average speed in bin from speed distribution table
 					          // (e.g. [0.9355095541401274, 0.1436349283740799]
@@ -949,6 +949,7 @@ public class SpeedBinDAO extends DAO {
 					           * ie totalSecondsInBin = sum of products of seconds in bin for each hour
 					           */
 					          ArrayList<Double> percentValues = getPercentValuesInBin( tagId, dayType, hourBin, speedBin);
+					          //logger.debug("percentValues=" + percentValues);
 					          double percentSecondsInBin = percentValues.get(0); // percentSecondsInBin for an hourbin = 1
 					          double percentMetersInBin = percentValues.get(1);
 					     
@@ -957,12 +958,15 @@ public class SpeedBinDAO extends DAO {
 					          // we are not naming this variable fractionalVehicleSecondsPerDay because that
 					          // variable name is reserved for the sum and fraction calculation performed later
 					          double vehicleSecondsPerHour = trafficCount * percentSecondsInBin; // ** this is not ACTUAL seconds in bin!
+					          //logger.debug("vehicleSecondsPerHour=" + vehicleSecondsPerHour);
 					          vehicleSecondsPerDay = vehicleSecondsPerDay + vehicleSecondsPerHour;
-
+					          //logger.debug("vehicleSecondsPerDay=" + vehicleSecondsPerDay);
+					          
 					          // calculate vehicleMetersPerDay
 					          double vehicleMetersPerHour = trafficCount * percentMetersInBin;
+					          //logger.debug("vehicleMetersPerHour=" + vehicleMetersPerHour);
 					          vehicleMetersPerDay = vehicleMetersPerDay + vehicleMetersPerHour;	// this is correct!	
-							
+					          //logger.debug("vehicleMetersPerDay=" + vehicleMetersPerDay);
 						} // end hour loop
 						
 						// these values are for one vehicle type
@@ -976,7 +980,7 @@ public class SpeedBinDAO extends DAO {
 						{
 							weightedAverageSpeed = vehicleMetersPerDay / vehicleSecondsPerDay;
 						}
-					    
+						//logger.debug("weightedAverageSpeed=" + weightedAverageSpeed);
 					    // insert cumulative variables in new table
 					    insertSpeedDistTrafficFlowRecord( tagId, dayType, vehicleType, speedBin, 
 					                          vehicleSecondsPerDay, vehicleMetersPerDay, weightedAverageSpeed);
@@ -1009,14 +1013,32 @@ public class SpeedBinDAO extends DAO {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
+			
+			/*
+			 * Issue 67 - By introducing reserved-word tags (RWT) into the study region, we created a
+			 * potential division-by-zero exception here.
+			 * 
+			 * Since RWTs can only be assigned to traffic counts, they don't have any relation to actual
+			 * GPS points. That means they are in traffic flow, but not speed distribution. When these
+			 * two tables are multiplied, we will get possible 0 values as the sums (below). When this
+			 * is the case, the UPDATE tries to divide with a denominator of 0, throwing an error.
+			 * 
+			 * The fix is to provide conditional SQL based on 0-values of the sumVehicleSecondsPerDay parameter.
+			 * (Since a previous change dropped the use of sumVehicleMetersPerDay, we don't need to check it for a 0 value)
+			 */
+			String partialSQL = "(vehiclesecondsperday / "+sumVehicleSecondsPerDay+")";
+			if( sumVehicleSecondsPerDay == 0)
+			{
+				partialSQL = "0"; // set values to 0 instead of dividing values
+			}
 			String sql = "UPDATE speeddistributiontrafficflow " +
 					"SET " +
-					"percentvehiclesecondsperday = (vehiclesecondsperday / "+sumVehicleSecondsPerDay+"), " +
-					"percentvehiclemetersperday = (vehiclesecondsperday / "+sumVehicleSecondsPerDay+") * weightedaveragespeed " +
+					"percentvehiclesecondsperday = "+partialSQL+", " +
+					"percentvehiclemetersperday = "+partialSQL+" * weightedaveragespeed " +
 					"WHERE tagid = '"+tagId+"' " +
 					"AND daytype = '"+dayType+"' " +
 					"AND vehicletype = '" + vehicleType + "'";
-			logger.debug("SQL for : " + sql);
+			//logger.debug("SQL for : " + sql);
 			s.executeUpdate(sql);
 			
 		} catch (SQLException e) {
