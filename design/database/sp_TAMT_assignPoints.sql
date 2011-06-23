@@ -1,4 +1,4 @@
--- Function: tamt_assignpoints(text)
+﻿-- Function: tamt_assignpoints(text)
 
 -- DROP FUNCTION tamt_assignpoints(text);
 
@@ -25,6 +25,7 @@ DECLARE
     defaultZoneType text;
     tmp text;
     output int;
+    sql text;
 
     -- important identifiers
     studyRegionId text;
@@ -47,7 +48,7 @@ BEGIN
     totalPoints := 0;
     incrementCount := 0;
     bearing_tolerance := 45.0;
-
+	
     -- What studyRegion are we working on?
     SELECT INTO studyRegionId region FROM gpstraces WHERE id = gid;
 
@@ -79,10 +80,14 @@ BEGIN
     -- main loop over points associated with this gpstrace
     FOR p IN SELECT * FROM gpspoints WHERE gpstraceid = gid ORDER BY created
     LOOP
+
+	-- reset our flags
+        hasRoadId := false;
+	hasZoneId := false;
+	
 	-- for this point record, get the nearest of the near roads with similar bearing
 	tagId := '';
 	roadId := '';
-	hasRoadId := false;
 	FOR my_record IN 
 		SELECT
 			r.tag_id,
@@ -117,7 +122,6 @@ BEGIN
 		-- Query for which zone this point is contained by
 		zoneId := '';
 		zoneType := '';
-		hasZoneId := false;
 		FOR my_record IN 
 			SELECT
 				z.id,
@@ -151,7 +155,7 @@ BEGIN
 	END IF;
 
 	-- and now we apply the default zonetype to all remaining untagged points
-	IF( hasZoneId = false ) THEN
+	IF( hasRoadId = false AND hasZoneId = false ) THEN
 		defaultZoneType := '';
 		SELECT INTO defaultZoneType default_zone_type FROM studyregion
 			WHERE id = studyRegionId;
@@ -173,8 +177,6 @@ BEGIN
     -- when we have looped over all the points for this record, record the status
     PERFORM TAMT_updateAssignStatus(gid, totalPoints, totalProcessed, totalAffected, true);
 
-    
-    
     -- and return how many points were tagged
     RETURN totalAffected;
 END;
