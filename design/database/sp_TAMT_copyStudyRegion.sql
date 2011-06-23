@@ -1,6 +1,6 @@
-﻿-- Function: tamt_reducetagfromspeeddistributiontrafficflowtagvehiclespeed()
+﻿-- Function:TAMT_copyStudyRegion(text, text))
 
--- DROP FUNCTION tamt_reducetagfromspeeddistributiontrafficflowtagvehiclespeed();
+-- DROP FUNCTION TAMT_copyStudyRegion(text, text)
 
 CREATE OR REPLACE FUNCTION TAMT_copyStudyRegion(_regionIdToCopy text, _newName text)
   RETURNS void AS
