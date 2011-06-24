@@ -91,7 +91,7 @@
 			<g:HTML ui:field="setActiveOption1" styleName="{style.clickable}">Set as active option</g:HTML>
 			<g:HTML ui:field="activeOption1" styleName="{style.title}">ACTIVE</g:HTML>
 			<g:HorizontalPanel styleName="{style.survey}">
-				<g:HTML styleName="{style.question}">Weekdays in the year:</g:HTML>
+				<g:HTML styleName="{style.question}">Equivalent weekdays<br/>in year:</g:HTML>
 				<g:TextBox ui:field="option1weekday" styleName="{style.textbox}"/>
 			</g:HorizontalPanel>
 		</g:VerticalPanel>
@@ -101,7 +101,7 @@
 			<g:HTML ui:field="setActiveOption2" styleName="{style.clickable}">Set as active option</g:HTML>
 			<g:HTML ui:field="activeOption2" styleName="{style.title}">ACTIVE</g:HTML>
 			<g:HorizontalPanel styleName="{style.survey}">
-				<g:HTML styleName="{style.question}">Weekdays in the year:</g:HTML>
+				<g:HTML styleName="{style.question}">Weekdays in year:</g:HTML>
 				<g:TextBox ui:field="option2weekday" styleName="{style.textbox}"/>
 			</g:HorizontalPanel>
 			<g:HorizontalPanel styleName="{style.survey}">
