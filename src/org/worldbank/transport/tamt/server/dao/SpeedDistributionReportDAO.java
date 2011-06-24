@@ -151,6 +151,8 @@ public class SpeedDistributionReportDAO extends DAO {
 		
 		ArrayList<ArrayList> rows = new ArrayList<ArrayList>();
 		
+		NumberFormat formatter = new DecimalFormat("#0.00");
+		
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
@@ -167,15 +169,26 @@ public class SpeedDistributionReportDAO extends DAO {
 				
 				ArrayList<String> row = new ArrayList<String>();
 
-				// skip first columns (tagid)
+				// skip first column (tagid)
 				row.add(r.getString(2)); // daytype
 				row.add(r.getString(3)); // vehicletype
 				row.add(r.getString(4)); // speedbin
-				row.add(r.getString(5)); // vehiclesecondsinbin
-				row.add(r.getString(6)); // vehiclemetersinbin
-				row.add(r.getString(7)); // avgmeterspersecond
-				row.add(r.getString(8)); // percentsecondsinbinperday
-				row.add(r.getString(9)); // percentmetersinbinperday
+				
+				// skip the last two year-based columns (s and m)
+				// and insert vkt here. Get as a double, then round to 2 decimal places
+				Double vktDouble = r.getDouble(12);
+				String vkt = "";
+				if( vktDouble != null)
+				{
+					vkt = formatter.format(vktDouble.doubleValue());
+				}
+				row.add(vkt);
+				
+				row.add(r.getString(5)); // vehiclesecondsperday
+				row.add(r.getString(6)); // vehiclemetersperday
+				row.add(r.getString(7)); // weightedaveragespeed
+				row.add(r.getString(8)); // %s/d
+				row.add(r.getString(9)); // %m/d
 				rows.add(row);
 				
 			}
@@ -424,7 +437,7 @@ public class SpeedDistributionReportDAO extends DAO {
 		String output = "";
 		
 		StringBuffer sb = new StringBuffer();
-		sb.append("REGION,TAG,DAYTYPE,VEHICLETYPE,SPEEDBIN,(s)/d,(m)/d,AVERAGE m/s,%(s)/d,%(m)/d\n");
+		sb.append("REGION,TAG,DAYTYPE,VEHICLETYPE,SPEEDBIN,VKT,(s)/d,(m)/d,AVERAGE m/s,%(s)/d,%(m)/d\n");
 		
 		try {
 			Connection connection = getConnection();
@@ -433,7 +446,9 @@ public class SpeedDistributionReportDAO extends DAO {
 			String sql = "select "+
 			"s.name as region,"+
 			"t.name as tag,"+
-			"sd.daytype,sd.vehicletype,sd.speedbin,sd.vehiclesecondsperday,sd.vehiclemetersperday,"+
+			"sd.daytype,sd.vehicletype,sd.speedbin," +
+			"round(sd.vkt::numeric, 2)," + // need to insert VKT here
+			"sd.vehiclesecondsperday,sd.vehiclemetersperday,"+
 			"sd.weightedaveragespeed,sd.percentvehiclesecondsperday,sd.percentvehiclemetersperday "+
 			"from speeddistributiontrafficflow sd,tagdetails t,studyregion s "+
 			"where sd.tagid = t.id and t.region = s.id " +
@@ -458,11 +473,12 @@ public class SpeedDistributionReportDAO extends DAO {
 				sb.append(r.getString(3) + ","); // daytype
 				sb.append(r.getString(4) + ","); // vehicle
 				sb.append(r.getString(5) + ","); // speedbin
-				sb.append(formatter.format(r.getDouble(6)) + ","); // vehiclesecondsperday
-				sb.append(formatter.format(r.getDouble(7)) + ","); // vehiclemetersperday
-				sb.append(formatter.format(r.getDouble(8)) + ","); // weightedaveragespeed
-				sb.append(formatter.format(r.getDouble(9)) + ","); // percentvehiclesecondsperday
-				sb.append(formatter.format(r.getDouble(10)) + "\n"); // percentvehiclemetersperday
+				sb.append(r.getString(6) + ","); // vkt
+				sb.append(formatter.format(r.getDouble(7)) + ","); // vehiclesecondsperday
+				sb.append(formatter.format(r.getDouble(8)) + ","); // vehiclemetersperday
+				sb.append(formatter.format(r.getDouble(9)) + ","); // weightedaveragespeed
+				sb.append(formatter.format(r.getDouble(10)) + ","); // percentvehiclesecondsperday
+				sb.append(formatter.format(r.getDouble(11)) + "\n"); // percentvehiclemetersperday
 			}
 			
 			output = sb.toString();
