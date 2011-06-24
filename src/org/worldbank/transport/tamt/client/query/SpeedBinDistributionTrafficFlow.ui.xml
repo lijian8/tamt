@@ -96,12 +96,24 @@
 			border: 0px solid black;
 		}			
 		.dayTypeHeader {
-			width: 100px;
+			width: 150px;
 			padding: 2px;
 			margin: 1px;
 			border: 0px solid black;
 		}
 		.dayType {
+			width: 150px;
+			padding: 0px;
+			margin: 0px;
+			border: 0px solid black;
+		}
+		.otherHeader {
+			width: 100px;
+			padding: 2px;
+			margin: 1px;
+			border: 0px solid black;
+		}
+		.other {
 			width: 100px;
 			padding: 0px;
 			margin: 0px;
@@ -174,8 +186,8 @@
 
 			<g:HorizontalPanel styleName="{style.tableheader}">
 				<g:Label styleName="{style.dayTypeHeader}">Day Type</g:Label>
-				<g:Label styleName="{style.dayTypeHeader}">Vehicle Type</g:Label>
-				<g:Label styleName="{style.dayTypeHeader}">Speed Bin</g:Label>
+				<g:Label styleName="{style.otherHeader}">Vehicle Type</g:Label>
+				<g:Label styleName="{style.otherHeader}">Speed Bin</g:Label>
 				<g:Label styleName="{style.cellHeaderDoubleTop}">VKT</g:Label>
 				<g:Label styleName="{style.cellHeaderDoubleTop}">(s)/d</g:Label>
 				<g:Label styleName="{style.cellHeaderDoubleTop}">(m)/d</g:Label>
