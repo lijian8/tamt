@@ -596,250 +596,6 @@ public class SpeedBinDAO extends DAO {
 		}
 	}
 	
-	public void combineSpeedDistributionTrafficFlowIMPROVED() throws Exception
-	{
-		/*
-		 * This method is trying to get around the performance issues of the
-		 * current implementation, which has some methods that are being called
-		 * too much (due to the nature of the nested loops over tags, daytypes,
-		 * vehicle types, speed bins, and hour bins. The trick is we need to
-		 * use some outer variables in some inner calculations.
-		 * 
-		 */
-		
-		// get region
-		// get tags
-		// get daytypes
-		// get lastSpeedBin
-		// get default study region
-		ArrayList<StudyRegion> regions = regionDao.getStudyRegions();
-		StudyRegion currentStudyRegion = null;
-		for (Iterator iterator = regions.iterator(); iterator.hasNext();) {
-			StudyRegion studyRegion = (StudyRegion) iterator.next();
-			if( studyRegion.isCurrentRegion())
-			{
-				currentStudyRegion = studyRegion;
-				break;
-			}
-		}
-	
-		// get tags for this study region
-		ArrayList<TagDetails> tagDetailsList = tagDao.getTagDetails(currentStudyRegion);
-	
-		ArrayList<String> dayTypes =  new ArrayList<String>();
-		dayTypes.add(TrafficCountRecord.DAYTYPE_WEEKDAY);
-		dayTypes.add(TrafficCountRecord.DAYTYPE_SATURDAY);
-		dayTypes.add(TrafficCountRecord.DAYTYPE_SUNDAY_HOLIDAY);
-		
-		// these vehicle types need to match the column names for
-		// vehicle types in the traffic flow report
-		ArrayList<String> vehicleTypes =  new ArrayList<String>();
-		vehicleTypes.add("w2");
-		vehicleTypes.add("w3");
-		vehicleTypes.add("pc");
-		vehicleTypes.add("tx");
-		vehicleTypes.add("ldv");
-		vehicleTypes.add("ldc");
-		vehicleTypes.add("hdc");
-		vehicleTypes.add("mdb");
-		vehicleTypes.add("hdb");
-		
-		int hourBin = 0;
-		int speedBin = 0;
-		
-		int lastSpeedBin = getLastSpeedBin();
-		logger.debug("getLastSpeedBin=" + lastSpeedBin);
-		
-		/*
-		 * For trafficCount....
-		 * Loop over:
-		 * - tags
-		 * 		- daytypes
-		 * 			- vehicle types
-		 * 				- (skip speedbin)
-		 * 					- hourbin
-		 * 
-		 * And keep the trafficCount value ready for later...(hash?)
-		 * How many items in hash?: tags * daytypes * vehicletypes * hourbins = number of tags * 648
-		 * I think in this case we do it in postgres (maybe temp table?), instead of java
-		 */
-		
-		/*
-		 * this is a throwaway, but is here in order not to change the return 
-		 * value of getTrafficCount, but not allocate extra memory in the loop.
-		 */
-		double trafficCount = 0.0; 
-
-		for (Iterator tagIterator = tagDetailsList.iterator(); tagIterator.hasNext();) {
-			TagDetails tagDetails = (TagDetails) tagIterator.next();
-			String tagId = tagDetails.getId();
-			
-			for (Iterator dayIterator = dayTypes.iterator(); dayIterator.hasNext();) {
-				String dayType = (String) dayIterator.next();	
-				
-				for (Iterator iterator = vehicleTypes.iterator(); iterator.hasNext();) {
-					String vehicleType = (String) iterator.next();
-					
-					for (int j = 0; j < 24; j++) {
-						hourBin = j;
-						
-				        // traffic count from traffic flow report (e.g. w2 traffic count per hour = 3)
-						
-						// the getTrafficCount stores and updates trafficCountCache to improve performance.
-						// String key = tagId + "-" + dayType + "-" + hourBin + "-" + vehicleType;
-						trafficCount = getTrafficCount( tagId, dayType, hourBin, vehicleType);
-						
-					}
-				}
-			
-			}
-		}
-							
-		/*
-		 * For percentValuesInBin...
-		 * Loop over:
-		 * - tags
-		 * 		- daytypes
-		 * 			- (skip vehicle type) ***** though this may change if GPS data is categorized by vehicle type ****
-		 * 				- speedBin
-		 * 					- hourBin
-		 * and keep the percentValuesInBin ready for later... (hash?)
-		 */
-		
-		/*
-		 * this is a throwaway, but is here in order not to change the return 
-		 * value of percentValues, but not allocate extra memory in the loop. 
-		 */
-		ArrayList<Double> percentValues = new ArrayList<Double>();
-		for (Iterator tagIterator = tagDetailsList.iterator(); tagIterator.hasNext();) {
-			TagDetails tagDetails = (TagDetails) tagIterator.next();
-			String tagId = tagDetails.getId();
-			
-			for (Iterator dayIterator = dayTypes.iterator(); dayIterator.hasNext();) {
-				String dayType = (String) dayIterator.next();	
-				
-				for (int i = 0; i <= lastSpeedBin; i++) {
-					
-					speedBin = i;;
-					
-					for (int j = 0; j < 24; j++) {
-						hourBin = j;
-						
-						percentValues = getPercentValuesInBin( tagId, dayType, hourBin, speedBin);
-						
-					}
-				}
-			
-			}
-		}		
-	
-		/*
-		 * Now loop through all of the factors and yank out the cached values as appropriate...
-		 */
-
-		/*
-		 * 
-		 * 			LOOP ON TAGS
-		 * 
-		 */
-		for (Iterator tagIterator = tagDetailsList.iterator(); tagIterator.hasNext();) {
-			TagDetails tagDetails = (TagDetails) tagIterator.next();
-			
-			String tagId = tagDetails.getId();
-			
-			/*
-			 * 
-			 * 			LOOP ON DAY TYPES
-			 * 
-			 */
-			for (Iterator dayIterator = dayTypes.iterator(); dayIterator
-					.hasNext();) {
-				String dayType = (String) dayIterator.next();
-				
-				/*
-				 * 
-				 * 			LOOP ON VEHICLE TYPES
-				 * 
-				 */
-				// TODO: move vehicle type to outer loop (past tag) for consistency
-				for (Iterator iterator = vehicleTypes.iterator(); iterator
-						.hasNext();) {
-					String vehicleType = (String) iterator.next();
-					
-					/*
-					 * 
-					 * 			LOOP ON SPEED BINS
-					 * 
-					 */
-					for (int i = 0; i <= lastSpeedBin; i++) {
-						
-						speedBin = i;
-					
-						// initialize cumulative variables
-						double vehicleSecondsPerDay = 0.0;
-				        double vehicleMetersPerDay = 0.0;
-				        
-				        /*
-						 * 
-						 * 			LOOP ON HOUR BINS
-						 * 
-						 */
-						for (int j = 0; j < 24; j++) {
-					
-							hourBin = j;
-							
-					          // traffic count from traffic flow report (e.g. w2 traffic count per hour = 3)
-							  trafficCount = getTrafficCount( tagId, dayType, hourBin, vehicleType);
-							  
-							  // percentSecondsInBin and percentMetersInBin
-							  percentValues = getPercentValuesInBin( tagId, dayType, hourBin, speedBin);
-					          double percentSecondsInBin = percentValues.get(0);
-					          double percentMetersInBin = percentValues.get(1);
-					     
-					          // calculate vehicle seconds per hour and add to vehicle seconds per day
-					          double vehicleSecondsPerHour = trafficCount * percentSecondsInBin;
-					          vehicleSecondsPerDay = vehicleSecondsPerDay + vehicleSecondsPerHour;
-
-					          // calculate vehicleMetersPerDay
-					          double vehicleMetersPerHour = trafficCount * percentMetersInBin;
-					          vehicleMetersPerDay = vehicleMetersPerDay + vehicleMetersPerHour;							
-							
-						} // end hour loop
-						
-						//logger.debug("vehicleSecondsPerDay=" + vehicleSecondsPerDay);
-						//logger.debug("vehicleMetersPerDay=" + vehicleMetersPerDay);
-						
-					    // calculate speed
-						double weightedAverageSpeed = 0.0;
-						// if both variables are not zero, calculate average speed, otherwise avg speed is 0.0 too
-						if( vehicleSecondsPerDay != 0.0 && vehicleMetersPerDay != 0.0)
-						{
-							weightedAverageSpeed = vehicleMetersPerDay / vehicleSecondsPerDay;
-						}
-					    
-					    // insert cumulative variables in new table
-					    insertSpeedDistTrafficFlowRecord( tagId, dayType, vehicleType, speedBin, 
-					                          vehicleSecondsPerDay, vehicleMetersPerDay, weightedAverageSpeed);
-						
-					} // end speed bin loop
-					
-			        
-			        // update percentvehiclesecondsperday, percentvehiclesmetersperday for every row
-			        ArrayList<Double> sumValues = getSumVehicleValuesPerDay( tagId, dayType, vehicleType );
-			        double sumVehicleSecondsPerDay = sumValues.get(0);
-			        double sumVehicleMetersPerDay = sumValues.get(1);
-			        setSumValuesForVehicleType( tagId, dayType, vehicleType, sumVehicleSecondsPerDay, sumVehicleMetersPerDay);
-			        
-			        
-				} // end vehicle type loop
-				
-			} // end day type loop
-			
-		} // end tag loop
-		
-	}	
-	
-
 	public void combineSpeedDistributionTrafficFlow() throws Exception
 	{
 		
@@ -926,6 +682,7 @@ public class SpeedBinDAO extends DAO {
 						// initialize cumulative variables
 						double vehicleSecondsPerDay = 0.0;
 				        double vehicleMetersPerDay = 0.0;
+				        double trafficCountPerDay = 0.0;
 				        
 				        /*
 						 * 
@@ -938,8 +695,10 @@ public class SpeedBinDAO extends DAO {
 							
 					          // traffic count from traffic flow report (e.g. w2 traffic count per hour = 3)
 							  double trafficCount = getTrafficCount( tagId, dayType, hourBin, vehicleType);
-							  //logger.debug("trafficount for " + tagId + dayType + hourBin + vehicleType + "=" + trafficCount);
-							
+							  
+							  // add traffic count to cumulative count for this tag/day/vehicletype/speed
+							  trafficCountPerDay += trafficCount;
+							  
 					          // fractional time in bin and average speed in bin from speed distribution table
 					          // (e.g. [0.9355095541401274, 0.1436349283740799]
 					          
@@ -949,7 +708,6 @@ public class SpeedBinDAO extends DAO {
 					           * ie totalSecondsInBin = sum of products of seconds in bin for each hour
 					           */
 					          ArrayList<Double> percentValues = getPercentValuesInBin( tagId, dayType, hourBin, speedBin);
-					          //logger.debug("percentValues=" + percentValues);
 					          double percentSecondsInBin = percentValues.get(0); // percentSecondsInBin for an hourbin = 1
 					          double percentMetersInBin = percentValues.get(1);
 					     
@@ -958,32 +716,38 @@ public class SpeedBinDAO extends DAO {
 					          // we are not naming this variable fractionalVehicleSecondsPerDay because that
 					          // variable name is reserved for the sum and fraction calculation performed later
 					          double vehicleSecondsPerHour = trafficCount * percentSecondsInBin; // ** this is not ACTUAL seconds in bin!
-					          //logger.debug("vehicleSecondsPerHour=" + vehicleSecondsPerHour);
 					          vehicleSecondsPerDay = vehicleSecondsPerDay + vehicleSecondsPerHour;
-					          //logger.debug("vehicleSecondsPerDay=" + vehicleSecondsPerDay);
 					          
 					          // calculate vehicleMetersPerDay
 					          double vehicleMetersPerHour = trafficCount * percentMetersInBin;
-					          //logger.debug("vehicleMetersPerHour=" + vehicleMetersPerHour);
 					          vehicleMetersPerDay = vehicleMetersPerDay + vehicleMetersPerHour;	// this is correct!	
-					          //logger.debug("vehicleMetersPerDay=" + vehicleMetersPerDay);
+					    
 						} // end hour loop
 						
-						// these values are for one vehicle type
-						//logger.debug("vehicleSecondsPerDay=" + vehicleSecondsPerDay);
-						//logger.debug("vehicleMetersPerDay=" + vehicleMetersPerDay);
-						
-					    // calculate speed
+						// calculate speed
 						double weightedAverageSpeed = 0.0;
 						// if both variables are not zero, calculate average speed, otherwise avg speed is 0.0 too
 						if( vehicleSecondsPerDay != 0.0 && vehicleMetersPerDay != 0.0)
 						{
 							weightedAverageSpeed = vehicleMetersPerDay / vehicleSecondsPerDay;
 						}
-						//logger.debug("weightedAverageSpeed=" + weightedAverageSpeed);
-					    // insert cumulative variables in new table
-					    insertSpeedDistTrafficFlowRecord( tagId, dayType, vehicleType, speedBin, 
-					                          vehicleSecondsPerDay, vehicleMetersPerDay, weightedAverageSpeed);
+						
+						/*
+						 * Issue 61: We want to display VKT (vehicle kilometers traveled) for each combination
+						 * of tag/day/vehicletype/speed on the SpeedDist x TrafficFlow table. VKT is calculated
+						 * as trafficCountPerDay * road length of the tag.
+						 * 
+						 * 1. Get the road length of the tag. For RWTs, get the proxy length
+						 * 2. Multiply trafficCountPerDay * roadLength
+						 */
+						// get road length for this tag
+						double roadLength = getRoadLengthByTag(tagId);
+						double vkt = (roadLength * trafficCountPerDay) / 1000; // we want the units in (km)
+						
+						// insert cumulative variables in new table
+					    insertSpeedDistTrafficFlowRecord( 
+					    		tagId, dayType, vehicleType, speedBin, 
+					    			vehicleSecondsPerDay, vehicleMetersPerDay, weightedAverageSpeed, vkt);
 						
 					} // end speed bin loop
 					
@@ -1006,6 +770,31 @@ public class SpeedBinDAO extends DAO {
 			
 		} // end tag loop
 		
+	}
+	
+	private double getRoadLengthByTag(String tagId) throws Exception
+	{
+		/*
+		 * We do this in a number of stored procedures, but they are not decoupled enough to
+		 * use again here. So, we have its own stored procedure.
+		 */
+		double roadLength = 0.0;
+		try {
+			Connection connection = getConnection();
+			Statement s = connection.createStatement();
+			String sql = "SELECT * FROM TAMT_getRoadLengthByTag('"+tagId+"');";
+			//logger.debug(sql);
+			ResultSet r = s.executeQuery(sql); 
+			while (r.next()) {
+				roadLength = r.getDouble(1);
+			}			
+		} catch (SQLException e) {
+			logger.error(e.getMessage());
+			throw new Exception(
+					"There was an error getting the road length by tag: "
+							+ e.getMessage());
+		}		
+		return roadLength;
 	}
 
 	protected void setSumValuesForVehicleType( String tagId, String dayType, String vehicleType, double sumVehicleSecondsPerDay, 
@@ -1105,13 +894,14 @@ public class SpeedBinDAO extends DAO {
 	
 	protected void insertSpeedDistTrafficFlowRecord(String tagId, String dayType,
 			String vehicleType, int speedBin, double vehicleSecondsPerDay,
-			double vehicleMetersPerDay, double weightedAverageSpeed) throws Exception {
+			double vehicleMetersPerDay, double weightedAverageSpeed,
+			double vkt) throws Exception {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
 			String sql = "INSERT INTO speeddistributiontrafficflow (tagid, " +
 					"daytype, vehicletype, speedbin, vehiclesecondsperday, " +
-					"vehiclemetersperday, weightedaveragespeed) " +
+					"vehiclemetersperday, weightedaveragespeed, vkt) " +
 					"VALUES (" +
 					"'"+tagId+"', " +
 					"'"+dayType+"', " +
@@ -1119,7 +909,8 @@ public class SpeedBinDAO extends DAO {
 					""+speedBin+", " +
 					""+vehicleSecondsPerDay+", " +
 					""+vehicleMetersPerDay+", " +
-					""+weightedAverageSpeed+")"; // not inserting percent* values yet
+					""+weightedAverageSpeed+", " + 
+					""+vkt+")"; // not inserting percent* values yet
 			//logger.debug("SQL for : " + sql);
 			s.executeUpdate(sql);
 			

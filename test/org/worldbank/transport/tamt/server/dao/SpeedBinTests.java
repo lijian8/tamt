@@ -333,7 +333,7 @@ public class SpeedBinTests {
 		logger.debug("test insertSpeedDistTrafficFlowRecord");
 		
 		try {
-			speedBinDAO.insertSpeedDistTrafficFlowRecord("3590f46c-6140-4555-bc73-75c7e381a843", "WEEKDAY", "tx", 5, 215, 1100, 45.2);
+			speedBinDAO.insertSpeedDistTrafficFlowRecord("3590f46c-6140-4555-bc73-75c7e381a843", "WEEKDAY", "tx", 5, 215, 1100, 45.2, 8);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -347,6 +347,7 @@ public class SpeedBinTests {
 		logger.debug("test insertSpeedDistTrafficFlowRecord");
 		
 		try {
+			// developer must change the tagID to allow this to work for current database
 			speedBinDAO.insertSpeedDistributionRecord("3590f46c-6140-4555-bc73-75c7e381a843", "WEEKDAY", 0, 55);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -368,20 +369,6 @@ public class SpeedBinTests {
 		}
 		// what can i assert?
 	}
-
-	@Test
-	public void combineSpeedDistributionTrafficFlowIMPROVED()
-	{
-		logger.debug("test combineSpeedDistributionTrafficFlowIMPROVED");
-		
-		try {
-			speedBinDAO.combineSpeedDistributionTrafficFlowIMPROVED();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// what can i assert?
-	}	
 	
 	@Test
 	public void setSumValuesForVehicleType()

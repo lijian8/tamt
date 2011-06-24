@@ -176,6 +176,7 @@
 				<g:Label styleName="{style.dayTypeHeader}">Day Type</g:Label>
 				<g:Label styleName="{style.dayTypeHeader}">Vehicle Type</g:Label>
 				<g:Label styleName="{style.dayTypeHeader}">Speed Bin</g:Label>
+				<g:Label styleName="{style.cellHeaderDoubleTop}">VKT</g:Label>
 				<g:Label styleName="{style.cellHeaderDoubleTop}">(s)/d</g:Label>
 				<g:Label styleName="{style.cellHeaderDoubleTop}">(m)/d</g:Label>
 				<g:Label styleName="{style.cellHeaderDoubleTop}">Average m/s</g:Label>

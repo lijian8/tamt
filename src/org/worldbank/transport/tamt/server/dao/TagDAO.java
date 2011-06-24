@@ -150,7 +150,7 @@ public class TagDAO extends DAO {
 		try {
 			Connection connection = getConnection();
 			Statement s = connection.createStatement();
-			String sql = "SELECT * FROM TAMT_convertAndBinSpeeds();";
+			String sql = "SELECT * FROM TAMT_populateTotalDistanceByTag();";
 			logger.debug(sql);
 			ResultSet r = s.executeQuery(sql); // returns a 1, which can be ignored
 		} catch (SQLException e) {

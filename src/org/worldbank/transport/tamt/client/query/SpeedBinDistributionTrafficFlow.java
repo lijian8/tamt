@@ -369,6 +369,8 @@ public class SpeedBinDistributionTrafficFlow extends Composite {
 		int row = 0;
 
 		double doubleValue = 0.0;
+		String format = "#0.00000";
+		String format2 = "#0.00";
 		for (Iterator iterator = reportValues.iterator(); iterator.hasNext();) {
 			
 			int column = 0;
@@ -379,11 +381,17 @@ public class SpeedBinDistributionTrafficFlow extends Composite {
 				if( column == 0 || column == 1 || column == 2)
 				{
 					l.setStyleName(style.dayType());
-				} else {
+				} 
+				else {
 					if( !l.getText().equalsIgnoreCase("0"))
 					{
 						doubleValue = Double.parseDouble(l.getText());
-						l.setText(NumberFormat.getFormat("#0.00000").format(doubleValue)); // reformat double values to 
+						if( column == 3)
+						{
+							format = format2;
+						}						
+						doubleValue = Double.parseDouble(l.getText());
+						l.setText(NumberFormat.getFormat(format).format(doubleValue)); // reformat double values
 					}
 					l.setStyleName(style.cellHeaderDouble());
 				}
