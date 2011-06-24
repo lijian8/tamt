@@ -261,6 +261,18 @@ version="2.4">
     <servlet-name>backupServiceServlet</servlet-name>
     <url-pattern>/tamt/backupService</url-pattern>
   </servlet-mapping>	      
+
+	  <!--  test connection service -->
+  <servlet>
+    <servlet-name>testConnectionServiceServlet</servlet-name>
+    <servlet-class>org.worldbank.transport.tamt.server.TestConnectionServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>testConnectionServiceServlet</servlet-name>
+    <url-pattern>/tamt/testConnectionService</url-pattern>
+  </servlet-mapping>	      
+
 	     
   <!-- Default page to serve -->
   <welcome-file-list>
