@@ -300,18 +300,21 @@ public class TrafficCountDetailView extends Composite {
 		}
 		currentTrafficCountRecord.setEndTime(endDate);
 
+		// swap out empty values for zeros
+		swapEmptyValuesForZero();
+		
 		try 
 		{
-		currentTrafficCountRecord.setTag(tag.getValue());
-		currentTrafficCountRecord.setW2(Integer.parseInt(W2.getValue()));
-		currentTrafficCountRecord.setW3(Integer.parseInt(W3.getValue()));
-		currentTrafficCountRecord.setPC(Integer.parseInt(PC.getValue()));
-		currentTrafficCountRecord.setTX(Integer.parseInt(TX.getValue()));
-		currentTrafficCountRecord.setLDV(Integer.parseInt(LDV.getValue()));
-		currentTrafficCountRecord.setLDC(Integer.parseInt(LDC.getValue()));
-		currentTrafficCountRecord.setHDC(Integer.parseInt(HDC.getValue()));
-		currentTrafficCountRecord.setMDB(Integer.parseInt(MDB.getValue()));
-		currentTrafficCountRecord.setHDB(Integer.parseInt(HDB.getValue()));
+			currentTrafficCountRecord.setTag(tag.getValue());
+			currentTrafficCountRecord.setW2(Integer.parseInt(W2.getValue()));
+			currentTrafficCountRecord.setW3(Integer.parseInt(W3.getValue()));
+			currentTrafficCountRecord.setPC(Integer.parseInt(PC.getValue()));
+			currentTrafficCountRecord.setTX(Integer.parseInt(TX.getValue()));
+			currentTrafficCountRecord.setLDV(Integer.parseInt(LDV.getValue()));
+			currentTrafficCountRecord.setLDC(Integer.parseInt(LDC.getValue()));
+			currentTrafficCountRecord.setHDC(Integer.parseInt(HDC.getValue()));
+			currentTrafficCountRecord.setMDB(Integer.parseInt(MDB.getValue()));
+			currentTrafficCountRecord.setHDB(Integer.parseInt(HDB.getValue()));
 		} catch (NumberFormatException e)
 		{
 			Window.alert("Counts should only contain digits.");
@@ -359,6 +362,21 @@ public class TrafficCountDetailView extends Composite {
 	}
 	*/
 
+	private void swapEmptyValuesForZero()
+	{
+
+		if( W2.getValue().isEmpty()) { W2.setValue("0"); }
+		if( W3.getValue().isEmpty()) { W3.setValue("0"); }
+		if( PC.getValue().isEmpty()) { PC.setValue("0"); }
+		if( TX.getValue().isEmpty()) { TX.setValue("0"); }
+		if( LDV.getValue().isEmpty()) { LDV.setValue("0"); }
+		if( LDC.getValue().isEmpty()) { LDC.setValue("0"); }
+		if( HDC.getValue().isEmpty()) { HDC.setValue("0"); }
+		if( MDB.getValue().isEmpty()) { MDB.setValue("0"); }
+		if( HDB.getValue().isEmpty()) { HDB.setValue("0"); }
+		
+	}
+	
 	private void updateFormFields(TrafficCountRecord trafficCountRecord)
 	{
 		
