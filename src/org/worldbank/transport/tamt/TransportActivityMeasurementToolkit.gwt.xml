@@ -17,6 +17,9 @@
   <!-- Specify the app entry point class.                         -->
   <entry-point class='org.worldbank.transport.tamt.client.TransportActivityMeasurementToolkit'/>
 
+  <!-- Load from here instead of HTML so we can test for internet connection before loading Maps API -->
+  <script src="http://maps.google.com/maps?gwt=1&amp;file=api&amp;v=2&amp;key=ABQIAAAAGt86K09TmfKzrelwDOWGFhT2yXp_ZAY8_ufC3CFXhHIE1NvwkxTDSeXb3-MIic0aZDFWflTeLY7IzA" ></script>
+
   <!-- Specify the paths for translatable code                    -->
   <source path='client'/>
   <source path='shared'/>
