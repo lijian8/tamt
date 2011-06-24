@@ -164,6 +164,11 @@
 			<g:Label ui:field="speedBinsSpeedDistributionTrafficFlow" styleName="{style.downloadReports} {style.clickable}">Speed Distribution x Traffic Flow</g:Label>
 			<g:Label ui:field="speedBinsSpeedDistributionAggregateByDayType" styleName="{style.downloadReports} {style.clickable}">Aggregate by Day Type</g:Label>
 			<g:Label ui:field="speedBinsSpeedDistributionAggregateByTag" styleName="{style.downloadReports} {style.clickable}">Aggregate by Tag</g:Label>
+			<g:HTML><p/></g:HTML>
+			
+			<g:HTML>Trip Statistics</g:HTML>
+			<g:Label ui:field="tripStatsTripBin" styleName="{style.downloadReports} {style.clickable}">Trip Bin</g:Label>
+			<g:Label ui:field="tripStatsSoakTimes" styleName="{style.downloadReports} {style.clickable}">Engine Soak Times</g:Label>
 				
 		</g:VerticalPanel>
 	</g:HorizontalPanel>
