@@ -71,6 +71,7 @@ public class SpeedBinDistributionTrafficFlow extends Composite {
 		String clickable();
 		String record();
 		String dayType();
+		String other();
 		String cell();
 		String hour();
 		String cellHeaderInteger();
@@ -378,9 +379,13 @@ public class SpeedBinDistributionTrafficFlow extends Composite {
 			for (Iterator iter = thisRow.iterator(); iter.hasNext();) {
 				String value = (String) iter.next();
 				Label l = new Label(value);
-				if( column == 0 || column == 1 || column == 2)
+				if( column == 0 )
 				{
 					l.setStyleName(style.dayType());
+				}
+				else if( column == 1 || column == 2)
+				{
+					l.setStyleName(style.other());
 				} 
 				else {
 					if( !l.getText().equalsIgnoreCase("0"))
