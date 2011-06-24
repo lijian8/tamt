@@ -152,6 +152,33 @@ public class DownloadCSV extends Composite {
 		}
 	}	
 	
+	@UiHandler("tripStatsTripBin")
+	void onClickTripStatsTripBin(ClickEvent e){		
+		if( currentStudyRegion != null)
+		{
+			// create the url string for the download
+			String url = "/download/tripstatistics/tripbin?regionid=" + currentStudyRegion.getId();
+			Window.open(url, "_blank", null);
+		} else {
+			Window.alert("Cannot download trip bin report at this time");
+			resetScreen();
+		}
+	}
+	
+	@UiHandler("tripStatsSoakTimes")
+	void onClickTripStatsSoakTimes(ClickEvent e){
+		
+		if( currentStudyRegion != null)
+		{
+			// create the url string for the download
+			String url = "/download/tripstatistics/soakbin?regionid=" + currentStudyRegion.getId();
+			Window.open(url, "_blank", null);
+		} else {
+			Window.alert("Cannot download soak bin report at this time");
+			resetScreen();
+		}
+	}	
+	
 	private void resetScreen()
 	{
 		resetRightPane();

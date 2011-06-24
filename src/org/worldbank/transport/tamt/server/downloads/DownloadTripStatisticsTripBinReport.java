@@ -45,7 +45,7 @@ public class DownloadTripStatisticsTripBinReport extends HttpServlet {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		Date downloaded = new Date();
 		String ts = format.format(downloaded);
-		String csvFileName = "trip-statistics-tripbin" + ts + ".csv";
+		String csvFileName = "trip-statistics-tripbin-" + ts + ".csv";
 		resp.setHeader("Content-disposition", "attachment;filename="+csvFileName);
 		
 		try {
