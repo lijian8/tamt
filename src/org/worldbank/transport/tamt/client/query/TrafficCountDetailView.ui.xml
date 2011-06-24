@@ -13,6 +13,10 @@
 			background-color: #000;
 			width: 1px;
 			height: 100%;
+		}
+		.clickable {
+			color: blue;
+			text-decoration: underline;
 		}	
 		.button {
 			margin-left: 10px;	

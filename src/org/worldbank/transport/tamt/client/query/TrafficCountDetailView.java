@@ -38,8 +38,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -67,6 +69,7 @@ public class TrafficCountDetailView extends Composite {
 	interface Style extends CssResource {
 	    String textBoxSmall();
 	    String textBoxLarge();
+	    String clickable();
 	}
 	
 	@UiField Style style;
@@ -126,7 +129,7 @@ public class TrafficCountDetailView extends Composite {
 	protected Date lastChosenDate;
 
 	protected StudyRegion currentStudyRegion;
-	
+	private DialogBox timeHelper;
 
 	public TrafficCountDetailView(HandlerManager eventBus) {
 		this.eventBus = eventBus;
@@ -144,7 +147,21 @@ public class TrafficCountDetailView extends Composite {
 		buildVehiclesTable();
 		
 		fmt = DateTimeFormat.getFormat("yyyy-MM-dd");
-		fmtHHMM = DateTimeFormat.getFormat("HH:mm");
+		fmtHHMM = DateTimeFormat.getFormat("HHmm");
+		
+		timeHelper = new DialogBox();
+		timeHelper.setText("Time Format");
+		VerticalPanel vp = new VerticalPanel();
+		HTML timeHelperText = new HTML("Time format must be in 24 hour time (HHmm) with no colon. E.g. '1945' instead of '7:45pm'");
+		Button vpOK = new Button("OK");
+		vpOK.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				timeHelper.hide();
+			}
+		});
+		vp.add(timeHelperText);
+		vp.add(vpOK);
+		timeHelper.add(vp);
 		
 		bind();
 		
@@ -270,7 +287,7 @@ public class TrafficCountDetailView extends Composite {
 		Date startDate = mergeTimeWithLastChosenDate(startTime.getValue());
 		if( startDate == null)
 		{
-			Window.alert("Start time must be formatted HH:mm");
+			Window.alert("Start time must be formatted HHmm");
 			return;
 		}
 		currentTrafficCountRecord.setStartTime(startDate);
@@ -278,7 +295,7 @@ public class TrafficCountDetailView extends Composite {
 		Date endDate = mergeTimeWithLastChosenDate(endTime.getValue());
 		if( endDate == null)
 		{
-			Window.alert("End time must be formatted HH:mm");
+			Window.alert("End time must be formatted HHmm");
 			return;
 		}
 		currentTrafficCountRecord.setEndTime(endDate);
@@ -391,9 +408,9 @@ public class TrafficCountDetailView extends Composite {
 	{
 		
 		/*
-		 * Must be in the format HH:mm (that is, digitdigitcolondigitdigit)
+		 * Must be in the format HHmm (that is, 4 consecutive digits)
 		 */
-		Pattern pattern = new Pattern("\\d\\d:\\d\\d");
+		Pattern pattern = new Pattern("\\d\\d\\d\\d");
 		Date date = null;
 		if( pattern.matches(hhmm))
 		{
@@ -402,7 +419,7 @@ public class TrafficCountDetailView extends Composite {
 			GWT.log("hhmm:" + hhmm);
 			String hh = hhmm.substring(0, 2);
 			GWT.log("hh:" + hh);
-			String mm = hhmm.substring(3, 5);
+			String mm = hhmm.substring(2, 4);
 			GWT.log("mm:" + mm);
 			date = new Date();
 			
@@ -428,7 +445,23 @@ public class TrafficCountDetailView extends Composite {
 		dateLabel = new Label("Date");
 		dayTypeLabel = new Label("Day type");
 		startTimeLabel = new Label("Start time");
+		startTimeLabel.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				timeHelper.center();
+				timeHelper.show();
+			}
+		});
+		startTimeLabel.setStylePrimaryName(style.clickable());
+		
 		endTimeLabel = new Label("End time");
+		endTimeLabel.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				timeHelper.center();
+				timeHelper.show();
+			}
+		});
+		endTimeLabel.setStylePrimaryName(style.clickable());
+		
 		tagLabel = new Label("Tag");
 		W2Label = new Label("Two-wheeler (W2)");
 		W3Label = new Label("Three-wheeler (W3)");
@@ -529,7 +562,7 @@ public class TrafficCountDetailView extends Composite {
 		
 		dateTimeTag.setWidget(2, 0, startTimeLabel);
 		dateTimeTag.setWidget(2, 1, startTime);
-
+		
 		dateTimeTag.setWidget(3, 0, endTimeLabel);
 		dateTimeTag.setWidget(3, 1, endTime);
 		
