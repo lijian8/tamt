@@ -73,6 +73,20 @@ public class DownloadCSV extends Composite {
 		
 	}
 	
+	@UiHandler("roadLengthByTagReport")
+	void onClickRoadLengthByTagReport(ClickEvent e){
+		
+		if( currentStudyRegion != null)
+		{
+			// create the url string for the download
+			String url = "/download/roadlength/roadlengthbytag?regionid=" + currentStudyRegion.getId();
+			Window.open(url, "_blank", null);
+		} else {
+			Window.alert("Cannot download road length by tag report at this time");
+			resetScreen();
+		}
+	}
+	
 	@UiHandler("vehicleFlowTrafficFlowReport")
 	void onClickVehicleFlowTrafficFlowReport(ClickEvent e){
 		
