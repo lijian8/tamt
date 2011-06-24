@@ -154,7 +154,11 @@
 			<g:HTML>Vehicle Flow</g:HTML>
 			<g:Label ui:field="vehicleFlowTrafficFlowReport" styleName="{style.downloadReports} {style.clickable}">Traffic Flow Report</g:Label>
 			<g:HTML><p/></g:HTML>
-			
+	
+			<g:HTML>Road Length</g:HTML>
+			<g:Label ui:field="roadLengthByTagReport" styleName="{style.downloadReports} {style.clickable}">Road Length By Tag Report</g:Label>
+			<g:HTML><p/></g:HTML>
+				
 			<g:HTML>Speed Bins</g:HTML>
 			<g:Label ui:field="speedBinsSpeedDistribution" styleName="{style.downloadReports} {style.clickable}">Speed Distribution</g:Label>
 			<g:Label ui:field="speedBinsSpeedDistributionTrafficFlow" styleName="{style.downloadReports} {style.clickable}">Speed Distribution x Traffic Flow</g:Label>
