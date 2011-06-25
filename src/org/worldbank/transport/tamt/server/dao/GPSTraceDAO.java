@@ -555,12 +555,12 @@ public class GPSTraceDAO extends DAO {
 						} catch (NumberFormatException e) {
 							// skip the line entry if there were problems with
 							// number conversions
-							logger.error("error processing line set:"
+							logger.error("Error converting string to number from GPS record:"
 									+ e.getMessage());
 							continue;
 						} catch (SQLException e) {
 							// skip the line entry if there were sql errors
-							logger.error("error adding point to database:"
+							logger.error("Error adding point to database:"
 									+ e.getMessage());
 							continue;
 						} catch (Exception e) {

@@ -30,7 +30,8 @@ public class AssignServiceImpl extends RemoteServiceServlet implements AssignSer
 		    super.init(config);                  // always!
 		    logger.debug("init()");
 			assigner = new AssignmentWorker();
-		    assigner.setPriority(Thread.MIN_PRIORITY);  // be a good citizen
+			// assigns more time on the CPU, which we want for this operation
+		    assigner.setPriority(Thread.MAX_PRIORITY);
 	}
 	 
 	public AssignServiceImpl()
@@ -69,7 +70,7 @@ public class AssignServiceImpl extends RemoteServiceServlet implements AssignSer
 			logger.debug("Start assigner with this status:" + status);
 			
 			assigner = new AssignmentWorker();
-			assigner.setPriority(Thread.MIN_PRIORITY);
+			assigner.setPriority(Thread.MAX_PRIORITY);
 			assigner.setStatus(status);
 			assigner.start();
 		}
