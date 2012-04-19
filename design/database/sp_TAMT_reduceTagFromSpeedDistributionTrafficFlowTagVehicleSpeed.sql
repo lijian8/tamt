@@ -78,7 +78,6 @@ BEGIN
 		--RAISE NOTICE '----lengthUserDefinedRoadsByTag=%', lengthUserDefinedRoadsByTag;
 
 		-- Step 2: Calculate proxy length for user-defined zones
-		
 		-- Step 2a: blocklength has already been fetched
 		
 		-- Step 2b: get the proxy length of user-defined zones in this region
@@ -183,14 +182,30 @@ BEGIN
 	--DROP TABLE IF EXISTS tmp_sptfvs;
 
 	-- Step 6d: in new table, recalculate m/s, taghours, tagkilometers, and tagkph
-	UPDATE speeddistributiontrafficflowvehiclespeed
-		SET 
-			meterspersecond = tagmeters / tagseconds,
-			taghours = tagseconds / 3600,
-			tagkilometers = tagmeters / 1000,
-			tagkph = (tagmeters / 1000)/(tagseconds / 3600)
-		WHERE regionid = _regionid;
-		
+	
+	
+	-- DIVIDE BY ZERO FIX:
+	-- IF tagseconds = 0, then update meterspersecond to also be 0, rather than dividing by 0
+	-- IF tagseconds = 0, then update tagkph to also be 0, rather than dividing by 0
+	IF tagseconds = 0
+	THEN
+		UPDATE speeddistributiontrafficflowvehiclespeed
+			SET 
+				meterspersecond = 0
+				taghours = 0,
+				tagkilometers = tagmeters / 1000,
+				tagkph = 0
+			WHERE regionid = _regionid;	
+	ELSE
+		UPDATE speeddistributiontrafficflowvehiclespeed
+			SET 
+				meterspersecond = tagmeters / tagseconds,
+				taghours = tagseconds / 3600,
+				tagkilometers = tagmeters / 1000,
+				tagkph = (tagmeters / 1000)/(tagseconds / 3600)
+			WHERE regionid = _regionid;
+	ENDIF;
+	
 END;
 $BODY$
   LANGUAGE 'plpgsql' VOLATILE
