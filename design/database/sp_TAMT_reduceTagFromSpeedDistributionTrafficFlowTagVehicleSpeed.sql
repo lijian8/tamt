@@ -1,7 +1,3 @@
-﻿-- Function: tamt_reducetagfromspeeddistributiontrafficflowtagvehiclespeed()
-
--- DROP FUNCTION tamt_reducetagfromspeeddistributiontrafficflowtagvehiclespeed();
-
 CREATE OR REPLACE FUNCTION tamt_reducetagfromspeeddistributiontrafficflowtagvehiclespeed()
   RETURNS void AS
 $BODY$
@@ -19,6 +15,7 @@ DECLARE
 	summ RECORD;
 	_regionid text;
 	_default_zone_type text;
+	tagsecondsfinal numeric;
 BEGIN
 
  	RAISE NOTICE 'START TAMT_reduceTagFromSpeedDistributionTrafficFlowTagVehicleSpeed';
@@ -187,24 +184,38 @@ BEGIN
 	-- DIVIDE BY ZERO FIX:
 	-- IF tagseconds = 0, then update meterspersecond to also be 0, rather than dividing by 0
 	-- IF tagseconds = 0, then update tagkph to also be 0, rather than dividing by 0
-	IF tagseconds = 0
+
+	-- 2012-04-18 - problem now is the regionid does not exist in this table
+	-- if we assume that only the current region's data makes it this far,
+	-- perhaps we don't need the region clause;
+	SELECT INTO tagsecondsfinal tagseconds FROM tmp_sptfvs 
+		--WHERE
+		--	_regionid = regionid
+		WHERE
+			vehicletype = vehicletype
+		AND 
+			speedbin = speedbin;
+
+	IF tagsecondsfinal = 0
 	THEN
 		UPDATE speeddistributiontrafficflowvehiclespeed
 			SET 
-				meterspersecond = 0
+				meterspersecond = 0,
 				taghours = 0,
 				tagkilometers = tagmeters / 1000,
 				tagkph = 0
-			WHERE regionid = _regionid;	
+			-- WHERE regionid = _regionid;
+			;	
 	ELSE
 		UPDATE speeddistributiontrafficflowvehiclespeed
 			SET 
-				meterspersecond = tagmeters / tagseconds,
+				meterspersecond = tagmeters / tagsecondsfinal,
 				taghours = tagseconds / 3600,
 				tagkilometers = tagmeters / 1000,
-				tagkph = (tagmeters / 1000)/(tagseconds / 3600)
-			WHERE regionid = _regionid;
-	ENDIF;
+				tagkph = (tagmeters / 1000)/(tagsecondsfinal / 3600)
+			--WHERE regionid = _regionid;
+			;
+	END IF;
 	
 END;
 $BODY$
