@@ -327,6 +327,13 @@ public class SpeedBinDistributionAggregateByTag extends Composite {
 				{
 					l.setStyleName(style.dayType());
 				} else {
+					// 2012-04-18 It appears we have a NumberFormatException
+					// here when l.getText() is NULL or EMPTY, so handle that case
+					GWT.log("l.getText()=" + l.getText());
+					if( l.getText().equalsIgnoreCase(""))
+					{
+						l.setText("0");
+					}
 					if( !l.getText().equalsIgnoreCase("0"))
 					{
 						doubleValue = Double.parseDouble(l.getText());
