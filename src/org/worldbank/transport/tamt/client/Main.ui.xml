@@ -59,7 +59,7 @@
   </g:east>
   <g:south size='40'>
   	<g:HorizontalPanel styleName="{style.debug}">
-  		<g:HTML styleName="{style.footerlink}">TAMT Applications Beta 1.1 - <a target="_blank" href="http://tamt.googlecode.com">http://tamt.googlecode.com</a></g:HTML>
+  		<g:HTML styleName="{style.footerlink}">TAMT Applications Beta 1.2 - <a target="_blank" href="http://tamt.googlecode.com">http://tamt.googlecode.com</a></g:HTML>
   		<g:DialogBox ui:field="dialogBox"/>
   	</g:HorizontalPanel>
   </g:south>
