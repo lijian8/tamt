@@ -102,8 +102,7 @@ public class TrafficFlowReportBO {
 			TagDetails tagDetails,
 			String dayType) throws Exception
 	{
-		
-		
+	
 		// to generate a traffic flow report, we must have a default
 		// flow for this tag
 		DefaultFlow query = new DefaultFlow();
@@ -301,7 +300,7 @@ public class TrafficFlowReportBO {
 		//logger.debug("hasValuesList hasNull:" + hasNull(hasValuesList));
 		
 		/*
-		 * This check turns up false if we have rawData that has onely ONE
+		 * This check turns up false if we have rawData that has only ONE
 		 * row of non-NULL data. (ie, before and afters, but the in-between
 		 * is the same row)
 		 * 
@@ -340,18 +339,14 @@ public class TrafficFlowReportBO {
 			 * Get the start and end positions of the next null range
 			 */
 			ArrayList<Integer> range = getInBetweenRange(hasValuesList);
-			//logger.debug("range=" + range);
 			int startIndex = range.get(0);
 			int endIndex = range.get(1);
 			
 			ArrayList<String> preRange = rawData.get(startIndex-1);
-			//logger.debug("preRange=" + preRange);
 			
 			ArrayList<String> postRange = rawData.get(endIndex+1);
-			//logger.debug("postRange=" + postRange);
 			
 			ArrayList<String> averages = calculateAverage(preRange, postRange);
-			//logger.debug("averages=" + averages);
 			
 			//TODO: if start and end are equal, then just replace the row at t
 			// that position (and check the hasNull(list again),
@@ -370,7 +365,7 @@ public class TrafficFlowReportBO {
 				
 			} else {
 			
-				for (int i = startIndex; i < endIndex; i++) {
+				for (int i = startIndex; i <= endIndex; i++) {
 					ArrayList<String> currentList = rawData.get(i);
 					for (int j = 0; j < averages.size(); j++) {
 						// take j and put it in j+1 of currentList
@@ -415,6 +410,7 @@ public class TrafficFlowReportBO {
 		
 		boolean foundFirstFalse = false;
 		boolean foundNextTrue = false;
+		
 		loopvalues:
 		for (int i = 0; i < hasValuesList.size(); i++) {
 			boolean b = hasValuesList.get(i);
